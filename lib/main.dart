@@ -1,14 +1,10 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
-import 'dart:math';
+import "dart:math";
 
-import 'package:dio/adapter.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:dio/dio.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:cookie_jar/cookie_jar.dart';
+import "package:flutter/material.dart";
+import 'package:pr0gramm/api/profileApi.dart';
+
+import "api/dtos/captcha.dart";
+import "api/loginApi.dart";
 
 void main() => runApp(MyApp());
 
@@ -36,56 +32,44 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Future<Captcha> _captchaFuture;
   final _captchaController = TextEditingController();
   final _userController = TextEditingController();
   final _passController = TextEditingController();
 
-  final CookieJar jar = CookieJar();
-  final Dio dio = Dio(BaseOptions(baseUrl: "https://pr0gramm.com/api"));
+  static final _loginApi = LoginApi();
+  static final _profileApi = ProfileApi();
 
-  _MyHomePageState() {
-    dio.interceptors.add(CookieManager(jar));
-    _captchaFuture = fetchCaptcha();
+  Future<Captcha> _captchaFuture = _loginApi.getCaptcha();
 
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
-      // Hook into the findProxy callback to set the client's proxy.
-      client.findProxy = (url) {
-        return 'PROXY 192.168.11.10:8888';
-      };
-
-      // This is a workaround to allow Charles to receive
-      // SSL payloads when your app is running on Android.
-      client.badCertificateCallback = (X509Certificate cert, String host, int port) => Platform.isAndroid;
-    };
-  }
-
-  Map<String, String> headers = {};
-
-  Future<Captcha> fetchCaptcha() async {
-    final response = await dio.get("/user/captcha");
-    return Captcha.fromJson(response.data);
+  void newCaptcha() {
+    _captchaFuture = _loginApi.getCaptcha();
+    _captchaController.clear();
+    setState(() {});
   }
 
   Future doLogin(BuildContext context) async {
-    var captcha = await _captchaFuture;
-    final body = {
-      "name": _userController.text,
-      "password": _passController.text,
-      "captcha": _captchaController.text,
-      "token": captcha.token
-    };
+    final captcha = await _captchaFuture;
+    captcha.captchaResult = _captchaController.text;
 
-    final response = await dio.post("/user/login", data: body, options: Options(
-      contentType: Headers.formUrlEncodedContentType
-    ));
+    final result = await _loginApi.doLogin(
+      user: _userController.text,
+      pass: _passController.text,
+      captcha: captcha,
+    );
 
-    print(response.data);
-    print(jar.loadForRequest(Uri.parse("https://pr0gramm.com/")));
+    if(result?.success ?? false) {
+      showAlertDialog(context, "Login Success", "Welcome ${result.username}");
 
-    _captchaFuture = fetchCaptcha();
+      final profile = await _profileApi.getProfileInfo(
+        name: result.username,
+        flags: 15,
+      );
 
-    showAlertDialog(context, "Login Status", response.data["success"] ? "Success" : "Failure!");
+      showAlertDialog(context, "Benis", "Dein Benis ${profile.user.score}");
+    } else {
+      showAlertDialog(context, "Login Failure", "Unable to login: ${result?.error}");
+      newCaptcha();
+    }
   }
 
   showAlertDialog(BuildContext context, String title, String message) {
@@ -113,15 +97,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void updateCookie(http.Response response) {
-    String rawCookie = response.headers["set-cookie"];
-    if (rawCookie != null) {
-      int index = rawCookie.indexOf(';');
-      headers["cookie"] =
-      (index == -1) ? rawCookie : rawCookie.substring(0, index);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,7 +114,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   future: _captchaFuture,
                   builder: (context, snapshot) {
                     if (snapshot.hasData)
-                      return Image.memory(snapshot.data.captchaBytes);
+                      return GestureDetector(
+                        onTap: newCaptcha,
+                        child: Image.memory(snapshot.data.captchaBytes),
+                      );
                     else
                       return CircularProgressIndicator();
                   },
@@ -192,26 +170,17 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.done),
         onPressed: () => doLogin(context),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 
   @override
   void dispose() {
     _captchaController.dispose();
+    _passController.dispose();
+    _userController.dispose();
     super.dispose();
   }
 }
 
-class Captcha {
-  final String token;
-  final Uint8List captchaBytes;
 
-  Captcha({this.token, String captcha})
-      : captchaBytes = Base64Decoder()
-            .convert(captcha.replaceFirst("data:image/png;base64,", ""));
-
-  factory Captcha.fromJson(Map<String, dynamic> json) {
-    return Captcha(token: json["token"], captcha: json["captcha"]);
-  }
-}

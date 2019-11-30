@@ -10,7 +10,7 @@ class ApiClient {
   static const baseUrl = "https://pr0gramm.com/api";
   static final ApiClient _instance = ApiClient._internal();
 
-  final CookieJar jar = CookieJar();
+  CookieJar jar = CookieJar();
   final Dio client = Dio(BaseOptions(baseUrl: baseUrl));
 
   factory ApiClient() {
@@ -32,6 +32,16 @@ class ApiClient {
 
       client.badCertificateCallback = (cert, host, port) => Platform.isAndroid;
     };
+  }
+
+  void setToken(String token, String meToken) {
+    final cookie = Cookie("pp", token);
+    final meCookie = Cookie("me", meToken);
+    jar.saveFromResponse(Uri.parse(baseUrl), [cookie, meCookie]);
+  }
+
+  void logout() {
+    jar = CookieJar();
   }
 }
 

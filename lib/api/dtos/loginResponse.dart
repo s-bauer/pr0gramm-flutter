@@ -3,6 +3,8 @@ class LoginResponse {
   final String error;
 
   String username;
+  String token;
+  String meToken;
 
   LoginResponse({this.success, this.error});
 

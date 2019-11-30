@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
-
 import 'package:dio/dio.dart';
 
 import 'baseApi.dart';
@@ -29,16 +27,22 @@ class LoginApi extends BaseApi {
         options: Options(contentType: Headers.formUrlEncodedContentType),
       );
 
-      final cookies = apiClient.getCookies();
-      final meCookie = cookies.firstWhere((c) => c.name == "me");
-      final decodedMe = Uri.decodeComponent(meCookie.value);
-      final meJson = MeCookie.fromJson(jsonDecode(decodedMe));
-
       final loginResponse = LoginResponse.fromJson(response.data);
-      loginResponse.username = meJson.name;
+
+      final cookies = apiClient.getCookies();
+      final meCookie = cookies.firstWhere((c) => c.name == "me", orElse: () => null);
+      final ppCookie = cookies.firstWhere((c) => c.name == "pp", orElse: () => null);
+
+      if(meCookie != null && ppCookie != null) {
+        final decodedMe = Uri.decodeComponent(meCookie.value);
+        final meJson = MeCookie.fromJson(jsonDecode(decodedMe));
+        loginResponse.username = meJson.name;
+        loginResponse.token = ppCookie.value;
+        loginResponse.meToken = meCookie.value;
+      }
 
       return loginResponse;
-    } on DioError {
+    } on Error {
       return LoginResponse(success: false);
     }
   }

@@ -24,6 +24,7 @@ dependencies:
   dio: ^3.0.7
   dio_cookie_manager: ^1.0.0
   shared_preferences: ^0.5.4
+  video_player: ^0.10.3
 
 dev_dependencies:
   flutter_test:

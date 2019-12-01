@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: "Pr0gramm",
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primaryColor: Color(0xffee4d2e),
         ),
         home: HomePage(),
       ),

@@ -91,7 +91,7 @@ class _PostPageState extends State<PostPage> {
                   if (comments == null) {
                     comments = LinkedComment(info.comments).comments;
                   }
-                  comments.sort((a,b) => a.comment.created.compareTo(b.comment.created));
+                  comments.sort((a,b) => b.comment.confidence.compareTo(a.comment.confidence));
                   comments.forEach((comment) {
                     sortedLinkedComments.add(comment);
                     if (comment.comments.length > 0) {

@@ -13,8 +13,6 @@ class ImagePost extends StatefulWidget {
 class _ImagePostState extends State<ImagePost> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Image.network("https://img.pr0gramm.com/${widget.item.image}"),
-    );
+    return Image.network("https://img.pr0gramm.com/${widget.item.image}");
   }
 }

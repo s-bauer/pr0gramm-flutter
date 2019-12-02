@@ -1,17 +1,12 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:pr0gramm/api/apiClient.dart';
 import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
-import 'package:pr0gramm/api/itemApi.dart';
 import 'package:pr0gramm/api/profileApi.dart';
 import 'package:pr0gramm/data/sharedPrefKeys.dart';
 import 'package:pr0gramm/services/itemProvider.dart';
-import 'package:pr0gramm/views/postView.dart';
+import 'package:pr0gramm/views/widgets/postPage.dart';
 import 'package:pr0gramm/widgets/inherited.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:video_player/video_player.dart';
 
 import 'loginView.dart';
 

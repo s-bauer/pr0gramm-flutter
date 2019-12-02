@@ -13,6 +13,46 @@ class PostPage extends StatefulWidget {
   @override
   _PostPageState createState() => _PostPageState();
 }
+class PostButtons extends StatelessWidget {
+  final PostInfo info;
+
+  const PostButtons({Key key, this.info}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        IconButton(
+          icon: Icon(Icons.add_circle_outline),
+          color: Colors.white,
+          onPressed: () {},
+        ),
+        IconButton(
+          color: Colors.white,
+          icon: Icon(Icons.remove_circle_outline),
+          onPressed: () {},
+        ),
+        IconButton(
+          color: Colors.white,
+          icon: Icon(Icons.favorite_border),
+          onPressed: () {},
+        ),
+        Container(
+          height: 30.0,
+          width: 1.0,
+          color: Colors.white30,
+          margin:
+          const EdgeInsets.only(left: 10.0, right: 20.0),
+        ),
+        Text(
+          info.item.user,
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        )
+      ],
+    );
+  }
+}
+
 
 class _PostPageState extends State<PostPage> {
   final ItemProvider _itemProvider = ItemProvider();

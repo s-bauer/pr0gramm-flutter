@@ -32,6 +32,7 @@ class _PostCommentState extends State<PostComment> {
             Column(
               children: <Widget>[
                 CircularButton(text: "+"),
+                SizedBox(height: 3),
                 CircularButton(text: "-"),
               ],
             ),

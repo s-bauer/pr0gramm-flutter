@@ -17,6 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Future _initFuture;
+  int _gridRefreshKey = 0;
 
   final ItemProvider _itemProvider = ItemProvider();
 
@@ -89,30 +90,39 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget buildProfile() {
-    return GridView.builder(
-      gridDelegate:
-          new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
-      itemBuilder: (context, index) {
-        return FutureBuilder<Item>(
-          future: _itemProvider.getItem(index),
-          builder: (context, snapshot) {
-            if (snapshot.hasData)
-              return GestureDetector(
-                child: Image.network(
-                    "https://thumb.pr0gramm.com/${snapshot.data.thumb}"),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => PostPage(index: index)),
-                  );
-                },
-              );
+  Future refreshItems() async {
+    setState(() {
+      _gridRefreshKey++;
+    });
+  }
 
-            return CircularProgressIndicator();
-          },
-        );
-      },
+  Widget buildProfile() {
+    return RefreshIndicator(
+      onRefresh: refreshItems,
+      child: GridView.builder(
+        key: Key(_gridRefreshKey.toString()),
+        gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+        itemBuilder: (context, index) {
+          return FutureBuilder<Item>(
+            future: _itemProvider.getItem(index),
+            builder: (context, snapshot) {
+              if (snapshot.hasData)
+                return GestureDetector(
+                  child: Image.network(
+                      "https://thumb.pr0gramm.com/${snapshot.data.thumb}"),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PostPage(index: index)),
+                    );
+                  },
+                );
+
+              return CircularProgressIndicator();
+            },
+          );
+        },
+      ),
     );
   }
 }

@@ -72,21 +72,31 @@ class _PostPageState extends State<PostPage> {
       body: PageView.builder(
         controller: _controller,
         itemBuilder: (context, index) {
+          var future = _itemProvider.getItemWithInfo(index);
+
           return FutureBuilder<PostInfo>(
-            future: _itemProvider.getItemWithInfo(index),
+            future: future,
             builder: (context, snapshot) {
               if (!snapshot.hasData)
                 return Center(child: CircularProgressIndicator());
 
               var comments = linkComments(snapshot.data);
 
-              return SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    PostView(item: snapshot.data.item),
-                    buildTags(context, snapshot.data),
-                    Column(children: comments.map((c) => c.build()).toList())
-                  ],
+              return RefreshIndicator(
+                onRefresh: () async {
+                  setState(() {
+                    future = _itemProvider.getItemWithInfo(index);
+                  });
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    children: <Widget>[
+                      PostView(item: snapshot.data.item),
+                      buildTags(context, snapshot.data),
+                      Column(children: comments.map((c) => c.build()).toList())
+                    ],
+                  ),
                 ),
               );
             },

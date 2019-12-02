@@ -16,7 +16,7 @@ class _PostCommentState extends State<PostComment> {
     final padding = EdgeInsets.only(
       top: 5,
       bottom: 5,
-      left: 10.0 * widget.linkedComment.depth,
+      left: widget.linkedComment.parent != null ? 10 : 0,
     );
 
     const textStyle = const TextStyle(

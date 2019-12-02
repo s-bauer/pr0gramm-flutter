@@ -7,6 +7,8 @@ import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
 import 'package:pr0gramm/api/itemApi.dart';
 import 'package:pr0gramm/api/profileApi.dart';
 import 'package:pr0gramm/data/sharedPrefKeys.dart';
+import 'package:pr0gramm/services/itemProvider.dart';
+import 'package:pr0gramm/views/postView.dart';
 import 'package:pr0gramm/widgets/inherited.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
@@ -20,8 +22,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Future _initFuture;
-  var _items = List<Item>();
-  Future _workingTask;
+
+  final ItemProvider _itemProvider = ItemProvider();
 
   Future initialize() async {
     try {
@@ -47,35 +49,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<Item> getItem(int index) async {
-    final itemApi = ItemApi();
-
-    while (true) {
-      try {
-        if (index < _items.length) return _items[index];
-
-        if (_workingTask != null) {
-          await _workingTask;
-          continue;
-        }
-
-        int older;
-        if (_items.isNotEmpty) older = _items.last.promoted;
-
-        _workingTask = itemApi.getItems(
-          promoted: true,
-          flags: 9,
-          older: older,
-        );
-        var getItemsResponse = await _workingTask;
-        _workingTask = null;
-
-        _items.addAll(getItemsResponse.items);
-      } on Exception catch (e) {
-        print(e);
-      }
-    }
-  }
 
   void logOut() {
     final apiClient = ApiClient();
@@ -122,14 +95,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildProfile() {
-    var profile = MyInherited.of(context).profile;
-
     return GridView.builder(
       gridDelegate:
           new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
       itemBuilder: (context, index) {
         return FutureBuilder<Item>(
-          future: getItem(index),
+          future: _itemProvider.getItem(index),
           builder: (context, snapshot) {
             if (snapshot.hasData)
               return GestureDetector(
@@ -138,8 +109,7 @@ class _HomePageState extends State<HomePage> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => DetailView(item: snapshot.data)),
+                    MaterialPageRoute(builder: (context) => PostPage(index: index)),
                   );
                 },
               );
@@ -149,88 +119,6 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
-
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        Text("Welcome ${profile.user.name}"),
-        RaisedButton(
-          child: Text("Logout"),
-          onPressed: logOut,
-        )
-      ],
-    );
   }
 }
 
-class DetailView extends StatefulWidget {
-  final Item item;
-
-  DetailView({Key key, this.item}) : super(key: key);
-
-  @override
-  _DetailViewState createState() => _DetailViewState();
-}
-
-class _DetailViewState extends State<DetailView> {
-  VideoPlayerController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-
-    if (widget.item.image.endsWith(".mp4"))
-      _controller = VideoPlayerController.network(
-          "https://vid.pr0gramm.com/${widget.item.image}")
-        ..initialize().then((_) {
-          _controller.play();
-          _controller.setLooping(true);
-          setState(() {});
-        });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (widget.item.image.endsWith(".mp4"))
-      return Scaffold(
-        backgroundColor: Colors.black45,
-        appBar: AppBar(
-          title: Text("Top"),
-        ),
-        body: Center(
-          child: Stack(
-            children: <Widget>[
-              GestureDetector(
-                onTap: () {
-                  if (_controller.value.isPlaying)
-                    _controller.pause();
-                  else
-                    _controller.play();
-                },
-                child: _controller?.value?.initialized ?? false
-                    ? AspectRatio(
-                        aspectRatio: _controller.value.aspectRatio,
-                        child: VideoPlayer(_controller),
-                      )
-                    : CircularProgressIndicator(),
-              ),
-            ],
-          ),
-        ),
-      );
-
-    return Scaffold(
-      backgroundColor: Colors.black45,
-      appBar: AppBar(
-        title: Text("Post"),
-      ),
-      body: Image.network("https://img.pr0gramm.com/${widget.item.image}"),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller?.dispose();
-    super.dispose();
-  }
-}

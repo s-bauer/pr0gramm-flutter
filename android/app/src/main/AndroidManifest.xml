@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.bauer.pr0gramm">
-    
+
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that

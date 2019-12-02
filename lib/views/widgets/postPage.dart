@@ -20,13 +20,6 @@ class PostPage extends StatefulWidget {
 class _PostPageState extends State<PostPage> {
   final ItemProvider _itemProvider = ItemProvider();
   PageController _controller;
-  Future<PostInfo> _postFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _postFuture = _itemProvider.getItemWithInfo(widget.index);
-  }
 
   List<LinkedComment> linkComments(PostInfo postInfo) {
     final plainComments = postInfo.info.comments;
@@ -50,7 +43,7 @@ class _PostPageState extends State<PostPage> {
         controller: _controller,
         itemBuilder: (context, index) {
           return FutureBuilder<PostInfo>(
-            future: _postFuture,
+            future: _itemProvider.getItemWithInfo(widget.index),
             builder: (context, snapshot) {
               if(!snapshot.hasData)
                 return Center(child: CircularProgressIndicator());

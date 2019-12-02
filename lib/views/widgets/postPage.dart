@@ -131,11 +131,18 @@ class _PostPageState extends State<PostPage> {
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       PostView(item: snapshot.data.item),
                       PostButtons(info: snapshot.data),
                       buildTags(context, snapshot.data),
-                      Column(children: comments.map((c) => c.build()).toList())
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: comments.map((c) => c.build()).toList(),
+                        ),
+                      )
                     ],
                   ),
                 ),

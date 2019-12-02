@@ -133,6 +133,7 @@ class _PostPageState extends State<PostPage> {
                   child: Column(
                     children: <Widget>[
                       PostView(item: snapshot.data.item),
+                      PostButtons(info: snapshot.data),
                       buildTags(context, snapshot.data),
                       Column(children: comments.map((c) => c.build()).toList())
                     ],

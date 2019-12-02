@@ -43,7 +43,7 @@ class _PostPageState extends State<PostPage> {
         controller: _controller,
         itemBuilder: (context, index) {
           return FutureBuilder<PostInfo>(
-            future: _itemProvider.getItemWithInfo(widget.index),
+            future: _itemProvider.getItemWithInfo(index),
             builder: (context, snapshot) {
               if(!snapshot.hasData)
                 return Center(child: CircularProgressIndicator());

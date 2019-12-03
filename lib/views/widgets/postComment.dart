@@ -52,14 +52,6 @@ class _PostCommentState extends State<PostComment> {
             Positioned.fill(
               child: CustomPaint(
                 painter: CommentHierarchyPainter(
-                  hasChildren: widget.linkedComment.children.isNotEmpty,
-                  hasSiblings: widget.linkedComment.parent != null &&
-                      widget.linkedComment.parent.children.length > 1,
-                  isLastInList: widget.linkedComment.parent != null &&
-                      widget.linkedComment.parent.children.last ==
-                          widget.linkedComment,
-                  isRoot: widget.linkedComment.parent == null,
-                  depth: widget.linkedComment.depth,
                   comment: widget.linkedComment,
                 ),
               ),
@@ -105,8 +97,6 @@ class _PostCommentState extends State<PostComment> {
                           onOpen: (link) async {
                             if (await canLaunch(link.url)) {
                               await launch(link.url);
-                            } else {
-                              throw 'Ups..';
                             }
                           },
                           text: widget.linkedComment.comment.content,
@@ -124,8 +114,9 @@ class _PostCommentState extends State<PostComment> {
                             overflow: TextOverflow.visible,
                           ),
                           UserMark(
-                              userMark: widget.linkedComment.comment.mark,
-                              radius: 2)
+                            userMark: widget.linkedComment.comment.mark,
+                            radius: 2,
+                          )
                         ]),
                         Text(
                           "$points Punkte  ${formatTime(widget.linkedComment.comment.created * 1000)}",
@@ -166,17 +157,18 @@ class CommentHierarchyPainter extends CustomPainter {
   final bool hasChildren;
   final bool hasSiblings;
   final int depth;
+
   final LinkedComment comment;
 
   final Paint _paint = Paint()..color = Colors.grey;
 
-  CommentHierarchyPainter(
-      {this.isLastInList,
-      this.isRoot,
-      this.hasChildren,
-      this.depth,
-      this.hasSiblings,
-      this.comment});
+  CommentHierarchyPainter({this.comment})
+      : hasChildren = comment.children.isNotEmpty,
+        isLastInList = comment.parent?.children?.last == comment,
+        isRoot = comment.parent == null,
+        depth = comment.depth,
+        hasSiblings =
+            comment.parent != null && comment.parent.children.length > 1;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -185,7 +177,9 @@ class CommentHierarchyPainter extends CustomPainter {
     double childLineXPos = indentWidth + lineXPos;
     double connectionHeightDifference = 10;
     double connectionLineStartingY = 27.0;
-    double connectionLineEndingY = connectionLineStartingY + connectionHeightDifference;
+    double connectionLineEndingY =
+        connectionLineStartingY + connectionHeightDifference;
+
     double connectCommentBeforeCorrection = -5;
     if (hasChildren) {
       canvas.drawLine(Offset(childLineXPos, connectionLineEndingY),
@@ -195,25 +189,20 @@ class CommentHierarchyPainter extends CustomPainter {
     if (!isRoot) {
       if (hasChildren || hasSiblings) {
         final height = isLastInList ? connectionLineStartingY : size.height;
-        canvas.drawLine(
-            Offset(lineXPos, connectCommentBeforeCorrection),
-            Offset(lineXPos, height),
-            _paint);
+        canvas.drawLine(Offset(lineXPos, connectCommentBeforeCorrection),
+            Offset(lineXPos, height), _paint);
       } else {
-        canvas.drawLine(
-            Offset(lineXPos, connectCommentBeforeCorrection),
-            Offset(lineXPos, connectionLineEndingY),
-            _paint);
+        canvas.drawLine(Offset(lineXPos, connectCommentBeforeCorrection),
+            Offset(lineXPos, connectionLineEndingY), _paint);
       }
     }
 
-    LinkedComment current = comment.parent;
     int i = 1;
+    LinkedComment current = comment.parent;
     while (current != null && current.parent != null) {
       if (current.parent.children.last != current) {
         canvas.drawLine(
-            Offset(lineXPos - indentWidth * i,
-                connectCommentBeforeCorrection),
+            Offset(lineXPos - indentWidth * i, connectCommentBeforeCorrection),
             Offset(lineXPos - indentWidth * i, size.height),
             _paint);
       }
@@ -221,46 +210,14 @@ class CommentHierarchyPainter extends CustomPainter {
       i++;
     }
 
-    //for (int i = 1; i < depth; i++) {
-    //  canvas.drawLine(Offset(-2.5 - 10 * i, -5),
-    //      Offset(-2.5 - 10 * i, size.height), _paint);
-    //}
-
     if (hasChildren && !isRoot) {
       canvas.drawLine(Offset(lineXPos, connectionLineStartingY),
           Offset(childLineXPos, connectionLineEndingY), _paint);
     }
-
-    return;
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
     return true;
-  }
-}
-
-class CircularButton extends StatelessWidget {
-  final String text;
-
-  const CircularButton({Key key, this.text}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 15,
-      height: 15,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.grey),
-      ),
-      child: Align(
-        alignment: Alignment.center,
-        child: Text(
-          text,
-          style: const TextStyle(color: Colors.grey, height: 1.0),
-        ),
-      ),
-    );
   }
 }

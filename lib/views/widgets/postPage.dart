@@ -62,13 +62,17 @@ class PostButtons extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Row(children: [
-                Text(
-                  info.item.user,
-                  style: authorTextStyle,
-                ),
-                UserMark(userMark: info.item.mark,)
-              ]),
+              Row(
+                children: [
+                  Text(
+                    info.item.user,
+                    style: authorTextStyle,
+                  ),
+                  UserMark(
+                    userMark: info.item.mark,
+                  )
+                ],
+              ),
               Text(
                 formatTime(info.item.created * 1000),
                 style: postTimeTextStyle,

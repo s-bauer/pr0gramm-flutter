@@ -28,7 +28,7 @@ class ItemProvider {
 
         _workingTask = _itemApi.getItems(
           promoted: true,
-          flags: 9,
+          flags: 1,
           older: older,
         );
         var getItemsResponse = await _workingTask;

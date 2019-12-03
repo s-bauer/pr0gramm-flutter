@@ -174,7 +174,7 @@ class CommentHierarchyPainter extends CustomPainter {
     double lineStartCorrectionRight = -2.5;
     double indentWidth = 10.0;
     double lineStartCorrectionLeft = indentWidth + lineStartCorrectionRight;
-    double connectionHeightDifference = 5;
+    double connectionHeightDifference = 10;
     double connectionLineStartingY = 27.0;
     double connectionLineEndingY = connectionLineStartingY + connectionHeightDifference;
     double connectCommentBeforeCorrection = -5;

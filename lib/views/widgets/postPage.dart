@@ -166,7 +166,7 @@ class _PostPageState extends State<PostPage> {
                       PostButtons(info: snapshot.data),
                       buildTags(context, snapshot.data),
                       Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.only(top: 8, bottom: 20.0, right: 10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: comments.map((c) => c.build()).toList(),

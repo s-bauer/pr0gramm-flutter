@@ -171,29 +171,29 @@ class CommentHierarchyPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    double lineStartCorrectionRight = -2.5;
+    double lineXPos = -2.5;
     double indentWidth = 10.0;
-    double lineStartCorrectionLeft = indentWidth + lineStartCorrectionRight;
+    double childLineXPos = indentWidth + lineXPos;
     double connectionHeightDifference = 10;
     double connectionLineStartingY = 27.0;
     double connectionLineEndingY = connectionLineStartingY + connectionHeightDifference;
     double connectCommentBeforeCorrection = -5;
     if (hasChildren) {
-      canvas.drawLine(Offset(lineStartCorrectionLeft, connectionLineEndingY),
-          Offset(lineStartCorrectionLeft, size.height), _paint);
+      canvas.drawLine(Offset(childLineXPos, connectionLineEndingY),
+          Offset(childLineXPos, size.height), _paint);
     }
 
     if (!isRoot) {
       if (hasChildren || hasSiblings) {
         final height = isLastInList ? connectionLineStartingY : size.height;
         canvas.drawLine(
-            Offset(lineStartCorrectionRight, connectCommentBeforeCorrection),
-            Offset(lineStartCorrectionRight, height),
+            Offset(lineXPos, connectCommentBeforeCorrection),
+            Offset(lineXPos, height),
             _paint);
       } else {
         canvas.drawLine(
-            Offset(lineStartCorrectionRight, connectCommentBeforeCorrection),
-            Offset(lineStartCorrectionRight, connectionLineEndingY),
+            Offset(lineXPos, connectCommentBeforeCorrection),
+            Offset(lineXPos, connectionLineEndingY),
             _paint);
       }
     }
@@ -203,9 +203,9 @@ class CommentHierarchyPainter extends CustomPainter {
     while (current != null && current.parent != null) {
       if (current.parent.children.last != current) {
         canvas.drawLine(
-            Offset(lineStartCorrectionRight - indentWidth * i,
+            Offset(lineXPos - indentWidth * i,
                 connectCommentBeforeCorrection),
-            Offset(lineStartCorrectionRight - indentWidth * i, size.height),
+            Offset(lineXPos - indentWidth * i, size.height),
             _paint);
       }
       current = current.parent;
@@ -218,8 +218,8 @@ class CommentHierarchyPainter extends CustomPainter {
     //}
 
     if (hasChildren && !isRoot) {
-      canvas.drawLine(Offset(lineStartCorrectionRight, connectionLineStartingY),
-          Offset(lineStartCorrectionLeft, connectionLineEndingY), _paint);
+      canvas.drawLine(Offset(lineXPos, connectionLineStartingY),
+          Offset(childLineXPos, connectionLineEndingY), _paint);
     }
 
     return;

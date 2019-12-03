@@ -3,8 +3,10 @@ import 'package:pr0gramm/entities/linkedComments.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/itemProvider.dart';
 import 'package:pr0gramm/services/timeFormatter.dart';
+import 'package:pr0gramm/views/widgets/userMark.dart';
 
 import '../postView.dart';
+
 const authorTextStyle = const TextStyle(
   fontSize: 14,
   fontWeight: FontWeight.bold,
@@ -25,6 +27,7 @@ class PostPage extends StatefulWidget {
   @override
   _PostPageState createState() => _PostPageState();
 }
+
 class PostButtons extends StatelessWidget {
   final PostInfo info;
 
@@ -53,17 +56,19 @@ class PostButtons extends StatelessWidget {
           height: 30.0,
           width: 1.0,
           color: Colors.white30,
-          margin:
-          const EdgeInsets.only(left: 10.0, right: 20.0),
+          margin: const EdgeInsets.only(left: 10.0, right: 20.0),
         ),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(
-                info.item.user,
-                style: authorTextStyle,
-              ),
+              Row(children: [
+                Text(
+                  info.item.user,
+                  style: authorTextStyle,
+                ),
+                UserMark(userMark: info.item.mark,)
+              ]),
               Text(
                 formatTime(info.item.created * 1000),
                 style: postTimeTextStyle,
@@ -77,7 +82,6 @@ class PostButtons extends StatelessWidget {
     );
   }
 }
-
 
 class _PostPageState extends State<PostPage> {
   final ItemProvider _itemProvider = ItemProvider();

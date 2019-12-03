@@ -5,6 +5,7 @@ import 'package:pr0gramm/entities/linkedComments.dart';
 import 'dart:math';
 
 import 'package:pr0gramm/services/timeFormatter.dart';
+import 'package:pr0gramm/views/widgets/userMark.dart';
 
 class PostComment extends StatefulWidget {
   final LinkedComment linkedComment;
@@ -28,7 +29,6 @@ class _PostCommentState extends State<PostComment> {
       color: Colors.white,
     );
 
-
     const authorTextStyle = const TextStyle(
       fontSize: 10,
       color: Colors.white70,
@@ -39,8 +39,8 @@ class _PostCommentState extends State<PostComment> {
       color: Colors.white70,
     );
 
-    final points = widget.linkedComment.comment.up - widget.linkedComment.comment.down;
-
+    final points =
+        widget.linkedComment.comment.up - widget.linkedComment.comment.down;
 
     final commentsColumn = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,8 +51,11 @@ class _PostCommentState extends State<PostComment> {
               child: CustomPaint(
                 painter: CommentHierarchyPainter(
                   hasChildren: widget.linkedComment.children.isNotEmpty,
-                  hasSiblings: widget.linkedComment.parent != null && widget.linkedComment.parent.children.length > 1,
-                  isLastInList: widget.linkedComment.parent != null && widget.linkedComment.parent.children.last == widget.linkedComment,
+                  hasSiblings: widget.linkedComment.parent != null &&
+                      widget.linkedComment.parent.children.length > 1,
+                  isLastInList: widget.linkedComment.parent != null &&
+                      widget.linkedComment.parent.children.last ==
+                          widget.linkedComment,
                   isRoot: widget.linkedComment.parent == null,
                   depth: widget.linkedComment.depth,
                   comment: widget.linkedComment,
@@ -82,12 +85,15 @@ class _PostCommentState extends State<PostComment> {
                         overflow: TextOverflow.visible,
                       ),
                       SizedBox(height: 3),
-                      Text(
-                        widget.linkedComment.comment.name,
-                        style: authorTextStyle,
-                        softWrap: true,
-                        overflow: TextOverflow.visible,
-                      ),
+                      Row(children: [
+                        Text(
+                          widget.linkedComment.comment.name,
+                          style: authorTextStyle,
+                          softWrap: true,
+                          overflow: TextOverflow.visible,
+                        ),
+                        UserMark(userMark:  widget.linkedComment.comment.mark, radius: 2)
+                      ]),
                       Text(
                         "$points Punkte  ${formatTime(widget.linkedComment.comment.created * 1000)}",
                         style: pointTextStyle,
@@ -131,7 +137,12 @@ class CommentHierarchyPainter extends CustomPainter {
   final Paint _paint = Paint()..color = Colors.grey;
 
   CommentHierarchyPainter(
-      {this.isLastInList, this.isRoot, this.hasChildren, this.depth, this.hasSiblings, this.comment});
+      {this.isLastInList,
+      this.isRoot,
+      this.hasChildren,
+      this.depth,
+      this.hasSiblings,
+      this.comment});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -150,14 +161,14 @@ class CommentHierarchyPainter extends CustomPainter {
 
     LinkedComment current = comment.parent;
     int i = 1;
-    while(current != null && current.parent != null) {
-      if(current.parent.children.last != current)
-        canvas.drawLine(Offset(-2.5 - 10 * i, -5), Offset(-2.5 - 10 * i, size.height), _paint);
+    while (current != null && current.parent != null) {
+      if (current.parent.children.last != current)
+        canvas.drawLine(Offset(-2.5 - 10 * i, -5),
+            Offset(-2.5 - 10 * i, size.height), _paint);
 
       current = current.parent;
       i++;
     }
-
 
     //for (int i = 1; i < depth; i++) {
     //  canvas.drawLine(Offset(-2.5 - 10 * i, -5),

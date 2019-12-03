@@ -2,8 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:pr0gramm/entities/linkedComments.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/itemProvider.dart';
+import 'package:pr0gramm/services/timeFormatter.dart';
 
 import '../postView.dart';
+const authorTextStyle = const TextStyle(
+  fontSize: 14,
+  fontWeight: FontWeight.bold,
+  color: Colors.white,
+  letterSpacing: 1,
+);
+
+const postTimeTextStyle = const TextStyle(
+  fontSize: 8,
+  color: Colors.white70,
+);
 
 class PostPage extends StatefulWidget {
   final int index;
@@ -44,9 +56,22 @@ class PostButtons extends StatelessWidget {
           margin:
           const EdgeInsets.only(left: 10.0, right: 20.0),
         ),
-        Text(
-          info.item.user,
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                info.item.user,
+                style: authorTextStyle,
+              ),
+              Text(
+                formatTime(info.item.created * 1000),
+                style: postTimeTextStyle,
+                softWrap: true,
+                overflow: TextOverflow.visible,
+              ),
+            ],
+          ),
         )
       ],
     );

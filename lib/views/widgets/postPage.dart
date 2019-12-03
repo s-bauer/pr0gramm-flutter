@@ -2,8 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:pr0gramm/entities/linkedComments.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/itemProvider.dart';
+import 'package:pr0gramm/services/timeFormatter.dart';
+import 'package:pr0gramm/views/widgets/userMark.dart';
 
 import '../postView.dart';
+
+const authorTextStyle = const TextStyle(
+  fontSize: 14,
+  fontWeight: FontWeight.bold,
+  color: Colors.white,
+  letterSpacing: 1,
+);
+
+const postTimeTextStyle = const TextStyle(
+  fontSize: 8,
+  color: Colors.white70,
+);
 
 class PostPage extends StatefulWidget {
   final int index;
@@ -13,6 +27,7 @@ class PostPage extends StatefulWidget {
   @override
   _PostPageState createState() => _PostPageState();
 }
+
 class PostButtons extends StatelessWidget {
   final PostInfo info;
 
@@ -41,18 +56,36 @@ class PostButtons extends StatelessWidget {
           height: 30.0,
           width: 1.0,
           color: Colors.white30,
-          margin:
-          const EdgeInsets.only(left: 10.0, right: 20.0),
+          margin: const EdgeInsets.only(left: 10.0, right: 20.0),
         ),
-        Text(
-          info.item.user,
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                children: [
+                  Text(
+                    info.item.user,
+                    style: authorTextStyle,
+                  ),
+                  UserMark(
+                    userMark: info.item.mark,
+                  )
+                ],
+              ),
+              Text(
+                formatTime(info.item.created * 1000),
+                style: postTimeTextStyle,
+                softWrap: true,
+                overflow: TextOverflow.visible,
+              ),
+            ],
+          ),
         )
       ],
     );
   }
 }
-
 
 class _PostPageState extends State<PostPage> {
   final ItemProvider _itemProvider = ItemProvider();
@@ -137,7 +170,7 @@ class _PostPageState extends State<PostPage> {
                       PostButtons(info: snapshot.data),
                       buildTags(context, snapshot.data),
                       Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.only(top: 8, bottom: 20.0, right: 10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: comments.map((c) => c.build()).toList(),

@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:pr0gramm/entities/linkedComments.dart';
 
 import 'dart:math';
 
 import 'package:pr0gramm/services/timeFormatter.dart';
+import 'package:pr0gramm/views/widgets/userMark.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PostComment extends StatefulWidget {
   final LinkedComment linkedComment;
@@ -28,7 +31,6 @@ class _PostCommentState extends State<PostComment> {
       color: Colors.white,
     );
 
-
     const authorTextStyle = const TextStyle(
       fontSize: 10,
       color: Colors.white70,
@@ -39,8 +41,8 @@ class _PostCommentState extends State<PostComment> {
       color: Colors.white70,
     );
 
-    final points = widget.linkedComment.comment.up - widget.linkedComment.comment.down;
-
+    final points =
+        widget.linkedComment.comment.up - widget.linkedComment.comment.down;
 
     final commentsColumn = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,11 +52,6 @@ class _PostCommentState extends State<PostComment> {
             Positioned.fill(
               child: CustomPaint(
                 painter: CommentHierarchyPainter(
-                  hasChildren: widget.linkedComment.children.isNotEmpty,
-                  hasSiblings: widget.linkedComment.parent != null && widget.linkedComment.parent.children.length > 1,
-                  isLastInList: widget.linkedComment.parent != null && widget.linkedComment.parent.children.last == widget.linkedComment,
-                  isRoot: widget.linkedComment.parent == null,
-                  depth: widget.linkedComment.depth,
                   comment: widget.linkedComment,
                 ),
               ),
@@ -64,38 +61,72 @@ class _PostCommentState extends State<PostComment> {
               children: <Widget>[
                 Column(
                   children: <Widget>[
-                    CircularButton(text: "+"),
-                    SizedBox(height: 3),
-                    CircularButton(text: "-"),
+                    SizedBox(
+                        height: 15.0,
+                        width: 15.0,
+                        child: IconButton(
+                          padding: EdgeInsets.all(0),
+                          iconSize: 12,
+                          icon: Icon(Icons.add_circle_outline),
+                          color: Colors.white,
+                          onPressed: () {},
+                        )),
+                    SizedBox(
+                        height: 15.0,
+                        width: 15.0,
+                        child: IconButton(
+                          padding: EdgeInsets.all(0),
+                          iconSize: 12,
+                          color: Colors.white,
+                          icon: Icon(Icons.remove_circle_outline),
+                          onPressed: () {},
+                        )),
                   ],
                 ),
                 SizedBox(width: 5),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        widget.linkedComment.comment.content,
-                        style: textStyle,
-                        textAlign: TextAlign.left,
-                        softWrap: true,
-                        overflow: TextOverflow.visible,
-                      ),
-                      SizedBox(height: 3),
-                      Text(
-                        widget.linkedComment.comment.name,
-                        style: authorTextStyle,
-                        softWrap: true,
-                        overflow: TextOverflow.visible,
-                      ),
-                      Text(
-                        "$points Punkte  ${formatTime(widget.linkedComment.comment.created * 1000)}",
-                        style: pointTextStyle,
-                        softWrap: true,
-                        overflow: TextOverflow.visible,
-                      ),
-                      Divider(color: Colors.white24, height: 0.1),
-                    ],
+                  child: ConstrainedBox(
+                    // needed for the painter because we assume that the comment has min height 38
+                    constraints: BoxConstraints(
+                      minHeight: 40.0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Linkify(
+                          onOpen: (link) async {
+                            if (await canLaunch(link.url)) {
+                              await launch(link.url);
+                            }
+                          },
+                          text: widget.linkedComment.comment.content,
+                          style: textStyle,
+                          textAlign: TextAlign.left,
+                          humanize: true,
+                          linkStyle: TextStyle(color: Color(0xFFee4d2e)),
+                        ),
+                        SizedBox(height: 3),
+                        Row(children: [
+                          Text(
+                            widget.linkedComment.comment.name,
+                            style: authorTextStyle,
+                            softWrap: true,
+                            overflow: TextOverflow.visible,
+                          ),
+                          UserMark(
+                            userMark: widget.linkedComment.comment.mark,
+                            radius: 2,
+                          )
+                        ]),
+                        Text(
+                          "$points Punkte  ${formatTime(widget.linkedComment.comment.created * 1000)}",
+                          style: pointTextStyle,
+                          softWrap: true,
+                          overflow: TextOverflow.visible,
+                        ),
+                        Divider(color: Colors.white24, height: 0.1),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -126,78 +157,67 @@ class CommentHierarchyPainter extends CustomPainter {
   final bool hasChildren;
   final bool hasSiblings;
   final int depth;
+
   final LinkedComment comment;
 
   final Paint _paint = Paint()..color = Colors.grey;
 
-  CommentHierarchyPainter(
-      {this.isLastInList, this.isRoot, this.hasChildren, this.depth, this.hasSiblings, this.comment});
+  CommentHierarchyPainter({this.comment})
+      : hasChildren = comment.children.isNotEmpty,
+        isLastInList = comment.parent?.children?.last == comment,
+        isRoot = comment.parent == null,
+        depth = comment.depth,
+        hasSiblings =
+            comment.parent != null && comment.parent.children.length > 1;
 
   @override
   void paint(Canvas canvas, Size size) {
+    double lineXPos = -2.5;
+    double indentWidth = 10.0;
+    double childLineXPos = indentWidth + lineXPos;
+    double connectionHeightDifference = 10;
+    double connectionLineStartingY = 27.0;
+    double connectionLineEndingY =
+        connectionLineStartingY + connectionHeightDifference;
+
+    double connectCommentBeforeCorrection = -5;
     if (hasChildren) {
-      canvas.drawLine(Offset(7.5, 38), Offset(7.5, size.height), _paint);
+      canvas.drawLine(Offset(childLineXPos, connectionLineEndingY),
+          Offset(childLineXPos, size.height), _paint);
     }
 
     if (!isRoot) {
       if (hasChildren || hasSiblings) {
-        final height = isLastInList ? 33.0 : size.height;
-        canvas.drawLine(Offset(-2.5, -5), Offset(-2.5, height), _paint);
+        final height = isLastInList ? connectionLineStartingY : size.height;
+        canvas.drawLine(Offset(lineXPos, connectCommentBeforeCorrection),
+            Offset(lineXPos, height), _paint);
       } else {
-        canvas.drawLine(Offset(-2.5, -5), Offset(-2.5, 38), _paint);
+        canvas.drawLine(Offset(lineXPos, connectCommentBeforeCorrection),
+            Offset(lineXPos, connectionLineEndingY), _paint);
       }
     }
 
-    LinkedComment current = comment.parent;
     int i = 1;
-    while(current != null && current.parent != null) {
-      if(current.parent.children.last != current)
-        canvas.drawLine(Offset(-2.5 - 10 * i, -5), Offset(-2.5 - 10 * i, size.height), _paint);
-
+    LinkedComment current = comment.parent;
+    while (current != null && current.parent != null) {
+      if (current.parent.children.last != current) {
+        canvas.drawLine(
+            Offset(lineXPos - indentWidth * i, connectCommentBeforeCorrection),
+            Offset(lineXPos - indentWidth * i, size.height),
+            _paint);
+      }
       current = current.parent;
       i++;
     }
 
-
-    //for (int i = 1; i < depth; i++) {
-    //  canvas.drawLine(Offset(-2.5 - 10 * i, -5),
-    //      Offset(-2.5 - 10 * i, size.height), _paint);
-    //}
-
     if (hasChildren && !isRoot) {
-      canvas.drawLine(Offset(-2.5, 33), Offset(7.5, 38), _paint);
+      canvas.drawLine(Offset(lineXPos, connectionLineStartingY),
+          Offset(childLineXPos, connectionLineEndingY), _paint);
     }
-
-    return;
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
     return true;
-  }
-}
-
-class CircularButton extends StatelessWidget {
-  final String text;
-
-  const CircularButton({Key key, this.text}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 15,
-      height: 15,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.grey),
-      ),
-      child: Align(
-        alignment: Alignment.center,
-        child: Text(
-          text,
-          style: const TextStyle(color: Colors.grey, height: 1.0),
-        ),
-      ),
-    );
   }
 }

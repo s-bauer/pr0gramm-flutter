@@ -20,6 +20,7 @@ class _VideoPostState extends State<VideoPost> {
 
     final url = "https://vid.pr0gramm.com/${widget.item.image}";
 
+    VideoPlayerController.
     _controller = VideoPlayerController.network(url)
       ..initialize().then((_) {
         _controller.play();

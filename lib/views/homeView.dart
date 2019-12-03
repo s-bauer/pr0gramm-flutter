@@ -1,71 +1,48 @@
 import 'package:flutter/material.dart';
+
 import 'package:pr0gramm/api/apiClient.dart';
 import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
-import 'package:pr0gramm/api/profileApi.dart';
-import 'package:pr0gramm/data/sharedPrefKeys.dart';
+import 'package:pr0gramm/services/initializeService.dart';
 import 'package:pr0gramm/services/itemProvider.dart';
+import 'package:pr0gramm/services/imageProvider.dart' as imgProv;
 import 'package:pr0gramm/views/widgets/postPage.dart';
 import 'package:pr0gramm/widgets/inherited.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import 'loginView.dart';
+import 'loginView/loginView.dart';
 
-class HomePage extends StatefulWidget {
+class HomeView extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomeViewState createState() => _HomeViewState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeViewState extends State<HomeView> {
   Future _initFuture;
   int _gridRefreshKey = 0;
 
   final ItemProvider _itemProvider = ItemProvider();
+  final imgProv.ImageProvider _imageProvider = imgProv.ImageProvider();
 
-  Future initialize() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      if (prefs.containsKey(SharedPrefKeys.Token) &&
-          prefs.containsKey(SharedPrefKeys.MeToken) &&
-          prefs.containsKey(SharedPrefKeys.UserName)) {
-        final apiClient = ApiClient();
-
-        final token = prefs.getString(SharedPrefKeys.Token);
-        final meToken = prefs.getString(SharedPrefKeys.MeToken);
-        apiClient.setToken(token, meToken);
-
-        final username = prefs.getString(SharedPrefKeys.UserName);
-
-        final api = ProfileApi();
-        final profile = await api.getProfileInfo(name: username, flags: 15);
-
-        MyInherited.of(context).onStatusChange(true, profile);
-      }
-    } on Exception catch (e) {
-      print(e);
-    }
+  @override
+  void initState() {
+    super.initState();
+    _initFuture = InitializeService().initialize(context);
   }
-
 
   void logOut() {
     final apiClient = ApiClient();
     apiClient.logout();
-
     MyInherited.of(context).onStatusChange(false, null);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_initFuture == null) _initFuture = initialize();
-
-    final isLoggedIn = MyInherited.of(context).isLoggedIn;
-
     return Scaffold(
       appBar: AppBar(
-        title: Text("Home"),
+        title: Text("Top"),
       ),
       drawer: Drawer(),
       body: Center(
-        child: isLoggedIn ? buildProfile() : buildLoginButton(),
+        child: buildProfile(),
       ),
     );
   }
@@ -97,7 +74,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildProfile() {
-    return RefreshIndicator(
+    final page = RefreshIndicator(
       onRefresh: refreshItems,
       child: GridView.builder(
         key: Key(_gridRefreshKey.toString()),
@@ -108,8 +85,15 @@ class _HomePageState extends State<HomePage> {
             builder: (context, snapshot) {
               if (snapshot.hasData)
                 return GestureDetector(
-                  child: Image.network(
-                      "https://thumb.pr0gramm.com/${snapshot.data.thumb}"),
+                  child: new FutureBuilder(
+                    future: _imageProvider.getThumb(snapshot.data),
+                    builder: (context, snap) {
+                      if(snap.hasData)
+                        return Image.memory(snap.data);
+
+                      return Container(color: Colors.red);
+                    },
+                  ),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -123,6 +107,16 @@ class _HomePageState extends State<HomePage> {
           );
         },
       ),
+    );
+
+    return FutureBuilder(
+      future: _initFuture,
+        builder: (context, snap) {
+          if(snap.connectionState == ConnectionState.done)
+            return page;
+
+          return Container();
+        },
     );
   }
 }

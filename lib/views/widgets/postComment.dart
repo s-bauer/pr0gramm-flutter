@@ -67,41 +67,66 @@ class _PostCommentState extends State<PostComment> {
               children: <Widget>[
                 Column(
                   children: <Widget>[
-                    CircularButton(text: "+"),
-                    SizedBox(height: 3),
-                    CircularButton(text: "-"),
+                    SizedBox(
+                        height: 15.0,
+                        width: 15.0,
+                        child: IconButton(
+                          padding: EdgeInsets.all(0),
+                          iconSize: 12,
+                          icon: Icon(Icons.add_circle_outline),
+                          color: Colors.white,
+                          onPressed: () {},
+                        )),
+                    SizedBox(
+                        height: 15.0,
+                        width: 15.0,
+                        child: IconButton(
+                          padding: EdgeInsets.all(0),
+                          iconSize: 12,
+                          color: Colors.white,
+                          icon: Icon(Icons.remove_circle_outline),
+                          onPressed: () {},
+                        )),
                   ],
                 ),
                 SizedBox(width: 5),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        widget.linkedComment.comment.content,
-                        style: textStyle,
-                        textAlign: TextAlign.left,
-                        softWrap: true,
-                        overflow: TextOverflow.visible,
-                      ),
-                      SizedBox(height: 3),
-                      Row(children: [
+                  child: ConstrainedBox(
+                    // needed for the painter because we assume that the comment has min height 38
+                    constraints: BoxConstraints(
+                      minHeight: 40.0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
                         Text(
-                          widget.linkedComment.comment.name,
-                          style: authorTextStyle,
+                          widget.linkedComment.comment.content,
+                          style: textStyle,
+                          textAlign: TextAlign.left,
                           softWrap: true,
                           overflow: TextOverflow.visible,
                         ),
-                        UserMark(userMark:  widget.linkedComment.comment.mark, radius: 2)
-                      ]),
-                      Text(
-                        "$points Punkte  ${formatTime(widget.linkedComment.comment.created * 1000)}",
-                        style: pointTextStyle,
-                        softWrap: true,
-                        overflow: TextOverflow.visible,
-                      ),
-                      Divider(color: Colors.white24, height: 0.1),
-                    ],
+                        SizedBox(height: 3),
+                        Row(children: [
+                          Text(
+                            widget.linkedComment.comment.name,
+                            style: authorTextStyle,
+                            softWrap: true,
+                            overflow: TextOverflow.visible,
+                          ),
+                          UserMark(
+                              userMark: widget.linkedComment.comment.mark,
+                              radius: 2)
+                        ]),
+                        Text(
+                          "$points Punkte  ${formatTime(widget.linkedComment.comment.created * 1000)}",
+                          style: pointTextStyle,
+                          softWrap: true,
+                          overflow: TextOverflow.visible,
+                        ),
+                        Divider(color: Colors.white24, height: 0.1),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -146,26 +171,43 @@ class CommentHierarchyPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    double lineStartCorrectionRight = -2.5;
+    double indentWidth = 10.0;
+    double lineStartCorrectionLeft = indentWidth + lineStartCorrectionRight;
+    double connectionHeightDifference = 5;
+    double connectionLineStartingY = 27.0;
+    double connectionLineEndingY = connectionLineStartingY + connectionHeightDifference;
+    double connectCommentBeforeCorrection = -5;
     if (hasChildren) {
-      canvas.drawLine(Offset(7.5, 38), Offset(7.5, size.height), _paint);
+      canvas.drawLine(Offset(lineStartCorrectionLeft, connectionLineEndingY),
+          Offset(lineStartCorrectionLeft, size.height), _paint);
     }
 
     if (!isRoot) {
       if (hasChildren || hasSiblings) {
-        final height = isLastInList ? 33.0 : size.height;
-        canvas.drawLine(Offset(-2.5, -5), Offset(-2.5, height), _paint);
+        final height = isLastInList ? connectionLineStartingY : size.height;
+        canvas.drawLine(
+            Offset(lineStartCorrectionRight, connectCommentBeforeCorrection),
+            Offset(lineStartCorrectionRight, height),
+            _paint);
       } else {
-        canvas.drawLine(Offset(-2.5, -5), Offset(-2.5, 38), _paint);
+        canvas.drawLine(
+            Offset(lineStartCorrectionRight, connectCommentBeforeCorrection),
+            Offset(lineStartCorrectionRight, connectionLineEndingY),
+            _paint);
       }
     }
 
     LinkedComment current = comment.parent;
     int i = 1;
     while (current != null && current.parent != null) {
-      if (current.parent.children.last != current)
-        canvas.drawLine(Offset(-2.5 - 10 * i, -5),
-            Offset(-2.5 - 10 * i, size.height), _paint);
-
+      if (current.parent.children.last != current) {
+        canvas.drawLine(
+            Offset(lineStartCorrectionRight - indentWidth * i,
+                connectCommentBeforeCorrection),
+            Offset(lineStartCorrectionRight - indentWidth * i, size.height),
+            _paint);
+      }
       current = current.parent;
       i++;
     }
@@ -176,7 +218,8 @@ class CommentHierarchyPainter extends CustomPainter {
     //}
 
     if (hasChildren && !isRoot) {
-      canvas.drawLine(Offset(-2.5, 33), Offset(7.5, 38), _paint);
+      canvas.drawLine(Offset(lineStartCorrectionRight, connectionLineStartingY),
+          Offset(lineStartCorrectionLeft, connectionLineEndingY), _paint);
     }
 
     return;

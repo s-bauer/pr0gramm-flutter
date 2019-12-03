@@ -43,8 +43,8 @@ class DrawCircle extends CustomPainter {
   final Paint _paint;
   final double _radius;
 
-  DrawCircle({Color color, radius = 2.5})
-      : _radius = radius,
+  DrawCircle({Color color, radius})
+      : _radius = radius ?? 2.5,
         _paint = Paint()
           ..color = color
           ..strokeWidth = 10.0

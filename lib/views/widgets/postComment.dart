@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:pr0gramm/entities/linkedComments.dart';
 
 import 'dart:math';
 
 import 'package:pr0gramm/services/timeFormatter.dart';
 import 'package:pr0gramm/views/widgets/userMark.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PostComment extends StatefulWidget {
   final LinkedComment linkedComment;
@@ -99,12 +101,19 @@ class _PostCommentState extends State<PostComment> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(
-                          widget.linkedComment.comment.content,
+                        Linkify(
+                          onOpen: (link) async {
+                            if (await canLaunch(link.url)) {
+                              await launch(link.url);
+                            } else {
+                              throw 'Ups..';
+                            }
+                          },
+                          text: widget.linkedComment.comment.content,
                           style: textStyle,
                           textAlign: TextAlign.left,
-                          softWrap: true,
-                          overflow: TextOverflow.visible,
+                          humanize: true,
+                          linkStyle: TextStyle(color: Color(0xFFee4d2e)),
                         ),
                         SizedBox(height: 3),
                         Row(children: [

@@ -3,6 +3,8 @@ import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
 import 'package:video_player/video_player.dart';
 import 'package:pr0gramm/services/imageProvider.dart' as imgProv;
 
+import '../postView.dart';
+
 class VideoPost extends StatefulWidget {
   final Item item;
 
@@ -30,44 +32,24 @@ class _VideoPostState extends State<VideoPost> {
       });
   }
 
+  void handleTap() {
+    if (_controller.value.isPlaying)
+      _controller.pause();
+    else
+      _controller.play();
+  }
+
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    var height =
-        (width / (widget.item.width + 0.0)) * (widget.item.height + 0.0);
-    return Stack(
-      children: <Widget>[
-        GestureDetector(
-          onTap: () {
-            if (_controller.value.isPlaying)
-              _controller.pause();
-            else
-              _controller.play();
-          },
-          child: _controller?.value?.initialized ?? false
-              ? AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: VideoPlayer(_controller),
-                )
-              : Container(
-                  color: Colors.white,
-                  width: width,
-                  height: height,
-                  child: FutureBuilder(
-                    future: _imageProvider.getThumb(widget.item),
-                    builder: (context, snap) {
-                      if (snap.hasData)
-                        return Image.memory(snap.data,
-                            width: width,
-                            height: height,
-                            fit: BoxFit.fill);
-
-                      return Container(color: Colors.white);
-                    },
-                  )),
-        ),
-      ],
-    );
+    return _controller?.value?.initialized ?? false
+        ? GestureDetector(
+            onTap: handleTap,
+            child: AspectRatio(
+              aspectRatio: _controller.value.aspectRatio,
+              child: VideoPlayer(_controller),
+            ),
+          )
+        : PreviewItem(item: widget.item);
   }
 
   @override

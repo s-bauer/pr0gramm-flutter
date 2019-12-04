@@ -1,6 +1,9 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
 import 'package:pr0gramm/services/imageProvider.dart' as imgProv;
+
+import '../postView.dart';
 
 class ImagePost extends StatefulWidget {
   final Item item;
@@ -16,26 +19,25 @@ class _ImagePostState extends State<ImagePost> {
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    var height =
-        (width / (widget.item.width + 0.0)) * (widget.item.height + 0.0);
-    return Container(
-        width: width,
-        height: height,
-        child: FutureBuilder(
-          future: _imageProvider.getImage(widget.item),
-          builder: (context, snap) {
-            if (snap.hasData) return Image.memory(snap.data);
-            return FutureBuilder(
-              future: _imageProvider.getThumb(widget.item),
-              builder: (context, snap) {
-                if (snap.hasData)
-                  return Image.memory(snap.data,
-                      width: width, height: height, fit: BoxFit.fill);
-                return Container(color: Colors.white);
-              },
-            );
-          },
-        ));
+    return FutureBuilder(
+      future: getImage(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData)
+          return Image(
+            image: snapshot.data,
+            fit: BoxFit.fitWidth,
+          );
+
+        return PreviewItem(item: widget.item);
+      },
+    );
+  }
+
+  Future<ImageProvider> getImage() async {
+    final imgBytes = await _imageProvider.getImage(widget.item);
+    final img = MemoryImage(imgBytes);
+    await precacheImage(img, context);
+
+    return img;
   }
 }

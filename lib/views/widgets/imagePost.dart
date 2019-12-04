@@ -1,7 +1,9 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
 import 'package:pr0gramm/services/imageProvider.dart' as imgProv;
 
+import '../postView.dart';
 
 class ImagePost extends StatefulWidget {
   final Item item;
@@ -18,13 +20,24 @@ class _ImagePostState extends State<ImagePost> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _imageProvider.getImage(widget.item),
-      builder: (context, snap) {
-        if(snap.hasData)
-          return Image.memory(snap.data);
+      future: getImage(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData)
+          return Image(
+            image: snapshot.data,
+            fit: BoxFit.fitWidth,
+          );
 
-        return Container();
+        return PreviewItem(item: widget.item);
       },
     );
+  }
+
+  Future<ImageProvider> getImage() async {
+    final imgBytes = await _imageProvider.getImage(widget.item);
+    final img = MemoryImage(imgBytes);
+    await precacheImage(img, context);
+
+    return img;
   }
 }

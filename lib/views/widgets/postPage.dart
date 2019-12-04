@@ -70,6 +70,7 @@ class PostButtons extends StatelessWidget {
                   ),
                   UserMark(
                     userMark: info.item.mark,
+                    radius: 2.5,
                   )
                 ],
               ),

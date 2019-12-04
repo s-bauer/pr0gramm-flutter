@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
 import 'package:video_player/video_player.dart';
+import 'package:pr0gramm/services/imageProvider.dart' as imgProv;
+
+import '../postView.dart';
 
 class VideoPost extends StatefulWidget {
   final Item item;
@@ -13,6 +16,7 @@ class VideoPost extends StatefulWidget {
 
 class _VideoPostState extends State<VideoPost> {
   VideoPlayerController _controller;
+  final imgProv.ImageProvider _imageProvider = imgProv.ImageProvider();
 
   @override
   void initState() {
@@ -20,7 +24,7 @@ class _VideoPostState extends State<VideoPost> {
 
     final url = "https://vid.pr0gramm.com/${widget.item.image}";
 
-    VideoPlayerController.network(url)
+    _controller = VideoPlayerController.network(url)
       ..initialize().then((_) {
         _controller.play();
         _controller.setLooping(true);
@@ -28,26 +32,24 @@ class _VideoPostState extends State<VideoPost> {
       });
   }
 
+  void handleTap() {
+    if (_controller.value.isPlaying)
+      _controller.pause();
+    else
+      _controller.play();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        GestureDetector(
-          onTap: () {
-            if (_controller.value.isPlaying)
-              _controller.pause();
-            else
-              _controller.play();
-          },
-          child: _controller?.value?.initialized ?? false
-              ? AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            child: VideoPlayer(_controller),
+    return _controller?.value?.initialized ?? false
+        ? GestureDetector(
+            onTap: handleTap,
+            child: AspectRatio(
+              aspectRatio: _controller.value.aspectRatio,
+              child: VideoPlayer(_controller),
+            ),
           )
-              : CircularProgressIndicator(),
-        ),
-      ],
-    );
+        : PreviewItem(item: widget.item);
   }
 
   @override

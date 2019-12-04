@@ -98,8 +98,7 @@ class _PostPageState extends State<PostPage> {
         .where((c) => c.parent == 0)
         .map((c) => LinkedComment.root(c, plainComments))
         .toList()
-          ..sort(
-              (a, b) => b.comment.confidence.compareTo(a.comment.confidence));
+          ..sort((a, b) => b.comment.confidence.compareTo(a.comment.confidence));
   }
 
   Widget buildTags(BuildContext context, PostInfo info) {

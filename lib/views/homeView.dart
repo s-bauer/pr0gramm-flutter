@@ -5,6 +5,7 @@ import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
 import 'package:pr0gramm/services/initializeService.dart';
 import 'package:pr0gramm/services/itemProvider.dart';
 import 'package:pr0gramm/services/imageProvider.dart' as imgProv;
+import 'package:pr0gramm/views/widgets/drawer.dart';
 import 'package:pr0gramm/views/widgets/postPage.dart';
 import 'package:pr0gramm/widgets/inherited.dart';
 
@@ -28,19 +29,13 @@ class _HomeViewState extends State<HomeView> {
     _initFuture = InitializeService().initialize(context);
   }
 
-  void logOut() {
-    final apiClient = ApiClient();
-    apiClient.logout();
-    MyInherited.of(context).onStatusChange(false, null);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Top"),
       ),
-      drawer: Drawer(),
+      drawer: CustomDrawer(),
       body: Center(
         child: buildProfile(),
       ),

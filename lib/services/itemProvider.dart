@@ -13,7 +13,6 @@ class ItemProvider {
   Future _workingTask;
 
   Future<Item> getItem(int index) async {
-
     while (true) {
       try {
         if (index < _items.length) return _items[index];
@@ -38,6 +37,28 @@ class ItemProvider {
       } on Exception catch (e) {
         print(e);
       }
+    }
+  }
+
+  Future<Item> getItemById(int id) async {
+    var index = _items.lastIndexWhere((item) => item.id == id);
+    if (index != -1) return await getItem(index);
+    while (true) {
+      try {
+        if (_workingTask != null) {
+          await _workingTask;
+          continue;
+        }
+
+        _workingTask = _itemApi.getItemsById(id, promoted: true, flags: 1);
+        var getItemsResponse = await _workingTask;
+        _workingTask = null;
+        if (getItemsResponse != null) _items = getItemsResponse.items;
+      } on Exception catch (e) {
+        print(e);
+      }
+      index = _items.lastIndexWhere((item) => item.id == id);
+      if (index != -1) return await getItem(index);
     }
   }
 

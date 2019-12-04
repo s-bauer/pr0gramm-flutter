@@ -51,6 +51,13 @@ class ImageProvider {
     cachedImages[item.id] = cachedImage;
     return cachedImage.image;
   }
+
+  Uint8List getThumbSync(Item item) {
+    if(cachedThumbs.containsKey(item.id))
+      return cachedThumbs[item.id].image;
+
+    return Uint8List(0);
+  }
 }
 
 class CachedImage {

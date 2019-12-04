@@ -20,7 +20,6 @@ const userMarks = [
 
 class UserMark extends StatelessWidget {
   final int userMark;
-
   final double radius;
 
   UserMark({Key key, this.userMark, this.radius}) : super(key: key);
@@ -44,7 +43,7 @@ class DrawCircle extends CustomPainter {
   final double _radius;
 
   DrawCircle({Color color, radius})
-      : _radius = radius ?? 2.5,
+      : _radius = radius,
         _paint = Paint()
           ..color = color
           ..strokeWidth = 10.0

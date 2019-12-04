@@ -40,7 +40,40 @@ class _HomeViewState extends State<HomeView> {
       appBar: AppBar(
         title: Text("Top"),
       ),
-      drawer: Drawer(),
+      drawer: Drawer(
+          child: Column(
+        children: [
+          Container(
+            height: 50,
+          ),
+          Row(
+            children: [
+              MyInherited.of(context).isLoggedIn
+                  ? FlatButton(
+                      onPressed: () => this.logOut(),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.exit_to_app),
+                          Text('Abmelden')
+                        ],
+                      ),
+                    )
+                  : FlatButton(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginView()),
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.account_circle),
+                          Text('Anmelden')
+                        ],
+                      ),
+                    ),
+            ],
+          )
+        ],
+      )),
       body: Center(
         child: buildProfile(),
       ),
@@ -120,4 +153,3 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 }
-

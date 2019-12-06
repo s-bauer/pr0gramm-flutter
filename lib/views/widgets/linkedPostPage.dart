@@ -89,29 +89,31 @@ class _LinkedPostPageState extends State<LinkedPostPage> {
             var linkedPost = linkedPostInfoAsync.data..makeCurrent();
             var postInfo = linkedPost.toPostInfo();
             // TODO: fix swiping
-            return SwipeDetector(
-              onSwipeRight: () {
-                setState(() {
-                  future = provider.getLinkedPostInfo(move: Move.prev);
-                });
-              },
-              onSwipeLeft: () {
-                setState(() {
-                    future = provider.getLinkedPostInfo(move: Move.next);
-                });
-              },
-              child: FutureBuilder<PostInfo>(
-                  future: postInfo,
-                  builder: (context, info) {
-                    if (!info.hasData)
-                      return Center(child: CircularProgressIndicator());
+            return FutureBuilder<PostInfo>(
+                future: postInfo,
+                builder: (context, info) {
+                  if (!info.hasData)
+                    return Center(child: CircularProgressIndicator());
 
-                    var comments = linkComments(info.data);
-                    return RefreshIndicator(
+                  var comments = linkComments(info.data);
+                  return SwipeDetector(
+                    onSwipeRight: () {
+                      setState(() {
+                        future = provider.getLinkedPostInfo(move: Move.prev);
+                        postInfo = linkedPost.toPostInfo();
+                      });
+                    },
+                    onSwipeLeft: () {
+                      setState(() {
+                        future = provider.getLinkedPostInfo(move: Move.next);
+                        postInfo = linkedPost.toPostInfo();
+                      });
+                    },
+                    child: RefreshIndicator(
                       onRefresh: () async {
                         setState(() {
                           future = provider.getLinkedPostInfo(
-                              initialItemId: widget.initialItemId);
+                              initialItemId: linkedPost.item.id);
                         });
                       },
                       child: SingleChildScrollView(
@@ -134,9 +136,9 @@ class _LinkedPostPageState extends State<LinkedPostPage> {
                           ],
                         ),
                       ),
-                    );
-                  }),
-            );
+                    ),
+                  );
+                });
           }),
     );
   }

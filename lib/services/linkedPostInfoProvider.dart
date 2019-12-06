@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:pr0gramm/api/itemApi.dart';
 import 'package:pr0gramm/entities/commonTypes/flags.dart';
 import 'package:pr0gramm/entities/commonTypes/item.dart';
@@ -12,11 +14,11 @@ enum Move {
 class LinkedPostInfoProvider {
   final _itemApi = ItemApi();
   final _context;
-  LinkedPostInfo _current;
-  static Map<String, LinkedPostInfo> idMap = Map();
+  static LinkedPostInfo _current;
+  static Map<int, LinkedPostInfo> idMap = Map();
   LinkedPostInfoProvider(this._context);
 
-  get _loggedIn => MyInherited.of(_context).isLoggedIn;
+  get _loggedIn =>  false;
 
   Future<LinkedPostInfo> getLinkedPostInfo({int initialItemId, Move move}) async {
     if(move != null && _current != null) {
@@ -40,7 +42,7 @@ class LinkedPostInfoProvider {
     var inMemory = idMap.keys.contains(initialItemId);
     var linkedPostInfo;
     if (inMemory)
-      linkedPostInfo = idMap["$initialItemId"];
+      linkedPostInfo = idMap[initialItemId];
     else
       linkedPostInfo = await _build(initialItemId);
     return linkedPostInfo;
@@ -69,7 +71,7 @@ class LinkedPostInfoProvider {
         current = idMap.values.first;
       }
       if (current == null) {
-        var tmp = idMap.values.firstWhere((i) => i.item.id == initialId);
+        var tmp = idMap[initialId];
         return tmp;
       }
       return current;
@@ -77,12 +79,12 @@ class LinkedPostInfoProvider {
 
 
     if (next == null) {
-      var firstWhere = idMap["$initialId"];
+      var firstWhere = idMap[initialId];
       cur = firstWhere != null ? firstWhere : LinkedPostInfo(items.removeAt(0), newItemRequestHandler);
     } else {
       cur = next;
     }
-    idMap["${cur.item.id}"] = cur;
+    idMap[cur.item.id] = cur;
 
     if(cur.next == null) {
       cur.next = LinkedPostInfo(items.removeAt(0), newItemRequestHandler);
@@ -94,10 +96,15 @@ class LinkedPostInfoProvider {
   }
 
   Future<void> newItemRequestHandler(ItemRange range, int itemId) async {
-    var items = await _get(itemId: itemId, range: range);
+    var items;
+    try{
+      items = await _get(itemId: itemId, range: range);
+    } catch(e){
+      print(e);
+    }
     if(items == null) return;
     var forward = ItemRange.older == range;
-    var cur = idMap.values.firstWhere((i) => i.item.id == itemId);
+    var cur = idMap[itemId];
     if (!forward) {
       items = items.reversed.toList();
     }

@@ -5,7 +5,9 @@ import 'package:pr0gramm/entities/commonTypes/item.dart';
 
 class ImageProvider {
   static ImageProvider _instance = ImageProvider._internal();
+
   ImageProvider._internal();
+
   factory ImageProvider() => _instance;
 
   static const thumbBaseUrl = "https://thumb.pr0gramm.com";
@@ -13,18 +15,23 @@ class ImageProvider {
   static const cacheThreshold = 150;
 
   final apiClient = ApiClient();
-  final cachedThumbs = Map<int, CachedImage>();
-  final cachedImages = Map<int, CachedImage>();
-
+  static final cachedThumbs = Map<int, CachedImage>();
+  static final cachedImages = Map<int, CachedImage>();
 
   Future<Uint8List> getThumb(Item item) async {
-    if(cachedThumbs.containsKey(item.id))
-      return cachedThumbs[item.id].image;
+    if (cachedThumbs.containsKey(item.id)) return cachedThumbs[item.id].image;
+    var response;
 
-    final response = await apiClient.client.get(
-      "$thumbBaseUrl/${item.thumb}",
-      options: Options(responseType: ResponseType.bytes),
-    );
+    try {
+      response = await apiClient.client.get(
+        "$thumbBaseUrl/${item.thumb}",
+        options: Options(responseType: ResponseType.bytes),
+      );
+
+    } catch (e) {
+      print(e);
+      return null;
+    }
 
     final cachedImage = CachedImage(
       image: Uint8List.fromList(response.data),
@@ -35,13 +42,18 @@ class ImageProvider {
   }
 
   Future<Uint8List> getImage(Item item) async {
-    if(cachedImages.containsKey(item.id))
-      return cachedImages[item.id].image;
+    if (cachedImages.containsKey(item.id)) return cachedImages[item.id].image;
+    var response;
 
-    final response = await apiClient.client.get(
-      "$imageBase/${item.thumb}",
-      options: Options(responseType: ResponseType.bytes),
-    );
+    try {
+      response = await apiClient.client.get(
+        "$imageBase/${item.thumb}",
+        options: Options(responseType: ResponseType.bytes),
+      );
+    } catch (e) {
+      print(e);
+      return null;
+    }
 
     final cachedImage = CachedImage(
       image: Uint8List.fromList(response.data),
@@ -52,8 +64,7 @@ class ImageProvider {
   }
 
   Uint8List getThumbSync(Item item) {
-    if(cachedThumbs.containsKey(item.id))
-      return cachedThumbs[item.id].image;
+    if (cachedThumbs.containsKey(item.id)) return cachedThumbs[item.id].image;
 
     return Uint8List(0);
   }

@@ -30,13 +30,16 @@ class GetItemsConfiguration {
 class ItemApi extends BaseApi {
   Future<GetItemsResponse> getItems({GetItemsConfiguration config}) async {
     Response response;
+    var json;
     try{
       response = await client.get("/items/get?$config");
+      json = GetItemsResponse.fromJson(response.data);
     }catch(e) {
+      print("Error req: $config");
       print(e);
       return null;
     }
-    return GetItemsResponse.fromJson(response.data);
+    return json;
   }
 
   Future<ItemInfoResponse> getItemInfo(int itemId) async {

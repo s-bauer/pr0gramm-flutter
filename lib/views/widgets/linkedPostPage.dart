@@ -5,7 +5,6 @@ import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/linkedPostInfoProvider.dart';
 import 'package:pr0gramm/views/postView.dart';
 import 'package:pr0gramm/views/widgets/postPage.dart';
-import 'package:swipedetector/swipedetector.dart';
 
 class LinkedPostPage extends StatefulWidget {
   final int initialItemId;
@@ -19,6 +18,10 @@ class LinkedPostPage extends StatefulWidget {
 }
 
 class _LinkedPostPageState extends State<LinkedPostPage> {
+  PageController _controller;
+  LinkedPostInfoProvider provider;
+  var future;
+
   @override
   void initState() {
     super.initState();
@@ -30,7 +33,7 @@ class _LinkedPostPageState extends State<LinkedPostPage> {
         .where((c) => c.parent == 0)
         .map((c) => LinkedComment.root(c, plainComments))
         .toList()
-          ..sort(
+      ..sort(
               (a, b) => b.comment.confidence.compareTo(a.comment.confidence));
   }
 
@@ -71,75 +74,90 @@ class _LinkedPostPageState extends State<LinkedPostPage> {
     super.dispose();
   }
 
+  var curIndex = 10;
+
   @override
   Widget build(BuildContext context) {
-    var provider = LinkedPostInfoProvider(context);
-    var future =
-        provider.getLinkedPostInfo(initialItemId: widget.initialItemId);
-    return Scaffold(
-      backgroundColor: Colors.black45,
-      appBar: AppBar(
-        title: Text("Top"),
-      ),
-      body: FutureBuilder<LinkedPostInfo>(
-          future: future,
-          builder: (context, linkedPostInfoAsync) {
-            if (!linkedPostInfoAsync.hasData)
-              return Center(child: CircularProgressIndicator());
-            var linkedPost = linkedPostInfoAsync.data..makeCurrent();
-            var postInfo = linkedPost.toPostInfo();
-            // TODO: fix swiping
-            return FutureBuilder<PostInfo>(
-                future: postInfo,
-                builder: (context, info) {
-                  if (!info.hasData)
-                    return Center(child: CircularProgressIndicator());
+    _controller = PageController(initialPage: 10, keepPage: false);
 
-                  var comments = linkComments(info.data);
-                  return SwipeDetector(
-                    onSwipeRight: () {
-                      setState(() {
-                        future = provider.getLinkedPostInfo(move: Move.prev);
-                        postInfo = linkedPost.toPostInfo();
-                      });
-                    },
-                    onSwipeLeft: () {
-                      setState(() {
-                        future = provider.getLinkedPostInfo(move: Move.next);
-                        postInfo = linkedPost.toPostInfo();
-                      });
-                    },
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        setState(() {
-                          future = provider.getLinkedPostInfo(
-                              initialItemId: linkedPost.item.id);
-                        });
-                      },
-                      child: SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            PostView(item: info.data.item),
-                            PostButtons(info: info.data),
-                            buildTags(context, info.data),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 8, bottom: 20.0, right: 10),
+    provider = LinkedPostInfoProvider(context);
+    future = provider.getLinkedPostInfo(initialItemId: widget.initialItemId);
+    return Scaffold(
+        backgroundColor: Colors.black45,
+        appBar: AppBar(
+          title: Text("Top"),
+        ),
+        body: FutureBuilder<LinkedPostInfo>(
+            future: future,
+            builder: (context, linkedPostInfoAsync) {
+              if (!linkedPostInfoAsync.hasData)
+                return Center(child: CircularProgressIndicator());
+
+              // TODO: fix swiping
+              return PageView.builder(
+                controller: _controller,
+                itemBuilder: (context, index) {
+                  template(LinkedPostInfo curItem) {
+                    var linkedPost = curItem..makeCurrent();
+                    var postInfo = curItem.toPostInfo();
+                    return FutureBuilder<PostInfo>(
+                        future: postInfo,
+                        builder: (context, info) {
+                          var comments = linkComments(info.data);
+                          if (!info.hasData)
+                            return Center(child: CircularProgressIndicator());
+                          return RefreshIndicator(
+                            onRefresh: () async {
+                              setState(() {
+                                future = provider.getLinkedPostInfo(
+                                    initialItemId: linkedPost.item.id);
+                              });
+                            },
+                            child: SingleChildScrollView(
+                              physics: const AlwaysScrollableScrollPhysics(),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children:
-                                    comments.map((c) => c.build()).toList(),
+                                children: <Widget>[
+                                  PostView(item: curItem.item),
+                                  PostButtons(info: info.data),
+                                  buildTags(context, info.data),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 8, bottom: 20.0, right: 10),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: comments
+                                          .map((c) => c.build())
+                                          .toList(),
+                                    ),
+                                  )
+                                ],
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                });
-          }),
+                            ),
+                          );
+                        });
+                  }
+                  double dif;
+                  if (curIndex > index) {
+                    dif = 0.0 + curIndex - index;
+                  } else {
+                    dif = 0.0 + index - curIndex;
+                  }
+                  var cur = linkedPostInfoAsync.data..makeCurrent();
+                  while (dif > 0) {
+                    if (cur == null) break;
+                    if (curIndex < index) {
+                      cur = cur.next;
+                    } else {
+                      cur = cur.prev;
+                    }
+                    dif--;
+                  }
+                  return template(cur);
+                },
+              );
+            })
     );
   }
 }

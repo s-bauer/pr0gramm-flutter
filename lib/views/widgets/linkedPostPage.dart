@@ -5,6 +5,7 @@ import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/linkedPostInfoProvider.dart';
 import 'package:pr0gramm/views/postView.dart';
 import 'package:pr0gramm/views/widgets/postPage.dart';
+import 'package:swipedetector/swipedetector.dart';
 
 class LinkedPostPage extends StatefulWidget {
   final int initialItemId;
@@ -85,41 +86,28 @@ class _LinkedPostPageState extends State<LinkedPostPage> {
           builder: (context, linkedPostInfoAsync) {
             if (!linkedPostInfoAsync.hasData)
               return Center(child: CircularProgressIndicator());
-            var linkedPost = linkedPostInfoAsync.data;
-            linkedPost.makeCurrent();
+            var linkedPost = linkedPostInfoAsync.data..makeCurrent();
             var postInfo = linkedPost.toPostInfo();
-            void next() {
-              if(linkedPost.next == null) return;
-              setState(() {
-                linkedPost = linkedPost.next..makeCurrent();
-                postInfo = linkedPost.toPostInfo();
-              });
-            }
-
-            void prev() {
-              if(linkedPost.prev == null) return;
-              setState(() {
-                linkedPost = linkedPost.prev..makeCurrent();
-                postInfo = linkedPost.toPostInfo();
-              });
-            }
             // TODO: fix swiping
-            return FutureBuilder<PostInfo>(
-                future: postInfo,
-                builder: (context, info) {
-                  if (!info.hasData)
-                    return Center(child: CircularProgressIndicator());
+            return SwipeDetector(
+              onSwipeRight: () {
+                setState(() {
+                  future = provider.getLinkedPostInfo(move: Move.prev);
+                });
+              },
+              onSwipeLeft: () {
+                setState(() {
+                    future = provider.getLinkedPostInfo(move: Move.next);
+                });
+              },
+              child: FutureBuilder<PostInfo>(
+                  future: postInfo,
+                  builder: (context, info) {
+                    if (!info.hasData)
+                      return Center(child: CircularProgressIndicator());
 
-                  var comments = linkComments(info.data);
-                  return GestureDetector(
-                    onPanUpdate: (details) {
-                      if (details.delta.dx > 20) {
-                        prev();
-                      } else if (details.delta.dx < -20) {
-                        next();
-                      }
-                    },
-                    child: RefreshIndicator(
+                    var comments = linkComments(info.data);
+                    return RefreshIndicator(
                       onRefresh: () async {
                         setState(() {
                           future = provider.getLinkedPostInfo(
@@ -146,9 +134,9 @@ class _LinkedPostPageState extends State<LinkedPostPage> {
                           ],
                         ),
                       ),
-                    ),
-                  );
-                });
+                    );
+                  }),
+            );
           }),
     );
   }

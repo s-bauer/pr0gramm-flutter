@@ -1,4 +1,4 @@
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 import 'package:pr0gramm/services/AppLinkHandler.dart';
 import 'package:pr0gramm/services/itemProvider.dart';
 import 'package:pr0gramm/views/homeView.dart';
@@ -11,7 +11,7 @@ final topLinkHandler = LinkHandler(
         RegExp(r"(?<=top\/)[0-9][0-9]*").stringMatch(input ?? ""),
     action: (match, context) async {
       print('here');
-      await ItemProvider().getItemById(int.parse(match));
+      await ItemProvider(context).getItemById(int.parse(match));
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context2) {

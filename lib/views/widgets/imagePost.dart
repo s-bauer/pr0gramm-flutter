@@ -1,9 +1,8 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
+import 'package:pr0gramm/entities/commonTypes/item.dart';
 import 'package:pr0gramm/services/imageProvider.dart' as imgProv;
+import 'package:pr0gramm/views/postView.dart';
 
-import '../postView.dart';
 
 class ImagePost extends StatefulWidget {
   final Item item;

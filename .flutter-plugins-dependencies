@@ -1,1 +1,1 @@
-{"_info":"// This is a generated file; do not edit or check into version control.","dependencyGraph":[{"name":"shared_preferences","dependencies":[]},{"name":"url_launcher","dependencies":[]},{"name":"video_player","dependencies":[]}]}
+{"_info":"// This is a generated file; do not edit or check into version control.","dependencyGraph":[{"name":"shared_preferences","dependencies":[]},{"name":"uni_links","dependencies":[]},{"name":"url_launcher","dependencies":[]},{"name":"video_player","dependencies":[]}]}

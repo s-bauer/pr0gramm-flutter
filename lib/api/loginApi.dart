@@ -1,9 +1,10 @@
 import 'dart:convert';
-import 'package:dio/dio.dart';
 
-import 'baseApi.dart';
-import 'dtos/LoginResponse.dart';
-import 'dtos/captcha.dart';
+import 'package:dio/dio.dart';
+import 'package:pr0gramm/api/baseApi.dart';
+import 'package:pr0gramm/api/dtos/captcha.dart';
+import 'package:pr0gramm/api/dtos/loginResponse.dart';
+
 
 class LoginApi extends BaseApi {
   Future<Captcha> getCaptcha() async {

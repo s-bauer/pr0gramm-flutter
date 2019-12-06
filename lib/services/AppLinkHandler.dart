@@ -18,6 +18,7 @@ class LinkHandler {
 }
 
 class AppLinkHandler {
+  String latestLink;
   final List<LinkHandler> handlers;
   final BuildContext _context;
   AppLinkHandler(this.handlers, this._context);
@@ -26,6 +27,8 @@ class AppLinkHandler {
     String initialLink;
     try {
       initialLink = await getInitialLink();
+      if(latestLink == initialLink) return null;
+      latestLink = initialLink;
       print('initial link: $initialLink');
       handlers.forEach((handler) async {
         if (handler.test(initialLink)) {

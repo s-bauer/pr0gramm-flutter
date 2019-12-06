@@ -1,6 +1,6 @@
+import 'package:pr0gramm/api/baseApi.dart';
 import 'package:pr0gramm/api/dtos/profileInfoResponse.dart';
 
-import 'baseApi.dart';
 
 class ProfileApi extends BaseApi {
   Future<ProfileInfoResponse> getProfileInfo({String name, int flags}) async {

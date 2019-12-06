@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
-import 'package:video_player/video_player.dart';
+import 'package:pr0gramm/entities/commonTypes/item.dart';
 import 'package:pr0gramm/services/imageProvider.dart' as imgProv;
+import 'package:pr0gramm/views/postView.dart';
+import 'package:video_player/video_player.dart';
 
-import '../postView.dart';
 
 class VideoPost extends StatefulWidget {
   final Item item;

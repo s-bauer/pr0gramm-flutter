@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/entities/linkedComments.dart';
+import 'package:pr0gramm/entities/commonTypes/linkedStuff/linkedComments.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/itemProvider.dart';
 import 'package:pr0gramm/services/timeFormatter.dart';
+import 'package:pr0gramm/views/postView.dart';
 import 'package:pr0gramm/views/widgets/userMark.dart';
 
-import '../postView.dart';
 
 const authorTextStyle = const TextStyle(
   fontSize: 14,
@@ -68,7 +68,7 @@ class PostButtons extends StatelessWidget {
                     info.item.user,
                     style: authorTextStyle,
                   ),
-                  UserMark(
+                  UserMarkView(
                     userMark: info.item.mark,
                     radius: 2.5,
                   )
@@ -89,7 +89,7 @@ class PostButtons extends StatelessWidget {
 }
 
 class _PostPageState extends State<PostPage> {
-  final ItemProvider _itemProvider = ItemProvider();
+
   PageController _controller;
 
   List<LinkedComment> linkComments(PostInfo postInfo) {
@@ -136,6 +136,7 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
+    final ItemProvider _itemProvider = ItemProvider(context);
     _controller = PageController(initialPage: widget.index, keepPage: false);
 
     return Scaffold(

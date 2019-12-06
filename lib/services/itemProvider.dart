@@ -1,11 +1,23 @@
-import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
+import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/itemApi.dart';
+import 'package:pr0gramm/entities/commonTypes/flags.dart';
+import 'package:pr0gramm/entities/commonTypes/item.dart';
+import 'package:pr0gramm/entities/commonTypes/itemRange.dart';
+import 'package:pr0gramm/entities/commonTypes/promotionStatus.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
+import 'package:pr0gramm/widgets/inherited.dart';
 
 class ItemProvider {
   static ItemProvider _instance = ItemProvider._internal();
+
+  bool loggedIn;
+
   ItemProvider._internal();
-  factory ItemProvider() => _instance;
+
+  factory ItemProvider(BuildContext context) {
+    _instance.loggedIn = MyInherited.of(context).isLoggedIn;
+    return _instance;
+  }
 
   final _itemApi = ItemApi();
 
@@ -23,12 +35,15 @@ class ItemProvider {
         }
 
         int older;
-        if (_items.isNotEmpty) older = _items.last.promoted;
+        if (_items.isNotEmpty) older = _items.last.id;
 
         _workingTask = _itemApi.getItems(
-          promoted: true,
-          flags: 1,
-          older: older,
+          config: GetItemsConfiguration(
+              flags: loggedIn ? Flags.SFW : Flags.GUEST,
+              promoted: PromotionStatus.Promoted,
+              id: older,
+              range: ItemRange.older
+          ),
         );
         var getItemsResponse = await _workingTask;
         _workingTask = null;
@@ -50,7 +65,14 @@ class ItemProvider {
           continue;
         }
 
-        _workingTask = _itemApi.getItemsById(id, promoted: true, flags: 1);
+        _workingTask = _itemApi.getItems(
+          config: GetItemsConfiguration(
+              flags: loggedIn ? Flags.SFW : Flags.GUEST,
+              promoted: PromotionStatus.Promoted,
+              id: id,
+              range: ItemRange.start
+          ),
+        );
         var getItemsResponse = await _workingTask;
         _workingTask = null;
         if (getItemsResponse != null) _items = getItemsResponse.items;

@@ -1,5 +1,5 @@
-import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
 import 'package:pr0gramm/api/dtos/itemInfoResponse.dart';
+import 'package:pr0gramm/entities/commonTypes/item.dart';
 
 class PostInfo {
   final Item item;

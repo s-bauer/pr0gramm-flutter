@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:pr0gramm/api/apiClient.dart';
 
-import 'apiClient.dart';
 
 class BaseApi {
   final apiClient = ApiClient();

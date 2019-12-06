@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-
 import 'package:pr0gramm/api/apiClient.dart';
-import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
+import 'package:pr0gramm/entities/commonTypes/item.dart';
+import 'package:pr0gramm/entities/commonTypes/linkedStuff/linkedPostInfo.dart';
 import 'package:pr0gramm/services/initializeService.dart';
 import 'package:pr0gramm/services/itemProvider.dart';
 import 'package:pr0gramm/services/imageProvider.dart' as imgProv;
+import 'package:pr0gramm/views/loginView/loginView.dart';
+import 'package:pr0gramm/views/widgets/linkedPostPage.dart';
 import 'package:pr0gramm/views/widgets/postPage.dart';
 import 'package:pr0gramm/widgets/inherited.dart';
 
-import 'loginView/loginView.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -19,7 +20,6 @@ class _HomeViewState extends State<HomeView> {
   Future _initFuture;
   int _gridRefreshKey = 0;
 
-  final ItemProvider _itemProvider = ItemProvider();
   final imgProv.ImageProvider _imageProvider = imgProv.ImageProvider();
 
   @override
@@ -70,6 +70,18 @@ class _HomeViewState extends State<HomeView> {
                         ],
                       ),
                     ),
+              FlatButton(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LinkedPostPage()),
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.exit_to_app),
+                    Text('Abmelden')
+                  ],
+                ),
+              )
             ],
           )
         ],
@@ -113,6 +125,7 @@ class _HomeViewState extends State<HomeView> {
         key: Key(_gridRefreshKey.toString()),
         gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
         itemBuilder: (context, index) {
+          final ItemProvider _itemProvider = ItemProvider(context);
           return FutureBuilder<Item>(
             future: _itemProvider.getItem(index),
             builder: (context, snapshot) {
@@ -130,7 +143,7 @@ class _HomeViewState extends State<HomeView> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => PostPage(index: index)),
+                      MaterialPageRoute(builder: (context) => LinkedPostPage(initialItemId: snapshot.data.id)),
                     );
                   },
                 );

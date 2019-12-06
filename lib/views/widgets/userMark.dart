@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pr0gramm/entities/commonTypes/userMark.dart';
 
 const userMarks = [
   Color(0xffffffff),
@@ -18,11 +19,11 @@ const userMarks = [
   Color(0xffffc166),
 ];
 
-class UserMark extends StatelessWidget {
-  final int userMark;
+class UserMarkView extends StatelessWidget {
+  final UserMark userMark;
   final double radius;
 
-  UserMark({Key key, this.userMark, this.radius}) : super(key: key);
+  UserMarkView({Key key, this.userMark, this.radius}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class UserMark extends StatelessWidget {
       padding: EdgeInsets.only(left: 5),
       child: CustomPaint(
         painter: DrawCircle(
-          color: userMarks[userMark],
+          color: userMark.color,
           radius: radius,
         ),
       ),

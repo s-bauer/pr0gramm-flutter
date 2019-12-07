@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
 import 'package:pr0gramm/services/imageProvider.dart' as imgProv;

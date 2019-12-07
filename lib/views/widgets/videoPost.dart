@@ -16,7 +16,6 @@ class VideoPost extends StatefulWidget {
 
 class _VideoPostState extends State<VideoPost> {
   VideoPlayerController _controller;
-  final imgProv.ImageProvider _imageProvider = imgProv.ImageProvider();
 
   @override
   void initState() {

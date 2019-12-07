@@ -1,6 +1,4 @@
 
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
 import 'package:pr0gramm/views/widgets/imagePost.dart';

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/entities/linkedComments.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
+import 'package:pr0gramm/services/feedProvider.dart';
 import 'package:pr0gramm/services/itemProvider.dart';
 import 'package:pr0gramm/services/timeFormatter.dart';
+import 'package:pr0gramm/views/overviewView.dart';
 import 'package:pr0gramm/views/widgets/userMark.dart';
 
 import '../postView.dart';
@@ -21,8 +23,9 @@ const postTimeTextStyle = const TextStyle(
 
 class PostPage extends StatefulWidget {
   final int index;
+  final FeedProvider feedProvider;
 
-  const PostPage({Key key, this.index}) : super(key: key);
+  const PostPage({Key key, this.index, this.feedProvider}) : super(key: key);
 
   @override
   _PostPageState createState() => _PostPageState();
@@ -89,7 +92,6 @@ class PostButtons extends StatelessWidget {
 }
 
 class _PostPageState extends State<PostPage> {
-  final ItemProvider _itemProvider = ItemProvider();
   PageController _controller;
 
   List<LinkedComment> linkComments(PostInfo postInfo) {
@@ -137,6 +139,7 @@ class _PostPageState extends State<PostPage> {
   Widget build(BuildContext context) {
     _controller = PageController(initialPage: widget.index, keepPage: false);
 
+
     return Scaffold(
       backgroundColor: Colors.black45,
       appBar: AppBar(
@@ -145,7 +148,7 @@ class _PostPageState extends State<PostPage> {
       body: PageView.builder(
         controller: _controller,
         itemBuilder: (context, index) {
-          var future = _itemProvider.getItemWithInfo(index);
+          var future = widget.feedProvider.getItemWithInfo(index);
 
           return FutureBuilder<PostInfo>(
             future: future,
@@ -158,7 +161,7 @@ class _PostPageState extends State<PostPage> {
               return RefreshIndicator(
                 onRefresh: () async {
                   setState(() {
-                    future = _itemProvider.getItemWithInfo(index);
+                    future = widget.feedProvider.getItemWithInfo(index);
                   });
                 },
                 child: SingleChildScrollView(

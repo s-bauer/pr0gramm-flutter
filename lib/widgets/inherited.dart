@@ -7,7 +7,7 @@ class MyInherited extends StatefulWidget {
   MyInherited({Key key, this.child,}) : super(key: key);
 
   static MyInheritedData of(BuildContext context) {
-    return context.inheritFromWidgetOfExactType(MyInheritedData) as MyInheritedData;
+    return context.dependOnInheritedWidgetOfExactType<MyInheritedData>();
   }
 
   @override

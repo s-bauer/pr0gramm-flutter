@@ -1,19 +1,18 @@
 import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
 import 'package:pr0gramm/api/itemApi.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
+import 'package:pr0gramm/services/feedProvider.dart';
 
 class ItemProvider {
-  static ItemProvider _instance = ItemProvider._internal();
-  ItemProvider._internal();
-  factory ItemProvider() => _instance;
-
+  final FeedDetails feedDetails;
   final _itemApi = ItemApi();
 
   var _items = List<Item>();
   Future _workingTask;
 
-  Future<Item> getItem(int index) async {
+  ItemProvider(this.feedDetails);
 
+  Future<Item> getItem(int index) async {
     while (true) {
       try {
         if (index < _items.length) return _items[index];
@@ -27,8 +26,9 @@ class ItemProvider {
         if (_items.isNotEmpty) older = _items.last.promoted;
 
         _workingTask = _itemApi.getItems(
-          promoted: true,
-          flags: 1,
+          promoted: feedDetails.promoted,
+          flags: feedDetails.flags,
+          tags: feedDetails.tags,
           older: older,
         );
         var getItemsResponse = await _workingTask;

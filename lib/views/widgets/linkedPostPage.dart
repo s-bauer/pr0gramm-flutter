@@ -1,10 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:pr0gramm/entities/commonTypes/linkedStuff/linkedComments.dart';
 import 'package:pr0gramm/entities/commonTypes/linkedStuff/linkedPostInfo.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/linkedPostInfoProvider.dart';
-import 'package:pr0gramm/views/postView.dart';
-import 'package:pr0gramm/views/widgets/postPage.dart';
 
 class LinkedPostPage extends StatefulWidget {
   final int initialItemId;
@@ -20,7 +21,7 @@ class LinkedPostPage extends StatefulWidget {
 class _LinkedPostPageState extends State<LinkedPostPage> {
   PageController _controller;
   LinkedPostInfoProvider provider;
-  var future;
+  var preloadFuture;
 
   @override
   void initState() {
@@ -33,7 +34,7 @@ class _LinkedPostPageState extends State<LinkedPostPage> {
         .where((c) => c.parent == 0)
         .map((c) => LinkedComment.root(c, plainComments))
         .toList()
-      ..sort(
+          ..sort(
               (a, b) => b.comment.confidence.compareTo(a.comment.confidence));
   }
 
@@ -71,46 +72,92 @@ class _LinkedPostPageState extends State<LinkedPostPage> {
 
   @override
   void dispose() {
+    curPage?.dispose();
     super.dispose();
   }
 
-  var curIndex = 10;
+  var startIndex = 0;
+  var toShowFuture;
+  var first = true;
+  ValueNotifier<int> curPage = ValueNotifier<int>(-1);
 
   @override
   Widget build(BuildContext context) {
-    _controller = PageController(initialPage: 10, keepPage: false);
-
+    _controller = PageController(initialPage: startIndex, keepPage: false);
     provider = LinkedPostInfoProvider(context);
-    future = provider.getLinkedPostInfo(initialItemId: widget.initialItemId);
+    toShowFuture =
+        provider.getLinkedPostInfo(initialItemId: widget.initialItemId);
+
     return Scaffold(
         backgroundColor: Colors.black45,
         appBar: AppBar(
           title: Text("Top"),
         ),
         body: FutureBuilder<LinkedPostInfo>(
-            future: future,
-            builder: (context, linkedPostInfoAsync) {
-              if (!linkedPostInfoAsync.hasData)
+            future: toShowFuture,
+            builder: (context, initialLinkedPostAsync) {
+              if (!initialLinkedPostAsync.hasData)
                 return Center(child: CircularProgressIndicator());
+              void onChange(index) {
+                var diff = startIndex - index;
+                var walkNext = startIndex < index;
+                var toShow = initialLinkedPostAsync.data.walk(
+                    walkNext ? WalkDirection.next : WalkDirection.prev, diff);
+                print("index $index assigned to ${toShow.item.user}");
+                provider.setCurrent(toShow.item.id);
+                if (toShow.prev != null && curPage.value == 0) {
+                  startIndex += 1;
+                  print(
+                      "${toShow.item.user} has prev extending and correcting one more prev if existing");
+                  _controller.jumpToPage(curPage.value + 1);
+                }
+              }
 
-              // TODO: fix swiping
-              return PageView.builder(
-                controller: _controller,
-                itemBuilder: (context, index) {
-                  template(LinkedPostInfo curItem) {
-                    var linkedPost = curItem..makeCurrent();
-                    var postInfo = curItem.toPostInfo();
+              int findChildIndexCallback(Key key) {
+                var index = 0;
+                var str = key.toString();
+                var cur = LinkedPostInfoProvider
+                    .idMap[int.parse(str.substring(3, str.length - 3))];
+                while (cur.prev != null) {
+                  cur = cur.prev;
+                  index++;
+                }
+                return index;
+              }
+
+              // curPage.addListener(() => onChange(curPage.value));
+              return LinkedPageView<IntIterator>.builder(
+                iterator: IntIterator(0),
+                buildChild: (IntIterator data) {
+                  return Text("$data",
+                      style: TextStyle(
+                        color: RandomColor.getColor(),
+                      ));
+                },
+              );
+
+/*                  itemBuilder: (context, index) {
+                    var diff = startIndex - index;
+                    var walkNext = startIndex < index;
+                    diff = diff.abs();
+                    var toShow = initialLinkedPostAsync.data.walk(
+                        walkNext ? WalkDirection.next : WalkDirection.prev,
+                        diff);
+                    print("build: ${toShow.item.user}");
+
                     return FutureBuilder<PostInfo>(
-                        future: postInfo,
+                        key: Key("${toShow.item.id}"),
+                        future: toShow.toPostInfo(),
                         builder: (context, info) {
-                          var comments = linkComments(info.data);
                           if (!info.hasData)
                             return Center(child: CircularProgressIndicator());
+
+                          var comments = linkComments(info.data);
                           return RefreshIndicator(
                             onRefresh: () async {
                               setState(() {
-                                future = provider.getLinkedPostInfo(
-                                    initialItemId: linkedPost.item.id);
+                                toShowFuture = provider.getLinkedPostInfo(
+                                    initialItemId: info.data.item.id);
                               });
                             },
                             child: SingleChildScrollView(
@@ -118,7 +165,7 @@ class _LinkedPostPageState extends State<LinkedPostPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  PostView(item: curItem.item),
+                                  PostView(item: info.data.item),
                                   PostButtons(info: info.data),
                                   buildTags(context, info.data),
                                   Padding(
@@ -126,7 +173,7 @@ class _LinkedPostPageState extends State<LinkedPostPage> {
                                         top: 8, bottom: 20.0, right: 10),
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: comments
                                           .map((c) => c.build())
                                           .toList(),
@@ -137,27 +184,150 @@ class _LinkedPostPageState extends State<LinkedPostPage> {
                             ),
                           );
                         });
-                  }
-                  double dif;
-                  if (curIndex > index) {
-                    dif = 0.0 + curIndex - index;
-                  } else {
-                    dif = 0.0 + index - curIndex;
-                  }
-                  var cur = linkedPostInfoAsync.data..makeCurrent();
-                  while (dif > 0) {
-                    if (cur == null) break;
-                    if (curIndex < index) {
-                      cur = cur.next;
-                    } else {
-                      cur = cur.prev;
-                    }
-                    dif--;
-                  }
-                  return template(cur);
-                },
-              );
-            })
-    );
+                  }*/
+            }));
   }
+}
+
+class RandomColor {
+  static Random random = new Random();
+
+  static Color getColor() {
+    return Color.fromARGB(
+        255, random.nextInt(255), random.nextInt(255), random.nextInt(255));
+  }
+}
+
+class LinkedPageView<T> extends StatefulWidget {
+  final LinkedIterator<T> iterator;
+  final buildChild;
+
+  const LinkedPageView.builder({this.iterator, this.buildChild});
+
+  @override
+  _LinkedPageViewState createState() => _LinkedPageViewState();
+}
+
+class _LinkedPageViewState extends State<LinkedPageView> {
+  PageController _pageController;
+  Slots<IntIterator> slots;
+  ValueNotifier<int> onPageChanged;
+
+  Widget build(BuildContext context) {
+    var pageView = PageView.custom(
+      controller: _pageController,
+      childrenDelegate: SliverChildBuilderDelegate((c, i) {
+        return widget.buildChild(slots.getByIndex(i));
+      },
+          findChildIndexCallback: (key) => null,
+          addAutomaticKeepAlives: false,
+          childCount: 5),
+    );
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      onPageChange();
+    });
+    return pageView;
+  }
+
+  void _onScroll() {
+    if (_pageController.hasClients &&
+        _pageController.page.toInt() == _pageController.page &&
+        onPageChanged?.value != _pageController.page.toInt()) {
+      setState(() {
+        onPageChanged?.value = _pageController.page.toInt();
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    onPageChanged = new ValueNotifier(2);
+    slots = Slots(widget.iterator);
+    _pageController =
+        PageController(initialPage: slots.curIndex, keepPage: false)
+          ..addListener(_onScroll);
+    super.initState();
+  }
+
+  var first = true;
+  var pageView;
+
+  onPageChange() {
+    if (slots.curIndex == onPageChanged?.value)
+      return;
+    if (slots.prevSlot != null && slots.curIndex > onPageChanged?.value) {
+      slots.movePrev();
+      _pageController.jumpToPage(onPageChanged.value);
+    } else {
+      slots.moveNext();
+      _pageController.jumpToPage(onPageChanged.value);
+    }
+  }
+}
+
+class IntIterator extends LinkedIterator<IntIterator> {
+  final int value;
+  static int lowerEnd = -6;
+  static int upperEnd = 6;
+
+  @override
+  IntIterator get next =>
+      (value + 1) >= upperEnd ? null : IntIterator(value + 1);
+
+  @override
+  IntIterator get prev =>
+      (value - 1) <= lowerEnd ? null : IntIterator(value - 1);
+
+  IntIterator(this.value);
+
+  @override
+  String toString() => value.toString();
+}
+
+class Slots<T> {
+  LinkedIterator<T> _cur;
+
+  LinkedIterator<T> get cPrevSlot => prevSlot?.prev;
+
+  LinkedIterator<T> get prevSlot => curSlot?.prev;
+
+  LinkedIterator<T> get curSlot => _cur;
+
+  LinkedIterator<T> get nextSlot => curSlot?.next;
+
+  LinkedIterator<T> get cNextSlot => nextSlot?.next;
+
+  int get curIndex => [cPrevSlot, prevSlot].where((i) => i != null).length;
+
+  int get count => this.toList().where((i) => i != null).length;
+
+  Slots(this._cur);
+
+  void moveNext() {
+    _cur = _cur.next;
+  }
+
+  void movePrev() {
+    _cur = _cur.prev;
+  }
+
+  List<LinkedIterator<T>> toList() => [
+        cPrevSlot,
+        prevSlot,
+        curSlot,
+        nextSlot,
+        cNextSlot,
+      ].toList();
+
+  LinkedIterator<T> getByIndex(int index) {
+    return this.toList().elementAt(index);
+  }
+}
+
+abstract class LinkedIterator<T> {
+  int value;
+
+  LinkedIterator<T> get next;
+
+  LinkedIterator<T> get prev;
 }

@@ -1,56 +1,38 @@
-import 'dart:io';
-
 import 'package:pr0gramm/api/itemApi.dart';
 import 'package:pr0gramm/entities/commonTypes/flags.dart';
 import 'package:pr0gramm/entities/commonTypes/item.dart';
 import 'package:pr0gramm/entities/commonTypes/itemRange.dart';
 import 'package:pr0gramm/entities/commonTypes/linkedStuff/linkedPostInfo.dart';
 import 'package:pr0gramm/entities/commonTypes/promotionStatus.dart';
-import 'package:pr0gramm/widgets/inherited.dart';
-enum Move {
-  next,
-  prev
-}
+
 class LinkedPostInfoProvider {
   final _itemApi = ItemApi();
   final _context;
   static LinkedPostInfo _current;
   static Map<int, LinkedPostInfo> idMap = Map();
+
   LinkedPostInfoProvider(this._context);
 
-  get _loggedIn =>  false;
+  setCurrent(int id) {
+    _current = (idMap[id] ?? _current)..preloadSurrounding();
+  }
 
-  Future<LinkedPostInfo> getLinkedPostInfo({int initialItemId, Move move}) async {
-    if(move != null && _current != null) {
-      var moveTo;
-      if (move == Move.next) {
-        moveTo = _current.next;
-        if(moveTo == null){
-          await newItemRequestHandler(ItemRange.older, _current.item.id);
-          moveTo = _current.next ?? _current;
-        }
-      } else {
-        moveTo = _current.prev;
-        if(moveTo == null){
-          await newItemRequestHandler(ItemRange.older, _current.item.id);
-          moveTo = _current.prev ?? _current;
-        }
-      }
-      print(moveTo.item.user);
-      return moveTo;
-    }
+  get _loggedIn => false;
+
+  Future<LinkedPostInfo> getLinkedPostInfo({int initialItemId}) async {
     var inMemory = idMap.keys.contains(initialItemId);
     var linkedPostInfo;
-    if (inMemory)
-      linkedPostInfo = idMap[initialItemId];
-    else
+    if (inMemory) {
+      linkedPostInfo = _current = idMap[initialItemId];
+    } else {
       linkedPostInfo = await _build(initialItemId);
+    }
     return linkedPostInfo;
   }
 
   Future<LinkedPostInfo> _build(int initialItemId) async {
     var items = await _get(itemId: initialItemId);
-    if(items == null) return null;
+    if (items == null) return null;
     return _buildLinkedItems(items, initialItemId);
   }
 
@@ -60,7 +42,7 @@ class LinkedPostInfoProvider {
                   flags: _loggedIn ? Flags.SFW : Flags.GUEST,
                   promoted: PromotionStatus.Promoted,
                   id: itemId,
-                  range: range ?? ItemRange.start)))
+                  range: range ?? ItemRange.around)))
           ?.items;
 
   LinkedPostInfo _buildLinkedItems(List<Item> items, int initialId,
@@ -77,16 +59,17 @@ class LinkedPostInfoProvider {
       return current;
     }
 
-
     if (next == null) {
       var firstWhere = idMap[initialId];
-      cur = firstWhere != null ? firstWhere : LinkedPostInfo(items.removeAt(0), newItemRequestHandler);
+      cur = firstWhere != null
+          ? firstWhere
+          : LinkedPostInfo(items.removeAt(0), newItemRequestHandler);
     } else {
       cur = next;
     }
     idMap[cur.item.id] = cur;
 
-    if(cur.next == null) {
+    if (cur.next == null) {
       cur.next = LinkedPostInfo(items.removeAt(0), newItemRequestHandler);
       cur.next.prev = cur;
     }
@@ -97,19 +80,19 @@ class LinkedPostInfoProvider {
 
   Future<void> newItemRequestHandler(ItemRange range, int itemId) async {
     var items;
-    try{
+    try {
       items = await _get(itemId: itemId, range: range);
-    } catch(e){
+    } catch (e) {
       print(e);
     }
-    if(items == null) return;
+    if (items == null) return;
     var forward = ItemRange.older == range;
     var cur = idMap[itemId];
     if (!forward) {
       items = items.reversed.toList();
     }
     int requester = items.indexWhere((i) => i.id == itemId);
-    if(requester != -1) {
+    if (requester != -1) {
       items = forward ? items.skip(requester + 1) : items.take(requester);
     }
     items.forEach((item) {

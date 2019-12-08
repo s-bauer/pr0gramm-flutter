@@ -4,12 +4,18 @@ import 'package:pr0gramm/entities/commonTypes/item.dart';
 import 'package:pr0gramm/entities/commonTypes/itemRange.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/imageProvider.dart';
-
-class LinkedPostInfo {
+import 'package:pr0gramm/views/widgets/linkedPostPage.dart';
+enum WalkDirection {
+  next,
+  prev
+}
+class LinkedPostInfo with LinkedIterator<LinkedPostInfo> {
   ImageProvider imageProvider = ImageProvider();
   static const preloadThreshold = 3;
   Item item;
+  @override
   LinkedPostInfo next;
+  @override
   LinkedPostInfo prev;
   ItemInfoResponse _info;
   bool hasInfo = false;
@@ -36,11 +42,8 @@ class LinkedPostInfo {
 
   Future<PostInfo> toPostInfo() async => PostInfo(info: await info, item: item);
 
-  void makeCurrent() {
-    _preloadSurrounding();
-  }
 
-  void _preloadSurrounding() {
+  void preloadSurrounding() {
     preloadMe(preloadThreshold + 1, true);
     preloadMe(preloadThreshold + 1, false);
   }
@@ -55,5 +58,14 @@ class LinkedPostInfo {
       prev.preloadMe(toPreload - 1, directionNext);
     else
       requestRange(ItemRange.newer, item.id);
+  }
+
+  LinkedPostInfo walk(WalkDirection direction, [int count = 1]){
+    if(count == 0) {
+      return this;
+    }
+    return direction == WalkDirection.next
+        ? next?.walk(direction, count - 1) ?? this
+        : prev?.walk(direction, count - 1) ?? this;
   }
 }

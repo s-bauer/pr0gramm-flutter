@@ -11,7 +11,7 @@ class Tag {
 
   Tag.fromJson(Map<String, dynamic> json) {
     this.tag = json['tag'];
-    this.confidence = json['confidence'];
+    this.confidence = 0.0 + json['confidence'];
     this.id = json['id'];
   }
 

@@ -8,15 +8,12 @@ enum WalkDirection {
   next,
   prev
 }
-abstract class LinkedIterator<T> {
-  int value;
-
-  LinkedIterator<T> get next;
-
-  LinkedIterator<T> get prev;
+mixin LinkedIterator {
+  LinkedIterator get next;
+  LinkedIterator get prev;
 }
 
-class LinkedPostInfo with LinkedIterator<LinkedPostInfo> {
+class LinkedPostInfo with LinkedIterator {
   ImageProvider imageProvider = ImageProvider();
   static const preloadThreshold = 3;
   Item item;

@@ -4,11 +4,18 @@ import 'package:pr0gramm/entities/commonTypes/item.dart';
 import 'package:pr0gramm/entities/commonTypes/itemRange.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/imageProvider.dart';
-import 'package:pr0gramm/views/widgets/linkedPostPage.dart';
 enum WalkDirection {
   next,
   prev
 }
+abstract class LinkedIterator<T> {
+  int value;
+
+  LinkedIterator<T> get next;
+
+  LinkedIterator<T> get prev;
+}
+
 class LinkedPostInfo with LinkedIterator<LinkedPostInfo> {
   ImageProvider imageProvider = ImageProvider();
   static const preloadThreshold = 3;

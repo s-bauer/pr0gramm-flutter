@@ -1,6 +1,5 @@
-
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
+import 'package:pr0gramm/entities/commonTypes/item.dart';
 import 'package:pr0gramm/views/widgets/imagePost.dart';
 import 'package:pr0gramm/views/widgets/videoPost.dart';
 import 'package:pr0gramm/services/imageProvider.dart' as imgProv;

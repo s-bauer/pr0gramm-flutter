@@ -1,4 +1,4 @@
-import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
+import 'package:pr0gramm/entities/commonTypes/item.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/itemProvider.dart';
 

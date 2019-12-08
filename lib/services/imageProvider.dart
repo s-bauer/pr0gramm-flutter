@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:pr0gramm/api/apiClient.dart';
-import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
+import 'package:pr0gramm/entities/commonTypes/item.dart';
 
 class ImageProvider {
   static ImageProvider _instance = ImageProvider._internal();

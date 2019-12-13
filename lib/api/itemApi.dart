@@ -1,7 +1,7 @@
 import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
 import 'package:pr0gramm/api/dtos/itemInfoResponse.dart';
 import 'package:pr0gramm/entities/enums/flags.dart';
-import 'package:pr0gramm/entities/commonTypes/itemRange.dart';
+import 'package:pr0gramm/entities/enums/itemRange.dart';
 import 'package:pr0gramm/entities/enums/promotionStatus.dart';
 
 import 'baseApi.dart';

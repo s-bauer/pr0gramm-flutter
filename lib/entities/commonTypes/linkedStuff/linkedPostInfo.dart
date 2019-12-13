@@ -1,7 +1,7 @@
 import 'package:pr0gramm/api/dtos/itemInfoResponse.dart';
 import 'package:pr0gramm/api/itemApi.dart';
 import 'package:pr0gramm/entities/commonTypes/item.dart';
-import 'package:pr0gramm/entities/commonTypes/itemRange.dart';
+import 'package:pr0gramm/entities/enums/itemRange.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/imageProvider.dart';
 

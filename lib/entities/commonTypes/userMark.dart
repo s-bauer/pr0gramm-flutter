@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/entities/commonTypes/enum.dart';
+import 'package:pr0gramm/entities/commonTypes/baseTypes/enum.dart';
 
 class UserMark extends Enum<int> {
   static UserMark Schwuchtel = UserMark(0);

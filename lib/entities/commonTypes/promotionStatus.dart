@@ -1,4 +1,4 @@
-import 'package:pr0gramm/entities/commonTypes/enum.dart';
+import 'package:pr0gramm/entities/commonTypes/baseTypes/enum.dart';
 
 class PromotionStatus<int> extends Enum<int> {
   static PromotionStatus None = PromotionStatus(0);

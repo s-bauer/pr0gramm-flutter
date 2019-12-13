@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:pr0gramm/entities/commonTypes/userMark.dart';
 
-class UserMarkView extends StatelessWidget {
+class UserMarkWidget extends StatelessWidget {
   final UserMark userMark;
   final double radius;
 
-  UserMarkView({Key key, this.userMark, this.radius}) : super(key: key);
+  UserMarkWidget({Key key, this.userMark, this.radius}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

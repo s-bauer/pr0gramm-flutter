@@ -69,7 +69,7 @@ class PostButtons extends StatelessWidget {
                     info.item.user,
                     style: authorTextStyle,
                   ),
-                  UserMarkView(
+                  UserMarkWidget(
                     userMark: info.item.mark,
                     radius: 2.5,
                   )

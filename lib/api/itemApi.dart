@@ -14,24 +14,33 @@ class GetItemsConfiguration {
   final int id;
   final String tags;
 
-  GetItemsConfiguration(
-      {this.tags, this.id, this.range, this.self, this.promoted, this.flags});
+  GetItemsConfiguration({
+    this.tags,
+    this.id,
+    this.range,
+    this.self,
+    this.promoted,
+    this.flags,
+  });
 
-  @override
-  String toString() {
-    var promotedStr = promoted == PromotionStatus.Promoted
+  String toQueryString() {
+    final promotedStr = promoted == PromotionStatus.Promoted
         ? "&promoted=${promoted.value}"
         : "";
-    var rangeStr = id != null ? "&${range.value}=$id" : "";
-    var selfStr = self != null ? self ? 1 : 0 : "";
-    var tagStr = tags != null ? "&tags=$tags" : "";
-    return "flags=${flags.value}$promotedStr$rangeStr$selfStr$tagStr";
+
+    final rangeStr = id != null ? "&${range.value}=$id" : "";
+    final selfStr = self != null ? self ? 1 : 0 : "";
+    final tagStr = tags != null ? "&tags=$tags" : "";
+    final flagStr = "flags=${flags.value}";
+
+    return flagStr + promotedStr + rangeStr + selfStr + tagStr;
   }
 }
 
 class ItemApi extends BaseApi {
   Future<GetItemsResponse> getItems(GetItemsConfiguration config) async {
-    final response = await client.get("/items/get?$config");
+    final queryStr = config.toQueryString();
+    final response = await client.get("/items/get?$queryStr");
     return GetItemsResponse.fromJson(response.data);
   }
 

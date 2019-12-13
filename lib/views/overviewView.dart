@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pr0gramm/entities/commonTypes/item.dart';
 import 'package:pr0gramm/services/feedProvider.dart';
 import 'package:pr0gramm/services/imageProvider.dart' as imgProv;
+import 'package:pr0gramm/views/widgets/linkedPostPage.dart';
 import 'package:pr0gramm/views/widgets/postPage.dart';
 
 class FeedInherited extends InheritedWidget {
@@ -58,8 +59,8 @@ class _OverviewViewState extends State<OverviewView> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PostPage(
-                        index: index,
+                      builder: (context) => LinkedPostPage(
+                        initialItemId: snapshot.data.id,
                         feedProvider: feedProvider,
                       ),
                     ),

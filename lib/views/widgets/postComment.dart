@@ -110,7 +110,7 @@ class _PostCommentState extends State<PostComment> {
                             softWrap: true,
                             overflow: TextOverflow.visible,
                           ),
-                          UserMarkView(
+                          UserMarkWidget(
                             userMark: widget.linkedComment.comment.mark,
                             radius: 2,
                           )

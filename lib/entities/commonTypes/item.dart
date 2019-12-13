@@ -1,5 +1,5 @@
-import 'package:pr0gramm/entities/commonTypes/flags.dart';
-import 'package:pr0gramm/entities/commonTypes/promotionStatus.dart';
+import 'package:pr0gramm/entities/enums/flags.dart';
+import 'package:pr0gramm/entities/enums/promotionStatus.dart';
 import 'package:pr0gramm/entities/commonTypes/userMark.dart';
 
 class Item {

@@ -42,6 +42,7 @@ const _colors = [
   Color(0xff10366f),
   Color(0xffffc166),
 ];
+
 const _names = [
   "Schwuchtel",
   "Neuschwuchtel",

@@ -1,6 +1,6 @@
-import 'package:pr0gramm/entities/commonTypes/flags.dart';
+import 'package:pr0gramm/entities/enums/flags.dart';
 import 'package:pr0gramm/entities/commonTypes/item.dart';
-import 'package:pr0gramm/entities/commonTypes/promotionStatus.dart';
+import 'package:pr0gramm/entities/enums/promotionStatus.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/itemProvider.dart';
 

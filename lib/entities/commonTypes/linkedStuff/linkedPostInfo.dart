@@ -8,9 +8,27 @@ enum WalkDirection {
   next,
   prev
 }
-mixin LinkedIterator {
+mixin LinkedIterator implements Comparable<LinkedIterator> {
   LinkedIterator get next;
   LinkedIterator get prev;
+  bool operator ==(object);
+  int get hashCode;
+
+  LinkedIterator get last {
+    var iterator = this;
+    while(iterator.next != null)
+      iterator = iterator.next;
+    return iterator;
+  }
+  LinkedIterator get first {
+    var iterator = this;
+    while(iterator.first != null)
+      iterator = iterator.first;
+    return iterator;
+  }
+
+  @override
+  int compareTo(LinkedIterator other) => 0;
 }
 
 class LinkedPostInfo with LinkedIterator {
@@ -72,4 +90,5 @@ class LinkedPostInfo with LinkedIterator {
         ? next?.walk(direction, count - 1) ?? this
         : prev?.walk(direction, count - 1) ?? this;
   }
+
 }

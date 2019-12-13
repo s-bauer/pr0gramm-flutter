@@ -27,12 +27,13 @@ class ItemProvider {
         if (_items.isNotEmpty) older = _items.last.id;
 
         _workingTask = _itemApi.getItems(
-          config: GetItemsConfiguration(
-              promoted: feedDetails.promoted,
-              flags: feedDetails.flags,
-              tags: feedDetails.tags,
-              id: older,
-              range: ItemRange.older),
+          GetItemsConfiguration(
+            promoted: feedDetails.promoted,
+            flags: feedDetails.flags,
+            tags: feedDetails.tags,
+            id: older,
+            range: ItemRange.older,
+          ),
         );
         var getItemsResponse = await _workingTask;
         _workingTask = null;

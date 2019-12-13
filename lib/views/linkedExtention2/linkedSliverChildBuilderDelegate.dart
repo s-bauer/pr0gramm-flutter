@@ -40,11 +40,11 @@ class LinkedSliverChildBuilderDelegate extends SliverChildBuilderDelegate {
   Widget _build(BuildContext context, LinkedIterator cursor, int index) {
     map[cursor] = linkedBuilder(context, cursor);
     indexMap[index] = cursor;
-    if (index == 0) {
+/*    if (index == 0) {
       indexMap = SplayTreeMap.from(indexMap.map((k, v) => MapEntry(k + 1, v)));
       indexMap.remove(0);
       map.removeWhere((k, _) => k != cursor);
-    }
+    }*/
     return map[cursor];
   }
 

@@ -10,15 +10,16 @@ class GetItemsResponse {
   int rt;
   int qc;
 
-  GetItemsResponse(
-      {this.atEnd,
-      this.atStart,
-      this.error,
-      this.items,
-      this.ts,
-      this.cache,
-      this.rt,
-      this.qc});
+  GetItemsResponse({
+    this.atEnd,
+    this.atStart,
+    this.error,
+    this.items,
+    this.ts,
+    this.cache,
+    this.rt,
+    this.qc,
+  });
 
   GetItemsResponse.fromJson(Map<String, dynamic> json) {
     atEnd = json['atEnd'];

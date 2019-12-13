@@ -26,26 +26,27 @@ class ProfileInfoResponse {
   int rt;
   int qc;
 
-  ProfileInfoResponse(
-      {this.user,
-        this.comments,
-        this.commentCount,
-        this.commentsLikes,
-        this.commentLikesCount,
-        this.uploads,
-        this.uploadCount,
-        this.likesArePublic,
-        this.likes,
-        this.likeCount,
-        this.tagCount,
-        this.badges,
-        this.followCount,
-        this.following,
-        this.subscribed,
-        this.ts,
-        this.cache,
-        this.rt,
-        this.qc});
+  ProfileInfoResponse({
+    this.user,
+    this.comments,
+    this.commentCount,
+    this.commentsLikes,
+    this.commentLikesCount,
+    this.uploads,
+    this.uploadCount,
+    this.likesArePublic,
+    this.likes,
+    this.likeCount,
+    this.tagCount,
+    this.badges,
+    this.followCount,
+    this.following,
+    this.subscribed,
+    this.ts,
+    this.cache,
+    this.rt,
+    this.qc,
+  });
 
   ProfileInfoResponse.fromJson(Map<String, dynamic> json) {
     user = json['user'] != null ? new User.fromJson(json['user']) : null;

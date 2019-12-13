@@ -9,8 +9,14 @@ class ItemInfoResponse {
   List<ItemComment> comments;
   List<Tag> tags;
 
-  ItemInfoResponse(
-      {this.cache, this.ts, this.rt, this.qc, this.comments, this.tags});
+  ItemInfoResponse({
+    this.cache,
+    this.ts,
+    this.rt,
+    this.qc,
+    this.comments,
+    this.tags,
+  });
 
   ItemInfoResponse.fromJson(Map<String, dynamic> json) {
     this.cache = json['cache'];
@@ -38,6 +44,7 @@ class ItemInfoResponse {
         : null;
     data['tags'] =
         this.tags != null ? this.tags.map((i) => i.toJson()).toList() : null;
+
     return data;
   }
 }

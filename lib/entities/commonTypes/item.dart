@@ -22,25 +22,26 @@ class Item {
   UserMark mark;
   int gift;
 
-  Item(
-      {this.id,
-      this.promoted,
-      this.userId,
-      this.up,
-      this.down,
-      this.created,
-      this.image,
-      this.thumb,
-      this.fullsize,
-      this.width,
-      this.height,
-      this.audio,
-      this.source,
-      this.flags,
-      this.deleted,
-      this.user,
-      this.mark,
-      this.gift});
+  Item({
+    this.id,
+    this.promoted,
+    this.userId,
+    this.up,
+    this.down,
+    this.created,
+    this.image,
+    this.thumb,
+    this.fullsize,
+    this.width,
+    this.height,
+    this.audio,
+    this.source,
+    this.flags,
+    this.deleted,
+    this.user,
+    this.mark,
+    this.gift,
+  });
 
   Item.fromJson(Map<String, dynamic> json) {
     id = json['id'];

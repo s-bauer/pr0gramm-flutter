@@ -1,4 +1,4 @@
-import 'package:pr0gramm/entities/commonTypes/LikedItem.dart';
+import 'package:pr0gramm/entities/commonTypes/likedItem.dart';
 import 'package:pr0gramm/entities/commonTypes/comment/likedProfileComment.dart';
 import 'package:pr0gramm/entities/commonTypes/comment/profileComment.dart';
 import 'package:pr0gramm/entities/commonTypes/profileBadge.dart';

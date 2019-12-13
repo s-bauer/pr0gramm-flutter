@@ -43,7 +43,7 @@ class FeedDetails {
 
       case FeedType.NEW:
       default:
-        return FeedDetails._internal(flags: Flags.SFW, promoted: PromotionStatus.Promoted, tags: null);
+        return FeedDetails._internal(flags: Flags.SFW, promoted: PromotionStatus.None, tags: null);
     }
   }
 }

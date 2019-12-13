@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/entities/linkedComments.dart';
+import 'package:pr0gramm/entities/commonTypes/linkedStuff/linkedComments.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/feedProvider.dart';
-import 'package:pr0gramm/services/itemProvider.dart';
 import 'package:pr0gramm/services/timeFormatter.dart';
-import 'package:pr0gramm/views/overviewView.dart';
 import 'package:pr0gramm/views/widgets/userMark.dart';
 
 import '../postView.dart';
@@ -71,7 +69,7 @@ class PostButtons extends StatelessWidget {
                     info.item.user,
                     style: authorTextStyle,
                   ),
-                  UserMark(
+                  UserMarkWidget(
                     userMark: info.item.mark,
                     radius: 2.5,
                   )

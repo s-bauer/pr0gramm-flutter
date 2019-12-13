@@ -1,4 +1,6 @@
-import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
+import 'package:pr0gramm/entities/enums/flags.dart';
+import 'package:pr0gramm/entities/commonTypes/item.dart';
+import 'package:pr0gramm/entities/enums/promotionStatus.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/itemProvider.dart';
 
@@ -19,10 +21,9 @@ class FeedProvider {
 }
 
 class FeedDetails {
-  final int flags;
-  final bool promoted;
+  final Flags flags;
+  final PromotionStatus promoted;
   final String tags;
-
   FeedDetails._internal({this.flags, this.promoted, this.tags});
 
   factory FeedDetails(FeedType feedType) {
@@ -30,19 +31,19 @@ class FeedDetails {
       case FeedType.RANDOMTOP:
         final bust = DateTime.now().millisecond / 1000.0;
         return FeedDetails._internal(
-            flags: 9, promoted: true, tags: "!-(x:random | x:$bust)");
+            flags: Flags.SFW, promoted: PromotionStatus.Promoted, tags: "!-(x:random | x:$bust)");
 
       case FeedType.RANDOMNEW:
         final bust = DateTime.now().millisecond / 1000.0;
         return FeedDetails._internal(
-            flags: 9, promoted: false, tags: "!-(x:random | x:$bust)");
+            flags: Flags.SFW, promoted: PromotionStatus.None, tags: "!-(x:random | x:$bust)");
 
       case FeedType.TOP:
-        return FeedDetails._internal(flags: 9, promoted: true, tags: null);
+        return FeedDetails._internal(flags: Flags.SFW, promoted: PromotionStatus.Promoted, tags: null);
 
       case FeedType.NEW:
       default:
-        return FeedDetails._internal(flags: 9, promoted: false, tags: null);
+        return FeedDetails._internal(flags: Flags.SFW, promoted: PromotionStatus.None, tags: null);
     }
   }
 }

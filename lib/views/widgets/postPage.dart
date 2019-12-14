@@ -83,37 +83,13 @@ class PostButtons extends StatelessWidget {
   }
 }
 
-class PostPage extends StatefulWidget {
-  final int index;
-  final Feed feed;
-  final _centerKey = UniqueKey();
+class PostTags extends StatelessWidget {
+  final PostInfo info;
 
-  PostPage({Key key, this.index, this.feed}) : super(key: key);
+  const PostTags({Key key, this.info}) : super(key: key);
 
   @override
-  _PostPageState createState() => _PostPageState();
-}
-
-class _PostPageState extends State<PostPage> {
-  MyPageController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = MyPageController(keepPage: false, initialPage: widget.index);
-  }
-
-  List<LinkedComment> linkComments(PostInfo postInfo) {
-    final plainComments = postInfo.info.comments;
-    return plainComments
-        .where((c) => c.parent == 0)
-        .map((c) => LinkedComment.root(c, plainComments))
-        .toList()
-          ..sort(
-              (a, b) => b.comment.confidence.compareTo(a.comment.confidence));
-  }
-
-  Widget buildTags(BuildContext context, PostInfo info) {
+  Widget build(BuildContext context) {
     var tags = info.info.tags
       ..sort((a, b) => b.confidence.compareTo(a.confidence));
 
@@ -144,6 +120,63 @@ class _PostPageState extends State<PostPage> {
       ),
     );
   }
+}
+
+
+class PostComments extends StatelessWidget {
+  final PostInfo info;
+
+  const PostComments({Key key, this.info}) : super(key: key);
+
+
+  List<LinkedComment> linkComments() {
+    final plainComments = info.info.comments;
+    return plainComments
+        .where((c) => c.parent == 0)
+        .map((c) => LinkedComment.root(c, plainComments))
+        .toList()
+      ..sort(
+              (a, b) => b.comment.confidence.compareTo(a.comment.confidence));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var comments = linkComments();
+
+    return Padding(
+      padding:
+      const EdgeInsets.only(top: 8, bottom: 20.0, right: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: comments.map((c) => c.build()).toList(),
+      ),
+    );
+
+  }
+}
+
+
+class PostPage extends StatefulWidget {
+  final int index;
+  final Feed feed;
+  final _centerKey = UniqueKey();
+
+  PostPage({Key key, this.index, this.feed}) : super(key: key);
+
+  @override
+  _PostPageState createState() => _PostPageState();
+}
+
+class _PostPageState extends State<PostPage> {
+  MyPageController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = MyPageController(keepPage: false, initialPage: widget.index);
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -154,8 +187,7 @@ class _PostPageState extends State<PostPage> {
       builder: (context, snapshot) {
         return SliverFillViewport(
           delegate: !snapshot.hasData
-              ? SliverChildListDelegate(
-                  [Center(child: CircularProgressIndicator())])
+              ? SliverChildListDelegate([Center(child: CircularProgressIndicator())])
               : SliverChildBuilderDelegate((context, index) {
                   final item = widget.feed.getItemWithInfo(index);
                   final future = ItemApi().getItemInfo(item.id).then((info) {
@@ -221,32 +253,16 @@ class _PostPageState extends State<PostPage> {
         if (!snapshot.hasData)
           return Center(child: CircularProgressIndicator());
 
-        var comments = linkComments(snapshot.data);
-
-        return RefreshIndicator(
-          onRefresh: () async {
-            setState(() {
-              // future = widget.feedProvider.getItemWithInfo(index);
-            });
-          },
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                PostView(item: snapshot.data.item),
-                PostButtons(info: snapshot.data),
-                buildTags(context, snapshot.data),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(top: 8, bottom: 20.0, right: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: comments.map((c) => c.build()).toList(),
-                  ),
-                )
-              ],
-            ),
+        return SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              PostView(item: snapshot.data.item),
+              PostButtons(info: snapshot.data),
+              PostTags(info: snapshot.data),
+              PostComments(info: snapshot.data)
+            ],
           ),
         );
       },

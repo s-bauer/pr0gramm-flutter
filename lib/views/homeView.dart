@@ -5,7 +5,6 @@ import 'package:pr0gramm/services/initializeService.dart';
 import 'package:pr0gramm/views/overviewView.dart';
 import 'package:pr0gramm/views/widgets/drawer.dart';
 
-import 'loginView/loginView.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -38,11 +37,14 @@ class _HomeViewState extends State<HomeView> {
     return FutureBuilder(
       future: _initFuture,
         builder: (context, snap) {
-          if(snap.connectionState == ConnectionState.done)
+          if(snap.connectionState == ConnectionState.done) {
+            final provider = FeedProvider(feedType: FeedType.PUBLICNEW);
             return FeedInherited(
-              feedProvider: FeedProvider(feedType: FeedType.PUBLIC),
+              feedProvider: provider,
+              feed: provider.getFeed(),
               child: OverviewView(),
             );
+          }
 
           return Container();
         },

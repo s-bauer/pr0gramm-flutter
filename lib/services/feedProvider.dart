@@ -1,8 +1,74 @@
+import 'dart:async';
+
+import 'package:flutter/widgets.dart';
 import 'package:pr0gramm/entities/enums/flags.dart';
 import 'package:pr0gramm/entities/commonTypes/item.dart';
 import 'package:pr0gramm/entities/enums/promotionStatus.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/itemProvider.dart';
+
+class Feed {
+  final FeedType feedType;
+  final FeedDetails feedDetails;
+  final ItemProviderNew _itemProvider;
+
+  Item center;
+
+  List<Item> _forwardList = [];
+  List<Item> _backwardsList = [];
+
+  final StreamController<List<Item>> _forwardStream =
+      new StreamController.broadcast();
+  final StreamController<List<Item>> _backwardStream =
+      new StreamController.broadcast();
+
+  Feed({
+    @required this.feedType,
+    @required this.feedDetails,
+  }) : _itemProvider = new ItemProviderNew(feedDetails)
+  {
+    refresh();
+  }
+
+  Stream<List<Item>> get forwardStream {
+    return _forwardStream.stream;
+  }
+
+  Stream<List<Item>> get backwardStream {
+    return _backwardStream.stream;
+  }
+
+  Future loadForward() async {
+    final nextBatch = await _itemProvider.getOlderBatch();
+    if (nextBatch != null) {
+      _forwardList.addAll(nextBatch.items);
+      _forwardStream.add(_forwardList);
+    }
+  }
+
+  Future loadBackwards() async {
+    final prevBatch = await _itemProvider.getNewerBatch();
+    if (prevBatch != null) {
+      _backwardsList.addAll(prevBatch.items);
+      _backwardStream.add(_backwardsList);
+    }
+  }
+
+  Future refresh() async {
+    final firstBatch = await _itemProvider.getFirstBatch();
+
+    _backwardsList = null;
+    _forwardList = firstBatch.items;
+
+    _forwardStream.add(_forwardList);
+    _backwardStream.add(_backwardsList);
+  }
+
+  void dispose() {
+    _forwardStream.close();
+    _backwardStream.close();
+  }
+}
 
 class FeedProvider {
   final FeedType feedType;
@@ -13,8 +79,14 @@ class FeedProvider {
       : feedDetails = new FeedDetails(feedType),
         _itemProvider = new ItemProvider(new FeedDetails(feedType));
 
-  Future<Item> getItem(int index) =>
-      _itemProvider.getItem(index);
+  Feed getFeed() {
+    return Feed(
+      feedType: feedType,
+      feedDetails: feedDetails,
+    );
+  }
+
+  Future<Item> getItem(int index) => _itemProvider.getItem(index);
 
   Future<PostInfo> getItemWithInfo(int index) =>
       _itemProvider.getItemWithInfo(index);
@@ -24,6 +96,7 @@ class FeedDetails {
   final Flags flags;
   final PromotionStatus promoted;
   final String tags;
+
   FeedDetails._internal({this.flags, this.promoted, this.tags});
 
   factory FeedDetails(FeedType feedType) {
@@ -31,28 +104,40 @@ class FeedDetails {
       case FeedType.RANDOMTOP:
         final bust = DateTime.now().millisecond / 1000.0;
         return FeedDetails._internal(
-            flags: Flags.sfw, promoted: PromotionStatus.promoted, tags: "!-(x:random | x:$bust)");
+            flags: Flags.sfw,
+            promoted: PromotionStatus.promoted,
+            tags: "!-(x:random | x:$bust)");
 
       case FeedType.RANDOMNEW:
         final bust = DateTime.now().millisecond / 1000.0;
         return FeedDetails._internal(
-            flags: Flags.sfw, promoted: PromotionStatus.none, tags: "!-(x:random | x:$bust)");
+            flags: Flags.sfw,
+            promoted: PromotionStatus.none,
+            tags: "!-(x:random | x:$bust)");
 
-      case FeedType.PUBLIC:
-        return FeedDetails._internal(flags: Flags.guest, promoted: PromotionStatus.promoted, tags: null);
+      case FeedType.PUBLICTOP:
+        return FeedDetails._internal(
+            flags: Flags.guest, promoted: PromotionStatus.promoted, tags: null);
+
+      case FeedType.PUBLICNEW:
+        return FeedDetails._internal(
+            flags: Flags.guest, promoted: PromotionStatus.none, tags: null);
 
       case FeedType.TOP:
-        return FeedDetails._internal(flags: Flags.sfw, promoted: PromotionStatus.promoted, tags: null);
+        return FeedDetails._internal(
+            flags: Flags.sfw, promoted: PromotionStatus.promoted, tags: null);
 
       case FeedType.NEW:
       default:
-        return FeedDetails._internal(flags: Flags.sfw, promoted: PromotionStatus.none, tags: null);
+        return FeedDetails._internal(
+            flags: Flags.sfw, promoted: PromotionStatus.none, tags: null);
     }
   }
 }
 
 enum FeedType {
-  PUBLIC,
+  PUBLICTOP,
+  PUBLICNEW,
   TOP,
   NEW,
   RANDOMTOP,

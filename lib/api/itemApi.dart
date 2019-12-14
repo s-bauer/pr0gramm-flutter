@@ -32,13 +32,23 @@ class GetItemsConfiguration {
 
     return flagStr + promotedStr + rangeStr + tagStr;
   }
+
+  GetItemsConfiguration withValues({PromotionStatus promoted, Flags flags, ItemRange range, int id, String tags}) {
+    return new GetItemsConfiguration(
+      promoted: promoted ?? this.promoted,
+      flags: flags ?? this.flags,
+      range: range ?? this.range,
+      id: id ?? this.id,
+      tags: tags ?? this.tags
+    );
+  }
 }
 
 class ItemApi extends BaseApi {
-  Future<GetItemsResponse> getItems(GetItemsConfiguration config) async {
+  Future<ItemBatch> getItems(GetItemsConfiguration config) async {
     final queryStr = config.toQueryString();
     final response = await client.get("/items/get?$queryStr");
-    return GetItemsResponse.fromJson(response.data);
+    return ItemBatch.fromJson(response.data);
   }
 
   Future<ItemInfoResponse> getItemInfo(int itemId) async {

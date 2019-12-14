@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/profileInfoResponse.dart';
+import 'package:pr0gramm/services/initializeService.dart';
 
-class MyInherited extends StatefulWidget {
+class GlobalInherited extends StatefulWidget {
   final Widget child;
+  final InitializationResult initResult;
 
-  MyInherited({Key key, this.child,}) : super(key: key);
+  GlobalInherited({Key key, this.child, this.initResult}) : super(key: key);
 
-  static MyInheritedData of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<MyInheritedData>();
+  static GlobalInheritedData of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<GlobalInheritedData>();
   }
 
   @override
-  State<StatefulWidget> createState() => _MyInheritedState();
+  State<StatefulWidget> createState() => _GlobalInheritedState(initResult);
 }
 
-class _MyInheritedState extends State<MyInherited> {
-  ProfileInfoResponse profile;
-  bool isLoggedIn = false;
+class _GlobalInheritedState extends State<GlobalInherited> {
+  final InitializationResult initResult;
 
-  void onProfileChange(ProfileInfoResponse newValue) {
-    setState(() {
-      profile = newValue;
-    });
+  ProfileInfoResponse profile;
+  bool isLoggedIn;
+  String username;
+
+  _GlobalInheritedState(this.initResult) {
+    isLoggedIn = initResult.loggedIn;
+    profile = initResult.profile;
+    username = initResult.username;
   }
 
   void onStatusChange(bool newLoggedIn, ProfileInfoResponse newProfile) {
@@ -33,31 +38,34 @@ class _MyInheritedState extends State<MyInherited> {
 
   @override
   Widget build(BuildContext context) {
-    return MyInheritedData(
+    return GlobalInheritedData(
       child: widget.child,
       isLoggedIn: isLoggedIn,
       profile: profile,
+      username: username,
       onStatusChange: onStatusChange,
     );
   }
 }
 
-class MyInheritedData extends InheritedWidget {
+class GlobalInheritedData extends InheritedWidget {
   final ProfileInfoResponse profile;
   final bool isLoggedIn;
+  final String username;
 
   final Function(bool, ProfileInfoResponse) onStatusChange;
 
-  MyInheritedData({
+  GlobalInheritedData({
     Key key,
     this.profile,
     this.isLoggedIn,
     this.onStatusChange,
+    this.username,
     Widget child,
   }) : super(key: key, child: child);
 
   @override
-  bool updateShouldNotify(MyInheritedData oldWidget) {
+  bool updateShouldNotify(GlobalInheritedData oldWidget) {
     return true;
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:pr0gramm/entities/commonTypes/item.dart';
 import 'package:pr0gramm/services/feedProvider.dart';
-import 'package:pr0gramm/services/imageProvider.dart' as imgProv;
+import 'package:pr0gramm/services/imageProvider.dart';
 import 'package:pr0gramm/views/post/post_page_view.dart';
 
 class FeedInherited extends InheritedWidget {
@@ -35,10 +35,8 @@ class OverviewView extends StatefulWidget {
   _OverviewViewState createState() => _OverviewViewState();
 }
 
-
-
 class _OverviewViewState extends State<OverviewView> {
-  final imgProv.ImageProvider _imageProvider = imgProv.ImageProvider();
+  final MyImageProvider _imageProvider = MyImageProvider();
   final ScrollController _controller = new ScrollController();
   Feed currentFeed;
 

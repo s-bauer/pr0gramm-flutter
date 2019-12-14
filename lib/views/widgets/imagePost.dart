@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/entities/commonTypes/item.dart';
 import 'package:pr0gramm/services/imageProvider.dart' as imgProv;
-
-import '../postView.dart';
+import 'package:pr0gramm/views/post/widgets/post_preview_item.dart';
 
 class ImagePost extends StatefulWidget {
   final Item item;
@@ -14,7 +13,7 @@ class ImagePost extends StatefulWidget {
 }
 
 class _ImagePostState extends State<ImagePost> {
-  final imgProv.ImageProvider _imageProvider = imgProv.ImageProvider();
+  final imgProv.MyImageProvider _imageProvider = imgProv.MyImageProvider();
 
   @override
   Widget build(BuildContext context) {

@@ -7,6 +7,7 @@ import 'package:pr0gramm/api/dtos/captcha.dart';
 import 'package:pr0gramm/api/loginApi.dart';
 import 'package:pr0gramm/api/profileApi.dart';
 import 'package:pr0gramm/data/sharedPrefKeys.dart';
+import 'package:pr0gramm/entities/enums/flags.dart';
 import 'package:pr0gramm/widgets/inherited.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -50,10 +51,10 @@ class _LoginViewState extends State<LoginView> {
 
       final profile = await _profileApi.getProfileInfo(
         name: result.username,
-        flags: 15,
+        flags: Flags.all,
       );
 
-      MyInherited.of(context).onStatusChange(true, profile);
+      GlobalInherited.of(context).onStatusChange(true, profile);
 
       Navigator.pop(context);
     } else {

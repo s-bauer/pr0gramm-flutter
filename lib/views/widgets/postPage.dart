@@ -151,18 +151,18 @@ class PostComments extends StatelessWidget {
   }
 }
 
-class PostPage extends StatefulWidget {
+class PostPageView extends StatefulWidget {
   final int index;
   final Feed feed;
   final _centerKey = UniqueKey();
 
-  PostPage({Key key, this.index, this.feed}) : super(key: key);
+  PostPageView({Key key, this.index, this.feed}) : super(key: key);
 
   @override
-  _PostPageState createState() => _PostPageState();
+  _PostPageViewState createState() => _PostPageViewState();
 }
 
-class _PostPageState extends State<PostPage> {
+class _PostPageViewState extends State<PostPageView> {
   MyPageController _controller;
 
   @override
@@ -183,13 +183,11 @@ class _PostPageState extends State<PostPage> {
               ? SliverChildListDelegate(
                   [Center(child: CircularProgressIndicator())])
               : SliverChildBuilderDelegate((context, index) {
-                  print("Building front $index");
-
-                  final item = widget.feed.getItemWithInfo(index);
-                  final future = ItemApi().getItemInfo(item.id).then((info) {
-                    return PostInfo(info: info, item: item);
-                  });
-                  return buildFutureBuilder(future, widget.index);
+                  return PostPage(
+                    item: snapshot.data[index],
+                    feed: widget.feed,
+                    index: index,
+                  );
                 }, childCount: snapshot.data.length),
         );
       },
@@ -203,12 +201,11 @@ class _PostPageState extends State<PostPage> {
 
         return SliverFillViewport(
           delegate: SliverChildBuilderDelegate((context, index) {
-            print("Building back $index");
-            final item = widget.feed.getItemWithInfo(index);
-            final future = ItemApi().getItemInfo(item.id).then((info) {
-              return PostInfo(info: info, item: item);
-            });
-            return buildFutureBuilder(future, widget.index);
+            return PostPage(
+              item: snapshot.data[index],
+              feed: widget.feed,
+              index: index,
+            );
           }, childCount: snapshot.data.length),
         );
       },
@@ -241,9 +238,22 @@ class _PostPageState extends State<PostPage> {
       body: scrollView,
     );
   }
+}
 
-  FutureBuilder<PostInfo> buildFutureBuilder(
-      Future<PostInfo> future, int index) {
+class PostPage extends StatelessWidget {
+  final Item item;
+  final Feed feed;
+  final int index;
+
+  const PostPage({Key key, this.item, this.feed, this.index}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final item = feed.getItemWithInfo(index);
+    final future = ItemApi().getItemInfo(item.id).then((info) {
+      return PostInfo(info: info, item: item);
+    });
+
     return FutureBuilder<PostInfo>(
       future: future,
       builder: (context, snapshot) {

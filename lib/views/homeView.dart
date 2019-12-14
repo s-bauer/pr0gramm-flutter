@@ -34,34 +34,13 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  FutureBuilder buildLoginButton() {
-    return FutureBuilder(
-      future: _initFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done)
-          return RaisedButton(
-            child: const Text("Login"),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LoginView()),
-              );
-            },
-          );
-
-        return CircularProgressIndicator();
-      },
-    );
-  }
-
   Widget buildProfile() {
-
     return FutureBuilder(
       future: _initFuture,
         builder: (context, snap) {
           if(snap.connectionState == ConnectionState.done)
             return FeedInherited(
-              feedProvider: FeedProvider(feedType: FeedType.TOP),
+              feedProvider: FeedProvider(feedType: FeedType.PUBLIC),
               child: OverviewView(),
             );
 

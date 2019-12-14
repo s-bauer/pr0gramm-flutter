@@ -31,24 +31,28 @@ class FeedDetails {
       case FeedType.RANDOMTOP:
         final bust = DateTime.now().millisecond / 1000.0;
         return FeedDetails._internal(
-            flags: Flags.SFW, promoted: PromotionStatus.Promoted, tags: "!-(x:random | x:$bust)");
+            flags: Flags.sfw, promoted: PromotionStatus.promoted, tags: "!-(x:random | x:$bust)");
 
       case FeedType.RANDOMNEW:
         final bust = DateTime.now().millisecond / 1000.0;
         return FeedDetails._internal(
-            flags: Flags.SFW, promoted: PromotionStatus.None, tags: "!-(x:random | x:$bust)");
+            flags: Flags.sfw, promoted: PromotionStatus.none, tags: "!-(x:random | x:$bust)");
+
+      case FeedType.PUBLIC:
+        return FeedDetails._internal(flags: Flags.guest, promoted: PromotionStatus.promoted, tags: null);
 
       case FeedType.TOP:
-        return FeedDetails._internal(flags: Flags.SFW, promoted: PromotionStatus.Promoted, tags: null);
+        return FeedDetails._internal(flags: Flags.sfw, promoted: PromotionStatus.promoted, tags: null);
 
       case FeedType.NEW:
       default:
-        return FeedDetails._internal(flags: Flags.SFW, promoted: PromotionStatus.None, tags: null);
+        return FeedDetails._internal(flags: Flags.sfw, promoted: PromotionStatus.none, tags: null);
     }
   }
 }
 
 enum FeedType {
+  PUBLIC,
   TOP,
   NEW,
   RANDOMTOP,

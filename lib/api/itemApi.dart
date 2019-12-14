@@ -9,7 +9,6 @@ import 'baseApi.dart';
 class GetItemsConfiguration {
   final PromotionStatus promoted;
   final Flags flags;
-  final bool self;
   final ItemRange range;
   final int id;
   final String tags;
@@ -18,22 +17,20 @@ class GetItemsConfiguration {
     this.tags,
     this.id,
     this.range,
-    this.self,
     this.promoted,
     this.flags,
   });
 
   String toQueryString() {
-    final promotedStr = promoted == PromotionStatus.Promoted
+    final promotedStr = promoted == PromotionStatus.promoted
         ? "&promoted=${promoted.value}"
         : "";
 
     final rangeStr = id != null ? "&${range.value}=$id" : "";
-    final selfStr = self != null ? self ? 1 : 0 : "";
     final tagStr = tags != null ? "&tags=$tags" : "";
     final flagStr = "flags=${flags.value}";
 
-    return flagStr + promotedStr + rangeStr + selfStr + tagStr;
+    return flagStr + promotedStr + rangeStr + tagStr;
   }
 }
 

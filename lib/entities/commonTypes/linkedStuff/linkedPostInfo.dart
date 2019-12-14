@@ -1,5 +1,6 @@
 import 'package:pr0gramm/api/dtos/itemInfoResponse.dart';
 import 'package:pr0gramm/api/itemApi.dart';
+import 'package:pr0gramm/entities/baseTypes/bidirectionalIterator.dart';
 import 'package:pr0gramm/entities/commonTypes/item.dart';
 import 'package:pr0gramm/entities/enums/itemRange.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
@@ -10,14 +11,9 @@ enum WalkDirection {
   prev
 }
 
-abstract class LinkedIterator<T> {
-  int value;
 
-  LinkedIterator<T> get next;
-  LinkedIterator<T> get prev;
-}
 
-class LinkedPostInfo with LinkedIterator<LinkedPostInfo> {
+class LinkedPostInfo with BidirectionalIterator<LinkedPostInfo> {
   ImageProvider imageProvider = ImageProvider();
   static const preloadThreshold = 3;
   Item item;

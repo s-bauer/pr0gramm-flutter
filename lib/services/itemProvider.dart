@@ -24,7 +24,8 @@ class ItemProvider {
         }
 
         int older;
-        if (_items.isNotEmpty) older = _items.last.id;
+        if (_items.isNotEmpty)
+          older = _items.last.id;
 
         _workingTask = _itemApi.getItems(
           GetItemsConfiguration(

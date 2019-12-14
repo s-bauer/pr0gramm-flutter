@@ -12,8 +12,6 @@ class Feed {
   final FeedDetails feedDetails;
   final ItemProviderNew _itemProvider;
 
-  Item center;
-
   List<Item> _forwardList = [];
   List<Item> _backwardsList = [];
 
@@ -30,13 +28,10 @@ class Feed {
     refresh();
   }
 
-  Stream<List<Item>> get forwardStream {
-    return _forwardStream.stream;
-  }
-
-  Stream<List<Item>> get backwardStream {
-    return _backwardStream.stream;
-  }
+  get forwardStream => _forwardStream.stream;
+  get backwardStream => _backwardStream.stream;
+  get forwardData => _forwardList;
+  get backwardData => _backwardsList;
 
   Future loadForward() async {
     final nextBatch = await _itemProvider.getOlderBatch();
@@ -67,6 +62,11 @@ class Feed {
   void dispose() {
     _forwardStream.close();
     _backwardStream.close();
+  }
+
+  @deprecated
+  getItemWithInfo(int index) {
+    return _forwardList[index];
   }
 }
 

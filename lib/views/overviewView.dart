@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:pr0gramm/entities/commonTypes/item.dart';
 import 'package:pr0gramm/services/feedProvider.dart';
 import 'package:pr0gramm/services/imageProvider.dart' as imgProv;
+import 'package:pr0gramm/views/widgets/postPage.dart';
 
 class FeedInherited extends InheritedWidget {
   final FeedProvider feedProvider;
@@ -50,11 +51,12 @@ class _OverviewViewState extends State<OverviewView> {
     final forwardBuilder = new StreamBuilder<List<Item>>(
       key: widget._centerKey,
       stream: currentFeed.forwardStream,
+      initialData: currentFeed.forwardData,
       builder: (context, snapshot) {
         final grid = SliverGrid(
           gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
           delegate: new SliverChildBuilderDelegate(
-              (context, index) => buildItem(context, snapshot.data[index]),
+              (context, index) => buildItem(context, snapshot.data[index], index),
             childCount: snapshot.data?.length ?? 0
           ),
         );
@@ -71,6 +73,7 @@ class _OverviewViewState extends State<OverviewView> {
 
     final backwardsBuilder = new StreamBuilder<List<Item>>(
       stream: currentFeed.backwardStream,
+      initialData: currentFeed.backwardData,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return SliverToBoxAdapter(child: Container());
@@ -79,7 +82,7 @@ class _OverviewViewState extends State<OverviewView> {
         return SliverGrid(
           gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
           delegate: new SliverChildBuilderDelegate(
-                  (context, index) => buildItem(context, snapshot.data[index]),
+                  (context, index) => buildItem(context, snapshot.data[index], index),
               childCount: snapshot.data?.length ?? 0
           ),
         );
@@ -125,7 +128,7 @@ class _OverviewViewState extends State<OverviewView> {
     super.dispose();
   }
 
-  Widget buildItem(BuildContext context, Item item) {
+  Widget buildItem(BuildContext context, Item item, int index) {
     return GestureDetector(
       child: new FutureBuilder(
         future: _imageProvider.getThumb(item),
@@ -133,20 +136,22 @@ class _OverviewViewState extends State<OverviewView> {
           return snap.hasData ? Image.memory(snap.data) : new Container();
         },
       ),
-      onTap: () {},
+      onTap: () {
+        onThumbTap(index);
+      },
     );
   }
 
 
-//  void onThumbTap(int index) {
-//    Navigator.push(
-//      context,
-//      new MaterialPageRoute(
-//        builder: (context) => PostPage(
-//          index: index,
-//          feedProvider: feedProvider,
-//        ),
-//      ),
-//    );
-//  }
+  void onThumbTap(int index) {
+    Navigator.push(
+      context,
+      new MaterialPageRoute(
+        builder: (context) => PostPage(
+          index: index,
+          feed: currentFeed,
+        ),
+      ),
+    );
+  }
 }

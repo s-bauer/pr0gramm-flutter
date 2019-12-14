@@ -1,10 +1,14 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:pr0gramm/api/itemApi.dart';
+import 'package:pr0gramm/controllers/pageController.dart';
+import 'package:pr0gramm/entities/commonTypes/item.dart';
 import 'package:pr0gramm/entities/commonTypes/linkedStuff/linkedComments.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/feedProvider.dart';
 import 'package:pr0gramm/services/timeFormatter.dart';
 import 'package:pr0gramm/views/widgets/userMark.dart';
-
 import '../postView.dart';
 
 const authorTextStyle = const TextStyle(
@@ -18,16 +22,6 @@ const postTimeTextStyle = const TextStyle(
   fontSize: 8,
   color: Colors.white70,
 );
-
-class PostPage extends StatefulWidget {
-  final int index;
-  final FeedProvider feedProvider;
-
-  const PostPage({Key key, this.index, this.feedProvider}) : super(key: key);
-
-  @override
-  _PostPageState createState() => _PostPageState();
-}
 
 class PostButtons extends StatelessWidget {
   final PostInfo info;
@@ -89,8 +83,25 @@ class PostButtons extends StatelessWidget {
   }
 }
 
+class PostPage extends StatefulWidget {
+  final int index;
+  final Feed feed;
+  final _centerKey = UniqueKey();
+
+  PostPage({Key key, this.index, this.feed}) : super(key: key);
+
+  @override
+  _PostPageState createState() => _PostPageState();
+}
+
 class _PostPageState extends State<PostPage> {
-  PageController _controller;
+  MyPageController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = MyPageController(keepPage: false, initialPage: widget.index);
+  }
 
   List<LinkedComment> linkComments(PostInfo postInfo) {
     final plainComments = postInfo.info.comments;
@@ -98,7 +109,8 @@ class _PostPageState extends State<PostPage> {
         .where((c) => c.parent == 0)
         .map((c) => LinkedComment.root(c, plainComments))
         .toList()
-          ..sort((a, b) => b.comment.confidence.compareTo(a.comment.confidence));
+          ..sort(
+              (a, b) => b.comment.confidence.compareTo(a.comment.confidence));
   }
 
   Widget buildTags(BuildContext context, PostInfo info) {
@@ -135,56 +147,109 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
-    _controller = PageController(initialPage: widget.index, keepPage: false);
+    final forwardBuilder = new StreamBuilder<List<Item>>(
+      key: widget._centerKey,
+      stream: widget.feed.forwardStream,
+      initialData: widget.feed.forwardData,
+      builder: (context, snapshot) {
+        return SliverFillViewport(
+          delegate: !snapshot.hasData
+              ? SliverChildListDelegate(
+                  [Center(child: CircularProgressIndicator())])
+              : SliverChildBuilderDelegate((context, index) {
+                  final item = widget.feed.getItemWithInfo(index);
+                  final future = ItemApi().getItemInfo(item.id).then((info) {
+                    return PostInfo(info: info, item: item);
+                  });
+                  return buildFutureBuilder(future, widget.index);
+                }),
+        );
+      },
+    );
 
+    final backwardBuilder = new StreamBuilder<List<Item>>(
+      stream: widget.feed.backwardData,
+      initialData: widget.feed.backwardData,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return SliverToBoxAdapter(child: Container());
+
+        return SliverFillViewport(
+          delegate: SliverChildBuilderDelegate((context, index) {
+            final item = widget.feed.getItemWithInfo(index);
+            final future = ItemApi().getItemInfo(item.id).then((info) {
+              return PostInfo(info: info, item: item);
+            });
+            return buildFutureBuilder(future, widget.index);
+          }),
+        );
+      },
+    );
+
+    final scrollView = Scrollable(
+      dragStartBehavior: DragStartBehavior.start,
+      axisDirection: AxisDirection.right,
+      controller: _controller,
+      physics: PageScrollPhysics(),
+      viewportBuilder: (BuildContext context, ViewportOffset position) {
+        return Viewport(
+          cacheExtent: 0.0,
+          axisDirection: AxisDirection.right,
+          offset: position,
+          center: widget._centerKey,
+          slivers: <Widget>[
+            backwardBuilder,
+            forwardBuilder,
+          ],
+        );
+      },
+    );
 
     return Scaffold(
       backgroundColor: Colors.black45,
       appBar: AppBar(
         title: Text("Top"),
       ),
-      body: PageView.builder(
-        controller: _controller,
-        itemBuilder: (context, index) {
-          var future = widget.feedProvider.getItemWithInfo(index);
+      body: scrollView,
+    );
+  }
 
-          return FutureBuilder<PostInfo>(
-            future: future,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData)
-                return Center(child: CircularProgressIndicator());
+  FutureBuilder<PostInfo> buildFutureBuilder(
+      Future<PostInfo> future, int index) {
+    return FutureBuilder<PostInfo>(
+      future: future,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData)
+          return Center(child: CircularProgressIndicator());
 
-              var comments = linkComments(snapshot.data);
+        var comments = linkComments(snapshot.data);
 
-              return RefreshIndicator(
-                onRefresh: () async {
-                  setState(() {
-                    future = widget.feedProvider.getItemWithInfo(index);
-                  });
-                },
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
+        return RefreshIndicator(
+          onRefresh: () async {
+            setState(() {
+              // future = widget.feedProvider.getItemWithInfo(index);
+            });
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                PostView(item: snapshot.data.item),
+                PostButtons(info: snapshot.data),
+                buildTags(context, snapshot.data),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 8, bottom: 20.0, right: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      PostView(item: snapshot.data.item),
-                      PostButtons(info: snapshot.data),
-                      buildTags(context, snapshot.data),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8, bottom: 20.0, right: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: comments.map((c) => c.build()).toList(),
-                        ),
-                      )
-                    ],
+                    children: comments.map((c) => c.build()).toList(),
                   ),
-                ),
-              );
-            },
-          );
-        },
-      ),
+                )
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -14,7 +14,7 @@ class CommentUser {
   CommentUser.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-    mark = json['mark'];
+    mark = UserMark(json['mark']);
   }
 
   Map<String, dynamic> toJson() {

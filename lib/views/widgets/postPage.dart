@@ -122,12 +122,10 @@ class PostTags extends StatelessWidget {
   }
 }
 
-
 class PostComments extends StatelessWidget {
   final PostInfo info;
 
   const PostComments({Key key, this.info}) : super(key: key);
-
 
   List<LinkedComment> linkComments() {
     final plainComments = info.info.comments;
@@ -135,7 +133,7 @@ class PostComments extends StatelessWidget {
         .where((c) => c.parent == 0)
         .map((c) => LinkedComment.root(c, plainComments))
         .toList()
-      ..sort(
+          ..sort(
               (a, b) => b.comment.confidence.compareTo(a.comment.confidence));
   }
 
@@ -144,17 +142,14 @@ class PostComments extends StatelessWidget {
     var comments = linkComments();
 
     return Padding(
-      padding:
-      const EdgeInsets.only(top: 8, bottom: 20.0, right: 10),
+      padding: const EdgeInsets.only(top: 8, bottom: 20.0, right: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: comments.map((c) => c.build()).toList(),
       ),
     );
-
   }
 }
-
 
 class PostPage extends StatefulWidget {
   final int index;
@@ -176,8 +171,6 @@ class _PostPageState extends State<PostPage> {
     _controller = MyPageController(keepPage: false, initialPage: widget.index);
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     final forwardBuilder = new StreamBuilder<List<Item>>(
@@ -187,14 +180,17 @@ class _PostPageState extends State<PostPage> {
       builder: (context, snapshot) {
         return SliverFillViewport(
           delegate: !snapshot.hasData
-              ? SliverChildListDelegate([Center(child: CircularProgressIndicator())])
+              ? SliverChildListDelegate(
+                  [Center(child: CircularProgressIndicator())])
               : SliverChildBuilderDelegate((context, index) {
+                  print("Building front $index");
+
                   final item = widget.feed.getItemWithInfo(index);
                   final future = ItemApi().getItemInfo(item.id).then((info) {
                     return PostInfo(info: info, item: item);
                   });
                   return buildFutureBuilder(future, widget.index);
-                }),
+                }, childCount: snapshot.data.length),
         );
       },
     );
@@ -207,12 +203,13 @@ class _PostPageState extends State<PostPage> {
 
         return SliverFillViewport(
           delegate: SliverChildBuilderDelegate((context, index) {
+            print("Building back $index");
             final item = widget.feed.getItemWithInfo(index);
             final future = ItemApi().getItemInfo(item.id).then((info) {
               return PostInfo(info: info, item: item);
             });
             return buildFutureBuilder(future, widget.index);
-          }),
+          }, childCount: snapshot.data.length),
         );
       },
     );

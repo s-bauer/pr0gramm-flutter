@@ -1,7 +1,7 @@
-import 'package:pr0gramm/entities/commonTypes/comment/itemComment.dart';
-import 'package:pr0gramm/entities/commonTypes/tag.dart';
+import 'package:pr0gramm/api/dtos/comment/item_comment.dart';
+import 'package:pr0gramm/api/dtos/tag/tag.dart';
 
-class ItemInfoResponse {
+class ItemInfo {
   String cache;
   int ts;
   int rt;
@@ -9,7 +9,7 @@ class ItemInfoResponse {
   List<ItemComment> comments;
   List<Tag> tags;
 
-  ItemInfoResponse({
+  ItemInfo({
     this.cache,
     this.ts,
     this.rt,
@@ -18,7 +18,7 @@ class ItemInfoResponse {
     this.tags,
   });
 
-  ItemInfoResponse.fromJson(Map<String, dynamic> json) {
+  ItemInfo.fromJson(Map<String, dynamic> json) {
     this.cache = json['cache'];
     this.ts = json['ts'];
     this.rt = json['rt'];

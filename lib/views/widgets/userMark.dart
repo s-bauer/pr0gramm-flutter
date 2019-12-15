@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:pr0gramm/entities/commonTypes/userMark.dart';
+import 'package:pr0gramm/api/dtos/user/user_mark.dart';
 
 class UserMarkWidget extends StatelessWidget {
   final UserMark userMark;

@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-import 'apiClient.dart';
+import 'api_client.dart';
 
 class BaseApi {
   final apiClient = ApiClient();

@@ -1,4 +1,4 @@
-import 'package:pr0gramm/entities/commonTypes/item.dart';
+import 'package:pr0gramm/api/dtos/item/item.dart';
 
 class ItemBatch {
   bool atEnd;

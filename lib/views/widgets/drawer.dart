@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/api/apiClient.dart';
+import 'package:pr0gramm/api/api_client.dart';
 import 'package:pr0gramm/views/loginView/loginView.dart';
 import 'package:pr0gramm/widgets/inherited.dart';
 

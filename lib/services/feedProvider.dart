@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:pr0gramm/entities/enums/flags.dart';
-import 'package:pr0gramm/entities/commonTypes/item.dart';
-import 'package:pr0gramm/entities/enums/promotionStatus.dart';
+import 'package:pr0gramm/api/dtos/item/item.dart';
+import 'package:pr0gramm/entities/enums/promotion_status.dart';
 import 'package:pr0gramm/services/itemProvider.dart';
 
 class Feed {

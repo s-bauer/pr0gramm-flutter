@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:pr0gramm/entities/commonTypes/linkedStuff/linkedComments.dart';
+import 'package:pr0gramm/entities/linked_comment.dart';
 import 'package:pr0gramm/services/timeFormatter.dart';
 import 'package:pr0gramm/views/widgets/userMark.dart';
 import 'package:url_launcher/url_launcher.dart';

@@ -1,10 +1,10 @@
-class ProfileUpload {
+class ProfileUploadItem {
   int id;
   String thumb;
 
-  ProfileUpload({this.id, this.thumb});
+  ProfileUploadItem({this.id, this.thumb});
 
-  ProfileUpload.fromJson(Map<String, dynamic> json) {
+  ProfileUploadItem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     thumb = json['thumb'];
   }

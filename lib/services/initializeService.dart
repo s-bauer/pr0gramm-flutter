@@ -1,7 +1,7 @@
 import 'package:path/path.dart';
-import 'package:pr0gramm/api/apiClient.dart';
-import 'package:pr0gramm/api/dtos/profileInfoResponse.dart';
-import 'package:pr0gramm/api/profileApi.dart';
+import 'package:pr0gramm/api/api_client.dart';
+import 'package:pr0gramm/api/dtos/profile_info.dart';
+import 'package:pr0gramm/api/profile_api.dart';
 import 'package:pr0gramm/data/sharedPrefKeys.dart';
 import 'package:pr0gramm/db/base/repository_manager.dart';
 import 'package:pr0gramm/entities/enums/flags.dart';
@@ -10,7 +10,7 @@ import 'package:sqflite/sqflite.dart';
 
 class InitializationResult {
   final String username;
-  final ProfileInfoResponse profile;
+  final ProfileInfo profile;
   final bool loggedIn;
 
   InitializationResult({_UserProfile profile})
@@ -26,7 +26,7 @@ class InitializationResult {
 
 class _UserProfile {
   final String username;
-  final ProfileInfoResponse profile;
+  final ProfileInfo profile;
   final bool loggedIn;
 
   _UserProfile.loggedIn({this.username, this.profile}) : loggedIn = true;

@@ -3,9 +3,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pr0gramm/api/dtos/captcha.dart';
-import 'package:pr0gramm/api/loginApi.dart';
-import 'package:pr0gramm/api/profileApi.dart';
+import 'package:pr0gramm/api/dtos/authentication/captcha.dart';
+import 'package:pr0gramm/api/login_api.dart';
+import 'package:pr0gramm/api/profile_api.dart';
 import 'package:pr0gramm/data/sharedPrefKeys.dart';
 import 'package:pr0gramm/entities/enums/flags.dart';
 import 'package:pr0gramm/widgets/inherited.dart';

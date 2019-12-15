@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/api/itemApi.dart';
-import 'package:pr0gramm/entities/commonTypes/item.dart';
-import 'package:pr0gramm/entities/postInfo.dart';
+import 'package:pr0gramm/api/item_api.dart';
+import 'package:pr0gramm/api/dtos/item/item.dart';
+import 'package:pr0gramm/entities/post_info.dart';
 import 'package:pr0gramm/services/feedProvider.dart';
 import 'package:pr0gramm/views/post/post_view.dart';
 import 'package:pr0gramm/views/post/widgets/post_buttons.dart';

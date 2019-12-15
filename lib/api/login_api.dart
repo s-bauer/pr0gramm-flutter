@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-
-import 'baseApi.dart';
-import 'dtos/LoginResponse.dart';
-import 'dtos/captcha.dart';
+import 'package:pr0gramm/api/base_api.dart';
+import 'package:pr0gramm/api/dtos/authentication/captcha.dart';
+import 'package:pr0gramm/api/dtos/authentication/login_response.dart';
+import 'package:pr0gramm/entities/me_cookie.dart';
 
 class LoginApi extends BaseApi {
   Future<Captcha> getCaptcha() async {
@@ -11,8 +11,11 @@ class LoginApi extends BaseApi {
     return Captcha.fromJson(response.data);
   }
 
-  Future<LoginResponse> doLogin(
-      {String user, String pass, Captcha captcha}) async {
+  Future<LoginResponse> doLogin({
+    String user,
+    String pass,
+    Captcha captcha,
+  }) async {
     final body = {
       "name": user,
       "password": pass,
@@ -30,10 +33,12 @@ class LoginApi extends BaseApi {
       final loginResponse = LoginResponse.fromJson(response.data);
 
       final cookies = apiClient.getCookies();
-      final meCookie = cookies.firstWhere((c) => c.name == "me", orElse: () => null);
-      final ppCookie = cookies.firstWhere((c) => c.name == "pp", orElse: () => null);
+      final meCookie =
+          cookies.firstWhere((c) => c.name == "me", orElse: () => null);
+      final ppCookie =
+          cookies.firstWhere((c) => c.name == "pp", orElse: () => null);
 
-      if(meCookie != null && ppCookie != null) {
+      if (meCookie != null && ppCookie != null) {
         final decodedMe = Uri.decodeComponent(meCookie.value);
         final meJson = MeCookie.fromJson(jsonDecode(decodedMe));
         loginResponse.username = meJson.name;
@@ -45,33 +50,5 @@ class LoginApi extends BaseApi {
     } on Error {
       return LoginResponse(success: false);
     }
-  }
-}
-
-class MeCookie {
-  String name;
-  String id;
-  int a;
-  String pp;
-  bool paid;
-
-  MeCookie({this.name, this.id, this.a, this.pp, this.paid});
-
-  MeCookie.fromJson(Map<String, dynamic> json) {
-    name = json['n'];
-    id = json['id'];
-    a = json['a'];
-    pp = json['pp'];
-    paid = json['paid'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['n'] = this.name;
-    data['id'] = this.id;
-    data['a'] = this.a;
-    data['pp'] = this.pp;
-    data['paid'] = this.paid;
-    return data;
   }
 }

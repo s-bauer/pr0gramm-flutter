@@ -1,12 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
-import 'package:pr0gramm/api/dtos/itemInfoResponse.dart';
+import 'package:pr0gramm/api/dtos/item_batch.dart';
+import 'package:pr0gramm/api/dtos/item/item_info.dart';
 import 'package:pr0gramm/entities/enums/flags.dart';
-import 'package:pr0gramm/entities/enums/itemRange.dart';
-import 'package:pr0gramm/entities/enums/promotionStatus.dart';
+import 'package:pr0gramm/entities/enums/item_range.dart';
+import 'package:pr0gramm/entities/enums/promotion_status.dart';
 import 'package:pr0gramm/entities/enums/vote.dart';
 
-import 'baseApi.dart';
+import 'base_api.dart';
 
 class GetItemsConfiguration {
   final PromotionStatus promoted;
@@ -59,9 +59,9 @@ class ItemApi extends BaseApi {
     return ItemBatch.fromJson(response.data);
   }
 
-  Future<ItemInfoResponse> getItemInfo(int itemId) async {
+  Future<ItemInfo> getItemInfo(int itemId) async {
     final response = await client.get("/items/info?itemId=$itemId");
-    return ItemInfoResponse.fromJson(response.data);
+    return ItemInfo.fromJson(response.data);
   }
 
   Future vote(int itemId, Vote vote, String nonce) async {

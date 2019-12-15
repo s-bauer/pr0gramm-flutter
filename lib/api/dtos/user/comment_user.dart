@@ -1,4 +1,4 @@
-import 'package:pr0gramm/entities/commonTypes/userMark.dart';
+import 'package:pr0gramm/api/dtos/user/user_mark.dart';
 
 class CommentUser {
   int id;

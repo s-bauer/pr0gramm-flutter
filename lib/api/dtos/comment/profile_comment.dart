@@ -1,4 +1,4 @@
-import 'package:pr0gramm/entities/commonTypes/comment/comment.dart';
+import 'package:pr0gramm/api/dtos/comment/comment.dart';
 
 class ProfileComment extends Comment {
   int itemId;

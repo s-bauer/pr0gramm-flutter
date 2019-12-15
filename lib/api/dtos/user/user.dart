@@ -1,5 +1,5 @@
-import 'package:pr0gramm/entities/commonTypes/user/commentUser.dart';
-import 'package:pr0gramm/entities/commonTypes/userMark.dart';
+import 'package:pr0gramm/api/dtos/user/comment_user.dart';
+import 'package:pr0gramm/api/dtos/user/user_mark.dart';
 
 class User extends CommentUser {
   int registered;
@@ -10,18 +10,18 @@ class User extends CommentUser {
   int inactive;
   int banned;
 
-  User(
-      {this.registered,
-      this.score,
-      this.admin,
-      this.itemDelete,
-      this.commentDelete,
-      this.inactive,
-      this.banned,
-      int id,
-      String name,
-      UserMark mark})
-      : super(
+  User({
+    this.registered,
+    this.score,
+    this.admin,
+    this.itemDelete,
+    this.commentDelete,
+    this.inactive,
+    this.banned,
+    int id,
+    String name,
+    UserMark mark,
+  }) : super(
           id: id,
           name: name,
           mark: mark,

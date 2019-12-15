@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:pr0gramm/api/apiClient.dart';
-import 'package:pr0gramm/entities/commonTypes/item.dart';
+import 'package:pr0gramm/api/api_client.dart';
+import 'package:pr0gramm/api/dtos/item/item.dart';
 
 class MyImageProvider {
   static MyImageProvider _instance = MyImageProvider._internal();

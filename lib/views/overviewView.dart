@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:pr0gramm/entities/commonTypes/item.dart';
+import 'package:pr0gramm/api/dtos/item/item.dart';
 import 'package:pr0gramm/services/feedProvider.dart';
 import 'package:pr0gramm/services/imageProvider.dart';
 import 'package:pr0gramm/views/post/post_page_view.dart';

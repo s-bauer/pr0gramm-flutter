@@ -1,7 +1,7 @@
-import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
-import 'package:pr0gramm/api/itemApi.dart';
-import 'package:pr0gramm/entities/enums/itemRange.dart';
-import 'package:pr0gramm/entities/enums/promotionStatus.dart';
+import 'package:pr0gramm/api/dtos/item_batch.dart';
+import 'package:pr0gramm/api/item_api.dart';
+import 'package:pr0gramm/entities/enums/item_range.dart';
+import 'package:pr0gramm/entities/enums/promotion_status.dart';
 import 'package:pr0gramm/services/feedProvider.dart';
 
 class ItemProvider {

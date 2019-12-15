@@ -1,4 +1,4 @@
-import 'package:pr0gramm/entities/commonTypes/baseTypes/enum.dart';
+import 'package:pr0gramm/entities/baseTypes/enum.dart';
 
 class ItemType extends Enum<int> {
   static ItemType item = ItemType(0);

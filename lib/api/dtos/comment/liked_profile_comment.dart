@@ -1,4 +1,4 @@
-import 'package:pr0gramm/entities/commonTypes/comment/profileComment.dart';
+import 'package:pr0gramm/api/dtos/comment/profile_comment.dart';
 
 class LikedProfileComment extends ProfileComment {
   int ccreated;

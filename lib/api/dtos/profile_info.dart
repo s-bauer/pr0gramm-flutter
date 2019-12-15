@@ -1,17 +1,17 @@
-import 'package:pr0gramm/entities/commonTypes/likedItem.dart';
-import 'package:pr0gramm/entities/commonTypes/comment/likedProfileComment.dart';
-import 'package:pr0gramm/entities/commonTypes/comment/profileComment.dart';
-import 'package:pr0gramm/entities/commonTypes/profileBadge.dart';
-import 'package:pr0gramm/entities/commonTypes/profileUpload.dart';
-import 'package:pr0gramm/entities/commonTypes/user/user.dart';
+import 'package:pr0gramm/api/dtos/item/liked_item.dart';
+import 'package:pr0gramm/api/dtos/comment/liked_profile_comment.dart';
+import 'package:pr0gramm/api/dtos/comment/profile_comment.dart';
+import 'package:pr0gramm/api/dtos/user/profile_badge.dart';
+import 'package:pr0gramm/api/dtos/item/profile_upload_item.dart';
+import 'package:pr0gramm/api/dtos/user/user.dart';
 
-class ProfileInfoResponse {
+class ProfileInfo {
   User user;
   List<ProfileComment> comments;
   int commentCount;
   List<LikedProfileComment> commentsLikes;
   int commentLikesCount;
-  List<ProfileUpload> uploads;
+  List<ProfileUploadItem> uploads;
   int uploadCount;
   bool likesArePublic;
   List<LikedItem> likes;
@@ -26,7 +26,7 @@ class ProfileInfoResponse {
   int rt;
   int qc;
 
-  ProfileInfoResponse({
+  ProfileInfo({
     this.user,
     this.comments,
     this.commentCount,
@@ -48,7 +48,7 @@ class ProfileInfoResponse {
     this.qc,
   });
 
-  ProfileInfoResponse.fromJson(Map<String, dynamic> json) {
+  ProfileInfo.fromJson(Map<String, dynamic> json) {
     user = json['user'] != null ? new User.fromJson(json['user']) : null;
     if (json['comments'] != null) {
       comments = new List<ProfileComment>();
@@ -65,9 +65,9 @@ class ProfileInfoResponse {
     }
     commentLikesCount = json['commentLikesCount'];
     if (json['uploads'] != null) {
-      uploads = new List<ProfileUpload>();
+      uploads = new List<ProfileUploadItem>();
       json['uploads'].forEach((v) {
-        uploads.add(new ProfileUpload.fromJson(v));
+        uploads.add(new ProfileUploadItem.fromJson(v));
       });
     }
     uploadCount = json['uploadCount'];

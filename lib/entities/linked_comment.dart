@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/entities/commonTypes/comment/itemComment.dart';
+import 'package:pr0gramm/api/dtos/comment/item_comment.dart';
 import 'package:pr0gramm/views/widgets/postComment.dart';
 
 class LinkedComment {
@@ -27,7 +27,7 @@ class LinkedComment {
         ..sort((a, b) => a.comment.confidence.compareTo(b.comment.confidence));
   }
 
-  Widget build() {
+  Widget buildWidget() {
     return PostComment(
       linkedComment: this,
     );

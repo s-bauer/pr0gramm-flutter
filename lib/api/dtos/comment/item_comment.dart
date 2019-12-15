@@ -1,5 +1,5 @@
-import 'package:pr0gramm/entities/commonTypes/comment/comment.dart';
-import 'package:pr0gramm/entities/commonTypes/userMark.dart';
+import 'package:pr0gramm/api/dtos/comment/comment.dart';
+import 'package:pr0gramm/api/dtos/user/user_mark.dart';
 
 class ItemComment extends Comment {
   int parent;

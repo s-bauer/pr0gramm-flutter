@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/api/dtos/profileInfoResponse.dart';
+import 'package:pr0gramm/api/dtos/profile_info.dart';
 import 'package:pr0gramm/services/initializeService.dart';
 
 class GlobalInherited extends StatefulWidget {
@@ -19,7 +19,7 @@ class GlobalInherited extends StatefulWidget {
 class _GlobalInheritedState extends State<GlobalInherited> {
   final InitializationResult initResult;
 
-  ProfileInfoResponse profile;
+  ProfileInfo profile;
   bool isLoggedIn;
   String username;
 
@@ -29,7 +29,7 @@ class _GlobalInheritedState extends State<GlobalInherited> {
     username = initResult.username;
   }
 
-  void onStatusChange(bool newLoggedIn, ProfileInfoResponse newProfile) {
+  void onStatusChange(bool newLoggedIn, ProfileInfo newProfile) {
     setState(() {
       isLoggedIn = newLoggedIn;
       profile = newProfile;
@@ -49,11 +49,11 @@ class _GlobalInheritedState extends State<GlobalInherited> {
 }
 
 class GlobalInheritedData extends InheritedWidget {
-  final ProfileInfoResponse profile;
+  final ProfileInfo profile;
   final bool isLoggedIn;
   final String username;
 
-  final Function(bool, ProfileInfoResponse) onStatusChange;
+  final Function(bool, ProfileInfo) onStatusChange;
 
   GlobalInheritedData({
     Key key,

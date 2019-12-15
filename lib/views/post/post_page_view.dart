@@ -52,7 +52,7 @@ class _PostPageViewState extends State<PostPageView> {
       physics: PageScrollPhysics(),
       viewportBuilder: (BuildContext context, ViewportOffset position) {
         return Viewport(
-          cacheExtent: 0.0,
+          cacheExtent: 0,
           axisDirection: AxisDirection.right,
           offset: position,
           center: widget._centerKey,

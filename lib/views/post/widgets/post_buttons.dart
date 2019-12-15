@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/timeFormatter.dart';
+import 'package:pr0gramm/services/voteService.dart';
 import 'package:pr0gramm/views/widgets/userMark.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,17 +26,11 @@ const postTimeTextStyle = const TextStyle(
 
 class PostButtons extends StatelessWidget {
   final PostInfo info;
+  final VoteService _voteService = VoteService();
 
-  const PostButtons({Key key, this.info}) : super(key: key);
-  onVote(Vote vote, BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey(SharedPrefKeys.MeToken)) {
-      final meToken = prefs.getString(SharedPrefKeys.MeToken);
-      final nonce = (json.decode(Uri.decodeFull(meToken))["id"] as String)
-          .substring(0, 16);
-      ItemApi().vote(info.item.id, vote, nonce);
-    }
-  }
+  PostButtons({Key key, this.info}) : super(key: key);
+
+  void voteItem(Vote vote) => _voteService.voteItem(info.item, vote);
 
   @override
   Widget build(BuildContext context) {
@@ -45,19 +40,19 @@ class PostButtons extends StatelessWidget {
         IconButton(
           icon: Icon(Icons.add_circle_outline),
           color: Colors.white,
-          onPressed: loggedIn ? () => onVote(Vote.up, context) : null,
+          onPressed: loggedIn ? () => voteItem(Vote.up) : null,
           disabledColor: Colors.white30,
         ),
         IconButton(
           color: Colors.white,
           icon: Icon(Icons.remove_circle_outline),
-          onPressed: loggedIn ? () => onVote(Vote.down, context) : null,
+          onPressed: loggedIn ? () => voteItem(Vote.down) : null,
           disabledColor: Colors.white30,
         ),
         IconButton(
           color: Colors.white,
           icon: Icon(Icons.favorite_border),
-          onPressed: loggedIn ? () => onVote(Vote.favorite, context) : null,
+          onPressed: loggedIn ? () => voteItem(Vote.favorite) : null,
           disabledColor: Colors.white30,
         ),
         Container(

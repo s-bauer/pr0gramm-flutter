@@ -7,7 +7,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final initService = new InitializeService();
-  final initResult = await initService.initialize2();
+  final initResult = await initService.initialize();
 
   runApp(MyApp(initResult: initResult));
 }

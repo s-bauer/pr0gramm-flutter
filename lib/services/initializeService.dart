@@ -20,31 +20,7 @@ class InitializeService {
   InitializeService._internal();
   factory InitializeService() => _instance;
 
-//  Future initialize(BuildContext context) async {
-//    try {
-//      final prefs = await SharedPreferences.getInstance();
-//      if (prefs.containsKey(SharedPrefKeys.Token) &&
-//          prefs.containsKey(SharedPrefKeys.MeToken) &&
-//          prefs.containsKey(SharedPrefKeys.UserName)) {
-//        final apiClient = ApiClient();
-//
-//        final token = prefs.getString(SharedPrefKeys.Token);
-//        final meToken = prefs.getString(SharedPrefKeys.MeToken);
-//        apiClient.setToken(token, meToken);
-//
-//        final username = prefs.getString(SharedPrefKeys.UserName);
-//
-//        final api = ProfileApi();
-//        final profile = await api.getProfileInfo(name: username, flags: Flags.all);
-//
-//        GlobalInherited.of(context).onStatusChange(true, profile);
-//      }
-//    } on Exception catch (e) {
-//      print(e);
-//    }
-//  }
-
-  Future<InitializationResult> initialize2() async {
+  Future<InitializationResult> initialize() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       if (prefs.containsKey(SharedPrefKeys.Token) &&

@@ -13,7 +13,7 @@ class VoteService {
   VoteService._();
 
   final ItemApi _itemApi = new ItemApi();
-  static CachedVoteRepository _voteRepository = CachedVoteRepository.instance;
+  CachedVoteRepository _voteRepository = CachedVoteRepository.instance;
 
   Future voteItem(Item item, Vote vote) async {
     final prefs = await SharedPreferences.getInstance();

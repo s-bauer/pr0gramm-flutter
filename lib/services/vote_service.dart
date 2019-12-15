@@ -31,13 +31,13 @@ class VoteService {
     }
   }
 
-  Future<Vote> getVoteOfItem(Item item) => _voteRepository
-          .findOne(itemId: item.id, itemType: ItemType.item)
-          .then((cached) {
-        if (cached == null) {
-          _voteRepository.saveVote(
-              itemId: item.id, itemType: ItemType.item, vote: Vote.none);
-        }
-        return cached?.voteValue ?? Vote.none;
-      });
+  Future<Vote> getVoteOfItem(Item item) async {
+    final voteItem = await _voteRepository
+          .findOne(itemId: item.id, itemType: ItemType.item);
+
+    if(voteItem == null)
+      return Vote.none;
+
+    return voteItem.voteValue;
+  }
 }

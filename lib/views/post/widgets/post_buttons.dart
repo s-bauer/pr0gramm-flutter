@@ -47,7 +47,8 @@ class _PostButtonsState extends State<PostButtons> {
       setState(() {
         currentVote = vote;
       });
-    } on Exception {
+    } on Exception catch (e) {
+      print(e);
       // ignore for now
     }
   }

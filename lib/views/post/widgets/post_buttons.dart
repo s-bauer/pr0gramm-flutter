@@ -1,14 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/timeFormatter.dart';
 import 'package:pr0gramm/services/voteService.dart';
 import 'package:pr0gramm/views/widgets/userMark.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../api/itemApi.dart';
-import '../../../data/sharedPrefKeys.dart';
 import '../../../entities/enums/vote.dart';
 import '../../../widgets/inherited.dart';
 
@@ -36,7 +31,29 @@ class PostButtons extends StatefulWidget {
 class _PostButtonsState extends State<PostButtons> {
   final VoteService _voteService = VoteService();
 
-  void voteItem(Vote vote) => _voteService.voteItem(widget.info.item, vote);
+  void voteItem(Vote vote) {
+    if (vote == myVote) {
+      if (Vote.favorite != vote) {
+        vote = Vote.none;
+      } else {
+        vote = Vote.up;
+      }
+    }
+    _voteService.voteItem(widget.info.item, vote);
+    setState(() {
+      myVote = vote;
+    });
+  }
+
+  Vote myVote;
+
+  @override
+  void initState() {
+    _voteService.getVoteOfItem(widget.info.item).then((vote) => setState(() {
+          myVote = vote;
+        }));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

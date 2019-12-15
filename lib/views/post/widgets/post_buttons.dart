@@ -1,7 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/timeFormatter.dart';
+import 'package:pr0gramm/services/vote_service.dart';
 import 'package:pr0gramm/views/widgets/userMark.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../api/itemApi.dart';
+import '../../../data/sharedPrefKeys.dart';
+import '../../../entities/enums/vote.dart';
+import '../../../widgets/inherited.dart';
 
 const authorTextStyle = const TextStyle(
   fontSize: 14,
@@ -20,24 +29,32 @@ class PostButtons extends StatelessWidget {
 
   const PostButtons({Key key, this.info}) : super(key: key);
 
+  Future doVote(Vote vote) async {
+    await VoteService.instance.executeVote(info.item, vote);
+  }
+
   @override
   Widget build(BuildContext context) {
+    var loggedIn = GlobalInherited.of(context).isLoggedIn;
     return Row(
       children: [
         IconButton(
           icon: Icon(Icons.add_circle_outline),
           color: Colors.white,
-          onPressed: () {},
+          onPressed: loggedIn ? () => doVote(Vote.up) : null,
+          disabledColor: Colors.white30,
         ),
         IconButton(
           color: Colors.white,
           icon: Icon(Icons.remove_circle_outline),
-          onPressed: () {},
+          onPressed: loggedIn ? () => doVote(Vote.down) : null,
+          disabledColor: Colors.white30,
         ),
         IconButton(
           color: Colors.white,
           icon: Icon(Icons.favorite_border),
-          onPressed: () {},
+          onPressed: loggedIn ? () => doVote(Vote.favorite) : null,
+          disabledColor: Colors.white30,
         ),
         Container(
           height: 30.0,

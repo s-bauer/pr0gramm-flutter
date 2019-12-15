@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/db/cached_vote_repository.dart';
-import 'package:pr0gramm/entities/enums/itemType.dart';
-import 'package:pr0gramm/entities/enums/vote.dart';
 import 'package:pr0gramm/services/feedProvider.dart';
 
 import 'package:pr0gramm/views/overviewView.dart';

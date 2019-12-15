@@ -56,7 +56,6 @@ class PostButtons extends StatelessWidget {
           color: Colors.white,
           onPressed: loggedIn ? () => onVote(Vote.up, context) : null,
           disabledColor: Colors.white30,
-
         ),
         IconButton(
           color: Colors.white,

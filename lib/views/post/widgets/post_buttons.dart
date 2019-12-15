@@ -108,7 +108,7 @@ class _PostButtonsState extends State<PostButtons> {
                     padding: EdgeInsets.only(right: 2),
                     child: Center(
                       child: Align(
-                        alignment: Alignment.bottomCenter,
+                        alignment: Alignment.center,
                         child: Icon(
                           Icons.add_circle,
                           size: 8,
@@ -130,7 +130,7 @@ class _PostButtonsState extends State<PostButtons> {
                     padding: EdgeInsets.only(right: 2),
                     child: Center(
                       child: Align(
-                        alignment: Alignment.bottomCenter,
+                        alignment: Alignment.center,
                         child: Icon(
                           Icons.watch_later,
                           size: 8,

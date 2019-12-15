@@ -24,7 +24,10 @@ class VoteService {
 
       _itemApi.vote(item.id, vote, nonce);
       _voteRepository.saveVote(
-          itemId: item.id, itemType: ItemType.item, vote: vote);
+        itemId: item.id,
+        itemType: ItemType.item,
+        vote: vote,
+      );
     }
   }
 

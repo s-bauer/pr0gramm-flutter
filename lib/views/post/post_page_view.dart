@@ -2,8 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:pr0gramm/controllers/pageController.dart';
-import 'package:pr0gramm/entities/commonTypes/item.dart';
-import 'package:pr0gramm/services/feedProvider.dart';
+import 'package:pr0gramm/api/dtos/item/item.dart';
+import 'package:pr0gramm/entities/feed.dart';
 import 'package:pr0gramm/views/post/post_page.dart';
 
 class PostPageView extends StatefulWidget {

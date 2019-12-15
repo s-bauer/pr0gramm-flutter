@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/entities/postInfo.dart';
+import 'package:pr0gramm/entities/post_info.dart';
 
 class PostTags extends StatelessWidget {
   final PostInfo info;

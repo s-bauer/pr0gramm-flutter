@@ -1,5 +1,5 @@
 import 'package:pr0gramm/db/base/repository_base.dart';
-import 'package:pr0gramm/entities/enums/itemType.dart';
+import 'package:pr0gramm/entities/enums/item_type.dart';
 import 'package:pr0gramm/entities/enums/vote.dart';
 import 'package:sqflite/sqlite_api.dart';
 

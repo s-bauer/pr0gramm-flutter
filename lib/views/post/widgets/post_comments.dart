@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/entities/commonTypes/linkedStuff/linkedComments.dart';
-import 'package:pr0gramm/entities/postInfo.dart';
+import 'package:pr0gramm/entities/linked_comment.dart';
+import 'package:pr0gramm/entities/post_info.dart';
 
 class PostComments extends StatelessWidget {
   final PostInfo info;
@@ -26,7 +26,7 @@ class PostComments extends StatelessWidget {
       padding: const EdgeInsets.only(top: 8, bottom: 20.0, right: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: comments.map((c) => c.build()).toList(),
+        children: comments.map((c) => c.buildWidget()).toList(),
       ),
     );
   }

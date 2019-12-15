@@ -1,0 +1,8 @@
+enum FeedType {
+  PUBLICTOP,
+  PUBLICNEW,
+  TOP,
+  NEW,
+  RANDOMTOP,
+  RANDOMNEW,
+}

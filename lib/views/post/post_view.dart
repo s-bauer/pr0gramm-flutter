@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/item/item.dart';
-import 'package:pr0gramm/views/widgets/imagePost.dart';
-import 'package:pr0gramm/views/widgets/videoPost.dart';
+import 'package:pr0gramm/views/widgets/image_post.dart';
+import 'package:pr0gramm/views/widgets/video_post.dart';
 
 class PostView extends StatefulWidget {
   final Item item;

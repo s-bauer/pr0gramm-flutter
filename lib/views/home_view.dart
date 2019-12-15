@@ -3,7 +3,7 @@ import 'package:pr0gramm/entities/enums/feed_type.dart';
 import 'package:pr0gramm/entities/feed.dart';
 import 'package:pr0gramm/entities/feed_details.dart';
 
-import 'package:pr0gramm/views/overviewView.dart';
+import 'package:pr0gramm/views/overview_view.dart';
 import 'package:pr0gramm/views/widgets/drawer.dart';
 
 class HomeView extends StatefulWidget {

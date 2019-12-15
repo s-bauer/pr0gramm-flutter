@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:pr0gramm/services/initialization_service.dart';
-import 'package:pr0gramm/views/homeView.dart';
-import 'package:pr0gramm/widgets/inherited.dart';
+import 'package:pr0gramm/views/home_view.dart';
+import 'package:pr0gramm/widgets/global_inherited.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

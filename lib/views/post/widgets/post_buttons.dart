@@ -3,8 +3,8 @@ import 'package:pr0gramm/entities/enums/vote.dart';
 import 'package:pr0gramm/entities/post_info.dart';
 import 'package:pr0gramm/helpers/time_formatter.dart';
 import 'package:pr0gramm/services/vote_service.dart';
-import 'package:pr0gramm/views/widgets/userMark.dart';
-import 'package:pr0gramm/widgets/inherited.dart';
+import 'package:pr0gramm/views/widgets/user_mark.dart';
+import 'package:pr0gramm/widgets/global_inherited.dart';
 
 const authorTextStyle = const TextStyle(
   fontSize: 14,

@@ -8,7 +8,7 @@ import 'package:pr0gramm/api/login_api.dart';
 import 'package:pr0gramm/api/profile_api.dart';
 import 'package:pr0gramm/data/sharedPrefKeys.dart';
 import 'package:pr0gramm/entities/enums/flags.dart';
-import 'package:pr0gramm/widgets/inherited.dart';
+import 'package:pr0gramm/widgets/global_inherited.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 

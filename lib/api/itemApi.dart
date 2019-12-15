@@ -1,8 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:pr0gramm/api/dtos/getItemsResponse.dart';
 import 'package:pr0gramm/api/dtos/itemInfoResponse.dart';
 import 'package:pr0gramm/entities/enums/flags.dart';
 import 'package:pr0gramm/entities/enums/itemRange.dart';
 import 'package:pr0gramm/entities/enums/promotionStatus.dart';
+import 'package:pr0gramm/entities/enums/vote.dart';
 
 import 'baseApi.dart';
 
@@ -54,5 +56,14 @@ class ItemApi extends BaseApi {
   Future<ItemInfoResponse> getItemInfo(int itemId) async {
     final response = await client.get("/items/info?itemId=$itemId");
     return ItemInfoResponse.fromJson(response.data);
+  }
+
+  void vote(int itemId, Vote vote, String nonce) async {
+    await client.post("/items/vote",
+        data: FormData.fromMap({
+          "id": itemId,
+          "vote": vote.value,
+          "_nonce": nonce,
+        }));
   }
 }

@@ -22,11 +22,7 @@ class MyImageProvider {
       options: Options(responseType: ResponseType.bytes),
     );
 
-    final cachedImage = CachedImage(
-      image: Uint8List.fromList(response.data),
-    );
-
-    return cachedImage.image;
+    return Uint8List.fromList(response.data);
   }
 
   Future<Uint8List> getImage(Item item) async {
@@ -35,17 +31,7 @@ class MyImageProvider {
       options: Options(responseType: ResponseType.bytes),
     );
 
-    final cachedImage = CachedImage(
-      image: Uint8List.fromList(response.data),
-    );
-
-    return cachedImage.image;
+    return Uint8List.fromList(response.data);
   }
 }
 
-class CachedImage {
-  final Uint8List image;
-  final DateTime cachedDate;
-
-  CachedImage({this.image}) : cachedDate = DateTime.now();
-}

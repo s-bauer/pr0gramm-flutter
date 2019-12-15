@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:pr0gramm/api/dtos/item/item.dart';
-import 'package:pr0gramm/services/feedProvider.dart';
-import 'package:pr0gramm/services/imageProvider.dart';
+import 'package:pr0gramm/entities/feed.dart';
+import 'package:pr0gramm/services/my_image_provider.dart';
 import 'package:pr0gramm/views/post/post_page_view.dart';
 
 class FeedInherited extends InheritedWidget {
-  final FeedProvider feedProvider;
   final Feed feed;
 
   FeedInherited({
     Key key,
-    @required this.feedProvider,
     @required this.feed,
     @required Widget child,
-  })  : assert(feedProvider != null),
-        assert(child != null),
+  })  : assert(child != null),
         super(key: key, child: child);
 
   static FeedInherited of(BuildContext context) {
@@ -52,14 +49,16 @@ class _OverviewViewState extends State<OverviewView> {
       initialData: currentFeed.forwardData,
       builder: (context, snapshot) {
         final grid = SliverGrid(
-          gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+          gridDelegate:
+              new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
           delegate: new SliverChildBuilderDelegate(
-              (context, index) => buildItem(context, snapshot.data[index], index),
-            childCount: snapshot.data?.length ?? 0
-          ),
+              (context, index) =>
+                  buildItem(context, snapshot.data[index], index),
+              childCount: snapshot.data?.length ?? 0),
         );
 
-        final circ = SliverFillViewport(delegate: SliverChildListDelegate([
+        final circ = SliverFillViewport(
+            delegate: SliverChildListDelegate([
           Center(child: CircularProgressIndicator()),
         ]));
 
@@ -78,11 +77,12 @@ class _OverviewViewState extends State<OverviewView> {
         }
 
         return SliverGrid(
-          gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+          gridDelegate:
+              new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
           delegate: new SliverChildBuilderDelegate(
-                  (context, index) => buildItem(context, snapshot.data[index], index),
-              childCount: snapshot.data?.length ?? 0
-          ),
+              (context, index) =>
+                  buildItem(context, snapshot.data[index], index),
+              childCount: snapshot.data?.length ?? 0),
         );
       },
     );
@@ -92,10 +92,7 @@ class _OverviewViewState extends State<OverviewView> {
       child: CustomScrollView(
         controller: _controller,
         center: widget._centerKey,
-        slivers: <Widget>[
-          backwardsBuilder,
-          forwardBuilder
-        ],
+        slivers: <Widget>[backwardsBuilder, forwardBuilder],
       ),
     );
   }
@@ -111,7 +108,7 @@ class _OverviewViewState extends State<OverviewView> {
     final min = _controller.position.minScrollExtent;
     final offset = _controller.offset;
 
-    if(offset - 50 <= min) {
+    if (offset - 50 <= min) {
       currentFeed.loadBackwards();
     }
 
@@ -139,7 +136,6 @@ class _OverviewViewState extends State<OverviewView> {
       },
     );
   }
-
 
   void onThumbTap(int index) {
     Navigator.push(

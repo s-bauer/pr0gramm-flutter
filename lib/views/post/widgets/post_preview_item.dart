@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/item/item.dart';
-import 'package:pr0gramm/services/imageProvider.dart';
+import 'package:pr0gramm/services/my_image_provider.dart';
 
 class PreviewItem extends StatelessWidget {
   final MyImageProvider _imageProvider = MyImageProvider();

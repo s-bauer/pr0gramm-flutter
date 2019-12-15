@@ -1,12 +1,12 @@
 import "package:flutter/material.dart";
-import 'package:pr0gramm/services/initializeService.dart';
+import 'package:pr0gramm/services/initialization_service.dart';
 import 'package:pr0gramm/views/homeView.dart';
 import 'package:pr0gramm/widgets/inherited.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final initService = new InitializeService();
+  final initService = new InitializationService();
   final initResult = await initService.initialize();
 
   runApp(MyApp(initResult: initResult));

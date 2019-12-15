@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/item/item.dart';
-import 'package:pr0gramm/services/imageProvider.dart' as imgProv;
+import 'package:pr0gramm/services/my_image_provider.dart' as imgProv;
 import 'package:pr0gramm/views/post/widgets/post_preview_item.dart';
 
 class ImagePost extends StatefulWidget {

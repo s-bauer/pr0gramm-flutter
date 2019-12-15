@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/services/feedProvider.dart';
+import 'package:pr0gramm/entities/enums/feed_type.dart';
+import 'package:pr0gramm/entities/feed.dart';
+import 'package:pr0gramm/entities/feed_details.dart';
 
 import 'package:pr0gramm/views/overviewView.dart';
 import 'package:pr0gramm/views/widgets/drawer.dart';
@@ -25,10 +27,10 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget buildProfile() {
-    final provider = FeedProvider(feedType: FeedType.TOP);
+    final feedDetails = new FeedDetails(FeedType.TOP);
+    final feed = new Feed(feedDetails: feedDetails);
     return FeedInherited(
-      feedProvider: provider,
-      feed: provider.getFeed(),
+      feed: feed,
       child: OverviewView(),
     );
   }

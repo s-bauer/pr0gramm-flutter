@@ -37,12 +37,12 @@ class _UserProfile {
         username = null;
 }
 
-class InitializeService {
-  static InitializeService _instance = InitializeService._internal();
+class InitializationService {
+  static InitializationService _instance = InitializationService._internal();
 
-  InitializeService._internal();
+  InitializationService._internal();
 
-  factory InitializeService() => _instance;
+  factory InitializationService() => _instance;
 
   Future<InitializationResult> initialize() async {
     try {

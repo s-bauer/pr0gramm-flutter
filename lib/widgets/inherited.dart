@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/profile_info.dart';
-import 'package:pr0gramm/services/initializeService.dart';
+import 'package:pr0gramm/services/initialization_service.dart';
 
 class GlobalInherited extends StatefulWidget {
   final Widget child;

@@ -7,5 +7,5 @@ abstract class Enum<T> {
   int get hashCode => value.hashCode;
 
   @override
-  bool operator ==(other) => value == other.value;
+  bool operator ==(other) => other is Enum<T> && value == other.value;
 }

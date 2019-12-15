@@ -62,19 +62,22 @@ class _PostButtonsState extends State<PostButtons> {
       children: [
         IconButton(
           icon: Icon(Icons.add_circle_outline),
-          color: Colors.white,
+          color: myVote == Vote.up || myVote == Vote.favorite
+              ? Color(0xffee4d2e)
+              : Colors.white,
           onPressed: loggedIn ? () => voteItem(Vote.up) : null,
           disabledColor: Colors.white30,
         ),
         IconButton(
-          color: Colors.white,
+          color: myVote == Vote.down ? Color(0xffee4d2e) : Colors.white,
           icon: Icon(Icons.remove_circle_outline),
           onPressed: loggedIn ? () => voteItem(Vote.down) : null,
           disabledColor: Colors.white30,
         ),
         IconButton(
-          color: Colors.white,
-          icon: Icon(Icons.favorite_border),
+          color: myVote == Vote.favorite ? Color(0xffee4d2e) : Colors.white,
+          icon: Icon(
+              myVote == Vote.favorite ? Icons.favorite : Icons.favorite_border),
           onPressed: loggedIn ? () => voteItem(Vote.favorite) : null,
           disabledColor: Colors.white30,
         ),

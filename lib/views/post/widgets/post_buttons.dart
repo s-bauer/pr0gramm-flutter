@@ -18,36 +18,79 @@ const postTimeTextStyle = const TextStyle(
   color: Colors.white70,
 );
 
-class PostButtons extends StatelessWidget {
+class PostButtons extends StatefulWidget {
   final PostInfo info;
 
-  const PostButtons({Key key, this.info}) : super(key: key);
+  PostButtons({Key key, this.info}) : super(key: key);
 
-  Future doVote(Vote vote) async {
-    await VoteService.instance.executeVote(info.item, vote);
+  @override
+  _PostButtonsState createState() => _PostButtonsState();
+}
+
+class _PostButtonsState extends State<PostButtons> {
+  final VoteService _voteService = VoteService.instance;
+  Vote currentVote;
+
+  Future voteItem(Vote vote) async {
+    if (vote == currentVote) {
+      if (vote == Vote.favorite) {
+        vote = Vote.up;
+      } else {
+        vote = Vote.none;
+      }
+    } else if(vote == Vote.up && currentVote == Vote.favorite) {
+      vote = Vote.none;
+    }
+
+    try {
+      await _voteService.voteItem(widget.info.item, vote);
+      setState(() {
+        currentVote = vote;
+      });
+    } on Exception {
+      // ignore for now
+    }
+  }
+
+  @override
+  void initState() {
+    _voteService.getVoteOfItem(widget.info.item).then((vote) {
+      setState(() {
+        currentVote = vote;
+      });
+    });
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    var loggedIn = GlobalInherited.of(context).isLoggedIn;
+    final loggedIn = GlobalInherited.of(context).isLoggedIn;
+    final votedColor = new Color(0xffee4d2e);
+
     return Row(
       children: [
         IconButton(
           icon: Icon(Icons.add_circle_outline),
-          color: Colors.white,
-          onPressed: loggedIn ? () => doVote(Vote.up) : null,
+          color: currentVote == Vote.up || currentVote == Vote.favorite
+              ? votedColor
+              : Colors.white,
+          onPressed: loggedIn ? () => voteItem(Vote.up) : null,
           disabledColor: Colors.white30,
         ),
         IconButton(
-          color: Colors.white,
+          color: currentVote == Vote.down ? votedColor : Colors.white,
           icon: Icon(Icons.remove_circle_outline),
-          onPressed: loggedIn ? () => doVote(Vote.down) : null,
+          onPressed: loggedIn ? () => voteItem(Vote.down) : null,
           disabledColor: Colors.white30,
         ),
         IconButton(
-          color: Colors.white,
-          icon: Icon(Icons.favorite_border),
-          onPressed: loggedIn ? () => doVote(Vote.favorite) : null,
+          color: currentVote == Vote.favorite ? votedColor : Colors.white,
+          icon: Icon(
+            currentVote == Vote.favorite
+                ? Icons.favorite
+                : Icons.favorite_border,
+          ),
+          onPressed: loggedIn ? () => voteItem(Vote.favorite) : null,
           disabledColor: Colors.white30,
         ),
         Container(
@@ -63,21 +106,60 @@ class PostButtons extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    info.item.user,
+                    widget.info.item.user,
                     style: authorTextStyle,
                   ),
                   UserMarkWidget(
-                    userMark: info.item.mark,
+                    userMark: widget.info.item.mark,
                     radius: 2.5,
                   )
                 ],
               ),
-              Text(
-                formatTime(info.item.created * 1000),
-                style: postTimeTextStyle,
-                softWrap: true,
-                overflow: TextOverflow.visible,
-              ),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 2),
+                    child: Center(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.add_circle,
+                          size: 8,
+                          color: Colors.white70,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 4),
+                    child: Text(
+                      (widget.info.item.up - widget.info.item.down).toString(),
+                      style: postTimeTextStyle,
+                      softWrap: true,
+                      overflow: TextOverflow.visible,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 2),
+                    child: Center(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.watch_later,
+                          size: 8,
+                          color: Colors.white70,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    formatTime(widget.info.item.created * 1000),
+                    style: postTimeTextStyle,
+                    softWrap: true,
+                    overflow: TextOverflow.visible,
+                  ),
+                ],
+              )
             ],
           ),
         )

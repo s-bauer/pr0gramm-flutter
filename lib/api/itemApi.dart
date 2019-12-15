@@ -35,13 +35,19 @@ class GetItemsConfiguration {
     return flagStr + promotedStr + rangeStr + tagStr;
   }
 
-  GetItemsConfiguration withValues({PromotionStatus promoted, Flags flags, ItemRange range, int id, String tags}) {
+  GetItemsConfiguration withValues({
+    PromotionStatus promoted,
+    Flags flags,
+    ItemRange range,
+    int id,
+    String tags,
+  }) {
     return new GetItemsConfiguration(
       promoted: promoted ?? this.promoted,
       flags: flags ?? this.flags,
       range: range ?? this.range,
       id: id ?? this.id,
-      tags: tags ?? this.tags
+      tags: tags ?? this.tags,
     );
   }
 }
@@ -58,12 +64,17 @@ class ItemApi extends BaseApi {
     return ItemInfoResponse.fromJson(response.data);
   }
 
-  void vote(int itemId, Vote vote, String nonce) async {
-    await client.post("/items/vote",
-        data: FormData.fromMap({
-          "id": itemId,
-          "vote": vote.value,
-          "_nonce": nonce,
-        }));
+  Future vote(int itemId, Vote vote, String nonce) async {
+    final data = {
+      "id": itemId,
+      "vote": vote.value,
+      "_nonce": nonce,
+    };
+
+    await client.post(
+      "/items/vote",
+      data: data,
+      options: new Options(contentType: Headers.formUrlEncodedContentType),
+    );
   }
 }

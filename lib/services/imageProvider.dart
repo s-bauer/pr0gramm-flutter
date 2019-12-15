@@ -4,24 +4,19 @@ import 'package:dio/dio.dart';
 import 'package:pr0gramm/api/apiClient.dart';
 import 'package:pr0gramm/entities/commonTypes/item.dart';
 
-class ImageProvider {
-  static ImageProvider _instance = ImageProvider._internal();
-  ImageProvider._internal();
-  factory ImageProvider() => _instance;
+class MyImageProvider {
+  static MyImageProvider _instance = MyImageProvider._internal();
+  MyImageProvider._internal();
+  factory MyImageProvider() => _instance;
 
   static const thumbBaseUrl = "https://thumb.pr0gramm.com";
   static const imageBase = "https://img.pr0gramm.com";
   static const cacheThreshold = 150;
 
   final apiClient = ApiClient();
-  final cachedThumbs = Map<int, CachedImage>();
-  final cachedImages = Map<int, CachedImage>();
 
 
   Future<Uint8List> getThumb(Item item) async {
-    if(cachedThumbs.containsKey(item.id))
-      return cachedThumbs[item.id].image;
-
     final response = await apiClient.client.get(
       "$thumbBaseUrl/${item.thumb}",
       options: Options(responseType: ResponseType.bytes),
@@ -31,14 +26,10 @@ class ImageProvider {
       image: Uint8List.fromList(response.data),
     );
 
-    cachedThumbs[item.id] = cachedImage;
     return cachedImage.image;
   }
 
   Future<Uint8List> getImage(Item item) async {
-    if(cachedImages.containsKey(item.id))
-      return cachedImages[item.id].image;
-
     final response = await apiClient.client.get(
       "$imageBase/${item.thumb}",
       options: Options(responseType: ResponseType.bytes),
@@ -48,15 +39,7 @@ class ImageProvider {
       image: Uint8List.fromList(response.data),
     );
 
-    cachedImages[item.id] = cachedImage;
     return cachedImage.image;
-  }
-
-  Uint8List getThumbSync(Item item) {
-    if(cachedThumbs.containsKey(item.id))
-      return cachedThumbs[item.id].image;
-
-    return Uint8List(0);
   }
 }
 

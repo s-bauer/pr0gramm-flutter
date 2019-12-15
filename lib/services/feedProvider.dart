@@ -4,13 +4,12 @@ import 'package:flutter/widgets.dart';
 import 'package:pr0gramm/entities/enums/flags.dart';
 import 'package:pr0gramm/entities/commonTypes/item.dart';
 import 'package:pr0gramm/entities/enums/promotionStatus.dart';
-import 'package:pr0gramm/entities/postInfo.dart';
 import 'package:pr0gramm/services/itemProvider.dart';
 
 class Feed {
   final FeedType feedType;
   final FeedDetails feedDetails;
-  final ItemProviderNew _itemProvider;
+  final ItemProvider _itemProvider;
 
   List<Item> _forwardList = [];
   List<Item> _backwardsList = [];
@@ -23,7 +22,7 @@ class Feed {
   Feed({
     @required this.feedType,
     @required this.feedDetails,
-  }) : _itemProvider = new ItemProviderNew(feedDetails)
+  }) : _itemProvider = new ItemProvider(feedDetails)
   {
     refresh();
   }
@@ -73,11 +72,9 @@ class Feed {
 class FeedProvider {
   final FeedType feedType;
   final FeedDetails feedDetails;
-  final ItemProvider _itemProvider;
 
   FeedProvider({this.feedType})
-      : feedDetails = new FeedDetails(feedType),
-        _itemProvider = new ItemProvider(new FeedDetails(feedType));
+      : feedDetails = new FeedDetails(feedType);
 
   Feed getFeed() {
     return Feed(
@@ -85,11 +82,6 @@ class FeedProvider {
       feedDetails: feedDetails,
     );
   }
-
-  Future<Item> getItem(int index) => _itemProvider.getItem(index);
-
-  Future<PostInfo> getItemWithInfo(int index) =>
-      _itemProvider.getItemWithInfo(index);
 }
 
 class FeedDetails {

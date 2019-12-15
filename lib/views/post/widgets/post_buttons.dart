@@ -29,54 +29,67 @@ class PostButtons extends StatefulWidget {
 
 class _PostButtonsState extends State<PostButtons> {
   final VoteService _voteService = VoteService.instance;
+  Vote currentVote;
 
-  void voteItem(Vote vote) {
-    if (vote == myVote) {
-      if (Vote.favorite != vote) {
-        vote = Vote.none;
-      } else {
+  Future voteItem(Vote vote) async {
+    if (vote == currentVote) {
+      if (vote == Vote.favorite) {
         vote = Vote.up;
+      } else {
+        vote = Vote.none;
       }
+    } else if(vote == Vote.up && currentVote == Vote.favorite) {
+      vote = Vote.none;
     }
-    _voteService.voteItem(widget.info.item, vote);
-    setState(() {
-      myVote = vote;
-    });
-  }
 
-  Vote myVote;
+    try {
+      await _voteService.voteItem(widget.info.item, vote);
+      setState(() {
+        currentVote = vote;
+      });
+    } on Exception {
+      // ignore for now
+    }
+  }
 
   @override
   void initState() {
-    _voteService.getVoteOfItem(widget.info.item).then((vote) => setState(() {
-          myVote = vote;
-        }));
+    _voteService.getVoteOfItem(widget.info.item).then((vote) {
+      setState(() {
+        currentVote = vote;
+      });
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    var loggedIn = GlobalInherited.of(context).isLoggedIn;
+    final loggedIn = GlobalInherited.of(context).isLoggedIn;
+    final votedColor = new Color(0xffee4d2e);
+
     return Row(
       children: [
         IconButton(
           icon: Icon(Icons.add_circle_outline),
-          color: myVote == Vote.up || myVote == Vote.favorite
-              ? Color(0xffee4d2e)
+          color: currentVote == Vote.up || currentVote == Vote.favorite
+              ? votedColor
               : Colors.white,
           onPressed: loggedIn ? () => voteItem(Vote.up) : null,
           disabledColor: Colors.white30,
         ),
         IconButton(
-          color: myVote == Vote.down ? Color(0xffee4d2e) : Colors.white,
+          color: currentVote == Vote.down ? votedColor : Colors.white,
           icon: Icon(Icons.remove_circle_outline),
           onPressed: loggedIn ? () => voteItem(Vote.down) : null,
           disabledColor: Colors.white30,
         ),
         IconButton(
-          color: myVote == Vote.favorite ? Color(0xffee4d2e) : Colors.white,
+          color: currentVote == Vote.favorite ? votedColor : Colors.white,
           icon: Icon(
-              myVote == Vote.favorite ? Icons.favorite : Icons.favorite_border),
+            currentVote == Vote.favorite
+                ? Icons.favorite
+                : Icons.favorite_border,
+          ),
           onPressed: loggedIn ? () => voteItem(Vote.favorite) : null,
           disabledColor: Colors.white30,
         ),

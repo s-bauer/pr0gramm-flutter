@@ -6,7 +6,7 @@ import 'package:pr0gramm/widgets/inherited.dart';
 class CustomDrawer extends Drawer {
   @override
   Widget build(BuildContext context) {
-    final isLoggedIn = MyInherited.of(context).isLoggedIn;
+    final isLoggedIn = GlobalInherited.of(context).isLoggedIn;
 
     final loginButton = FlatButton(
       onPressed: () => this.logOut(context),
@@ -42,6 +42,6 @@ class CustomDrawer extends Drawer {
   logOut(BuildContext context) {
     final apiClient = ApiClient();
     apiClient.logout();
-    MyInherited.of(context).onStatusChange(false, null);
+    GlobalInherited.of(context).onStatusChange(false, null);
   }
 }

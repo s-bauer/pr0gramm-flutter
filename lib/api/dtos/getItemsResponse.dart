@@ -1,6 +1,6 @@
 import 'package:pr0gramm/entities/commonTypes/item.dart';
 
-class GetItemsResponse {
+class ItemBatch {
   bool atEnd;
   bool atStart;
   Null error;
@@ -10,7 +10,7 @@ class GetItemsResponse {
   int rt;
   int qc;
 
-  GetItemsResponse({
+  ItemBatch({
     this.atEnd,
     this.atStart,
     this.error,
@@ -21,7 +21,7 @@ class GetItemsResponse {
     this.qc,
   });
 
-  GetItemsResponse.fromJson(Map<String, dynamic> json) {
+  ItemBatch.fromJson(Map<String, dynamic> json) {
     atEnd = json['atEnd'];
     atStart = json['atStart'];
     error = json['error'];

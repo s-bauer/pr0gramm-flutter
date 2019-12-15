@@ -27,21 +27,21 @@ class UserMarkData {
 }
 
 class UserMark extends Enum<int> {
-  static UserMark Schwuchtel = UserMark(0);
-  static UserMark Neuschwuchtel = UserMark(1);
-  static UserMark Altschwuchtel = UserMark(2);
-  static UserMark Administrator = UserMark(3);
-  static UserMark Gebannt = UserMark(4);
-  static UserMark Moderator = UserMark(5);
-  static UserMark Fliesentisch = UserMark(6);
-  static UserMark LebendeLegende = UserMark(7);
-  static UserMark Wichtel = UserMark(8);
-  static UserMark EdlerSpender = UserMark(9);
-  static UserMark Mittelaltschwuchtel = UserMark(10);
-  static UserMark Altmoderator = UserMark(11);
-  static UserMark Communityhelfer = UserMark(12);
-  static UserMark Nutzerbot = UserMark(13);
-  static UserMark Systembot = UserMark(14);
+  static UserMark schwuchtel = UserMark(0);
+  static UserMark neuschwuchtel = UserMark(1);
+  static UserMark altschwuchtel = UserMark(2);
+  static UserMark administrator = UserMark(3);
+  static UserMark gebannt = UserMark(4);
+  static UserMark moderator = UserMark(5);
+  static UserMark fliesentisch = UserMark(6);
+  static UserMark lebendeLegende = UserMark(7);
+  static UserMark wichtel = UserMark(8);
+  static UserMark edlerSpender = UserMark(9);
+  static UserMark mittelaltschwuchtel = UserMark(10);
+  static UserMark altmoderator = UserMark(11);
+  static UserMark communityhelfer = UserMark(12);
+  static UserMark nutzerbot = UserMark(13);
+  static UserMark systembot = UserMark(14);
 
   UserMark(int val) : _data = _userMarkData[val], super(val);
 

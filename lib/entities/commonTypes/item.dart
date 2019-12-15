@@ -1,10 +1,9 @@
 import 'package:pr0gramm/entities/enums/flags.dart';
-import 'package:pr0gramm/entities/enums/promotionStatus.dart';
 import 'package:pr0gramm/entities/commonTypes/userMark.dart';
 
 class Item {
   int id;
-  PromotionStatus promoted;
+  int promoted;
   int userId;
   int up;
   int down;
@@ -45,7 +44,7 @@ class Item {
 
   Item.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    promoted = PromotionStatus(json['promoted']);
+    promoted = json['promoted'];
     userId = json['userId'];
     up = json['up'];
     down = json['down'];
@@ -67,7 +66,7 @@ class Item {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['promoted'] = this.promoted.value;
+    data['promoted'] = this.promoted;
     data['userId'] = this.userId;
     data['up'] = this.up;
     data['down'] = this.down;

@@ -24,13 +24,19 @@ const postTimeTextStyle = const TextStyle(
   color: Colors.white70,
 );
 
-class PostButtons extends StatelessWidget {
+class PostButtons extends StatefulWidget {
   final PostInfo info;
-  final VoteService _voteService = VoteService();
 
   PostButtons({Key key, this.info}) : super(key: key);
 
-  void voteItem(Vote vote) => _voteService.voteItem(info.item, vote);
+  @override
+  _PostButtonsState createState() => _PostButtonsState();
+}
+
+class _PostButtonsState extends State<PostButtons> {
+  final VoteService _voteService = VoteService();
+
+  void voteItem(Vote vote) => _voteService.voteItem(widget.info.item, vote);
 
   @override
   Widget build(BuildContext context) {
@@ -68,17 +74,17 @@ class PostButtons extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    info.item.user,
+                    widget.info.item.user,
                     style: authorTextStyle,
                   ),
                   UserMarkWidget(
-                    userMark: info.item.mark,
+                    userMark: widget.info.item.mark,
                     radius: 2.5,
                   )
                 ],
               ),
               Text(
-                formatTime(info.item.created * 1000),
+                formatTime(widget.info.item.created * 1000),
                 style: postTimeTextStyle,
                 softWrap: true,
                 overflow: TextOverflow.visible,

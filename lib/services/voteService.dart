@@ -34,6 +34,11 @@ class VoteService {
   Future<Vote> getVoteOfItem(Item item) {
     return _voteRepository
         .findOne(itemId: item.id, itemType: ItemType.item)
-        .then((cached) => cached.voteValue);
+        .then((cached) {
+          if(cached == null){
+            _voteRepository.saveVote(itemId: item.id, itemType: ItemType.item, vote: Vote.none);
+          }
+          return cached?.voteValue ?? Vote.none;
+        });
   }
 }

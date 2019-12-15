@@ -102,12 +102,51 @@ class _PostButtonsState extends State<PostButtons> {
                   )
                 ],
               ),
-              Text(
-                formatTime(widget.info.item.created * 1000),
-                style: postTimeTextStyle,
-                softWrap: true,
-                overflow: TextOverflow.visible,
-              ),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 2),
+                    child: Center(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Icon(
+                          Icons.add_circle,
+                          size: 8,
+                          color: Colors.white70,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 4),
+                    child: Text(
+                      (widget.info.item.up - widget.info.item.down).toString(),
+                      style: postTimeTextStyle,
+                      softWrap: true,
+                      overflow: TextOverflow.visible,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 2),
+                    child: Center(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Icon(
+                          Icons.watch_later,
+                          size: 8,
+                          color: Colors.white70,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    formatTime(widget.info.item.created * 1000),
+                    style: postTimeTextStyle,
+                    softWrap: true,
+                    overflow: TextOverflow.visible,
+                  ),
+                ],
+              )
             ],
           ),
         )

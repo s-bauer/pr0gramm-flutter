@@ -1,3 +1,4 @@
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/entities/enums/vote.dart';
 import 'package:pr0gramm/entities/post_info.dart';
@@ -30,6 +31,7 @@ class PostButtons extends StatefulWidget {
 class _PostButtonsState extends State<PostButtons> {
   final VoteService _voteService = VoteService.instance;
   Vote currentVote;
+  String _upAnimationName = "enabled";
 
   Future voteItem(Vote vote) async {
     if (vote == currentVote) {
@@ -38,13 +40,17 @@ class _PostButtonsState extends State<PostButtons> {
       } else {
         vote = Vote.none;
       }
-    } else if(vote == Vote.up && currentVote == Vote.favorite) {
+    } else if (vote == Vote.up && currentVote == Vote.favorite) {
       vote = Vote.none;
     }
 
     try {
       await _voteService.voteItem(widget.info.item, vote);
       setState(() {
+        if ((currentVote == Vote.favorite || currentVote == Vote.up) &&
+            (vote == Vote.none || vote == Vote.down))
+          _upAnimationName = "clear";
+        if (vote == Vote.up) _upAnimationName = "vote";
         currentVote = vote;
       });
     } on Exception catch (e) {
@@ -57,6 +63,7 @@ class _PostButtonsState extends State<PostButtons> {
   void initState() {
     _voteService.getVoteOfItem(widget.info.item).then((vote) {
       setState(() {
+        if (vote == Vote.up) _upAnimationName = "voted";
         currentVote = vote;
       });
     });
@@ -66,18 +73,25 @@ class _PostButtonsState extends State<PostButtons> {
   @override
   Widget build(BuildContext context) {
     final loggedIn = GlobalInherited.of(context).isLoggedIn;
+    _upAnimationName = loggedIn ? _upAnimationName : "disabled";
     final votedColor = new Color(0xffee4d2e);
     final enabledColor = Colors.white60;
     final disabledColor = Colors.white30;
     return Row(
       children: [
-        IconButton(
-          icon: Icon(Icons.add_circle_outline),
-          color: currentVote == Vote.up || currentVote == Vote.favorite
-              ? votedColor
-              : enabledColor,
-          onPressed: loggedIn ? () => voteItem(Vote.up) : null,
-          disabledColor: disabledColor,
+        Center(
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: GestureDetector(
+              onTap: () => voteItem(Vote.up),
+              child: FlareActor(
+                'assets/rotating_add.flr',
+                animation: _upAnimationName,
+                fit: BoxFit.fitWidth,
+              ),
+            ),
+          ),
         ),
         IconButton(
           color: currentVote == Vote.down ? Colors.white : enabledColor,
@@ -105,17 +119,20 @@ class _PostButtonsState extends State<PostButtons> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Row(
-                children: [
-                  Text(
-                    widget.info.item.user,
-                    style: authorTextStyle,
-                  ),
-                  UserMarkWidget(
-                    userMark: widget.info.item.mark,
-                    radius: 2.5,
-                  )
-                ],
+              Padding(
+                padding: EdgeInsets.only(bottom: 3),
+                child: Row(
+                  children: [
+                    Text(
+                      widget.info.item.user,
+                      style: authorTextStyle,
+                    ),
+                    UserMarkWidget(
+                      userMark: widget.info.item.mark,
+                      radius: 2.5,
+                    )
+                  ],
+                ),
               ),
               Row(
                 children: [
@@ -135,7 +152,7 @@ class _PostButtonsState extends State<PostButtons> {
                   Padding(
                     padding: EdgeInsets.only(right: 4),
                     child: Text(
-                      (widget.info.item.up - widget.info.item.down).toString(),
+                      "${widget.info.item.up - widget.info.item.down} Benis",
                       style: postTimeTextStyle,
                       softWrap: true,
                       overflow: TextOverflow.visible,

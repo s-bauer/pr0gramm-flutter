@@ -10,6 +10,8 @@ class FeedDetails {
 
   FeedDetails._internal({this.flags, this.promoted, this.tags, this.name});
 
+  FeedDetails.custom({this.flags, this.promoted, this.tags, this.name});
+
   factory FeedDetails(FeedType feedType) {
     final bust = DateTime.now().millisecond / 1000.0;
 

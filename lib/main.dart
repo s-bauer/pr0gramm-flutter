@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
     "/top": (context) => _overviewBuilder.buildByType(FeedType.TOP),
     "/new": (context) => _overviewBuilder.buildByType(FeedType.NEW),
     "/random": (context) => _overviewBuilder.buildByType(FeedType.RANDOMNEW),
+    "/search": (context) => _overviewBuilder.buildByRoute(context),
   };
 
   MyApp({Key key, this.initResult}) : super(key: key);

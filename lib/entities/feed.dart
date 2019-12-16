@@ -5,28 +5,35 @@ import 'package:pr0gramm/api/dtos/item/item.dart';
 import 'package:pr0gramm/entities/feed_details.dart';
 import 'package:pr0gramm/services/item_provider.dart';
 
+import 'enums/feed_type.dart';
+
 class Feed {
   final FeedDetails feedDetails;
+  final FeedType feedType;
+
   final ItemProvider _itemProvider;
 
   List<Item> _forwardList = [];
   List<Item> _backwardsList = [];
 
   final StreamController<List<Item>> _forwardStream =
-  new StreamController.broadcast();
+      new StreamController.broadcast();
   final StreamController<List<Item>> _backwardStream =
-  new StreamController.broadcast();
+      new StreamController.broadcast();
 
   Feed({
     @required this.feedDetails,
-  }) : _itemProvider = new ItemProvider(feedDetails)
-  {
+    @required this.feedType,
+  }) : _itemProvider = new ItemProvider(feedDetails) {
     refresh();
   }
 
   get forwardStream => _forwardStream.stream;
+
   get backwardStream => _backwardStream.stream;
+
   get forwardData => _forwardList;
+
   get backwardData => _backwardsList;
 
   Future loadForward() async {

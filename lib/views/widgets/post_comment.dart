@@ -121,9 +121,6 @@ class _PostCommentState extends State<PostComment> {
     final points =
         widget.linkedComment.comment.up - widget.linkedComment.comment.down;
 
-    final votedColor = new Color(0xffee4d2e);
-    final enabledColor = Colors.white60;
-
     final commentsColumn = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -180,7 +177,9 @@ class _PostCommentState extends State<PostComment> {
                     constraints: BoxConstraints(
                       minHeight: 40.0,
                     ),
-                    child: Column(
+                    child: Opacity(
+                      opacity: currentVote == Vote.down ? 0.4 : 1.0,
+                      child:Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Linkify(
@@ -216,7 +215,7 @@ class _PostCommentState extends State<PostComment> {
                         ),
                         Divider(color: Colors.white24, height: 0.1),
                       ],
-                    ),
+                    ),),
                   ),
                 ),
               ],

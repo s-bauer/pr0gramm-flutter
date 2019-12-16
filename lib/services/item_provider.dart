@@ -5,33 +5,32 @@ import 'package:pr0gramm/entities/enums/promotion_status.dart';
 import 'package:pr0gramm/entities/feed_details.dart';
 
 class ItemProvider {
-  final FeedDetails feedDetails;
-  final GetItemsConfiguration _getConfig;
   final _itemApi = ItemApi();
 
   ItemBatch _newestBatch;
   ItemBatch _oldestBatch;
 
-  ItemProvider(this.feedDetails)
-      : _getConfig = new GetItemsConfiguration(
-          promoted: feedDetails.promoted,
-          flags: feedDetails.flags,
-          tags: feedDetails.tags,
-        );
+  GetItemsConfiguration buildConfig(FeedDetails feedDetails) {
+    return new GetItemsConfiguration(
+      promoted: feedDetails.promoted,
+      flags: feedDetails.flags,
+      tags: feedDetails.tags,
+    );
+  }
 
-  Future<ItemBatch> getFirstBatch() async {
-    final batch = await _itemApi.getItems(_getConfig);
+  Future<ItemBatch> getFirstBatch(FeedDetails feedDetails) async {
+    final batch = await _itemApi.getItems(buildConfig(feedDetails));
     _newestBatch = batch;
     _oldestBatch = batch;
     return batch;
   }
 
-  Future<ItemBatch> getOlderBatch() async {
-    if (_oldestBatch == null) return await getFirstBatch();
+  Future<ItemBatch> getOlderBatch(FeedDetails feedDetails) async {
+    if (_oldestBatch == null) return await getFirstBatch(feedDetails);
 
     if (_oldestBatch.atEnd) return null;
 
-    final config = _getConfig.withValues(
+    final config = buildConfig(feedDetails).copyWith(
       range: ItemRange.older,
       id: feedDetails.promoted == PromotionStatus.promoted
           ? _oldestBatch.items.last.promoted
@@ -41,12 +40,12 @@ class ItemProvider {
     return _oldestBatch = await _itemApi.getItems(config);
   }
 
-  Future<ItemBatch> getNewerBatch() async {
-    if (_newestBatch == null) return await getFirstBatch();
+  Future<ItemBatch> getNewerBatch(FeedDetails feedDetails) async {
+    if (_newestBatch == null) return await getFirstBatch(feedDetails);
 
     if (_newestBatch.atStart) return null;
 
-    final config = _getConfig.withValues(
+    final config = buildConfig(feedDetails).copyWith(
       range: ItemRange.newer,
       id: feedDetails.promoted == PromotionStatus.promoted
           ? _newestBatch.items.first.promoted

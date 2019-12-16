@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/entities/search_arguments.dart';
 import 'package:pr0gramm/views/overview_view.dart';
@@ -90,6 +91,7 @@ class _MySearchBarState extends State<MySearchBar> {
 
   void doSearch(BuildContext context) {
     EndSearchNotification().dispatch(context);
+
     final args = new SearchArguments(
       searchString: _controller.text,
       baseType: FeedInherited.of(context).feed.feedType,

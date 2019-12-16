@@ -8,16 +8,29 @@ class FeedDetails {
   final String tags;
   final String name;
 
-  FeedDetails._internal({this.flags, this.promoted, this.tags, this.name});
+  FeedDetails({this.flags, this.promoted, this.tags, this.name});
 
-  FeedDetails.custom({this.flags, this.promoted, this.tags, this.name});
+  FeedDetails copyWith({
+    Flags flags,
+    PromotionStatus promoted,
+    String tags,
+    String name,
+  }) {
+    return FeedDetails(
+      flags: flags ?? this.flags,
+      promoted: promoted ?? this.promoted,
+      tags: tags ?? this.tags,
+      name: name ?? this.name,
+    );
+  }
 
-  factory FeedDetails(FeedType feedType) {
+
+  factory FeedDetails.byFeedType(FeedType feedType) {
     final bust = DateTime.now().millisecond / 1000.0;
 
     switch (feedType) {
       case FeedType.RANDOMTOP:
-        return FeedDetails._internal(
+        return FeedDetails(
           flags: Flags.sfw,
           promoted: PromotionStatus.promoted,
           tags: "!-(x:random | x:$bust)",
@@ -25,7 +38,7 @@ class FeedDetails {
         );
 
       case FeedType.RANDOMNEW:
-        return FeedDetails._internal(
+        return FeedDetails(
           flags: Flags.sfw,
           promoted: PromotionStatus.none,
           tags: "!-(x:random | x:$bust)",
@@ -33,7 +46,7 @@ class FeedDetails {
         );
 
       case FeedType.PUBLICTOP:
-        return FeedDetails._internal(
+        return FeedDetails(
           flags: Flags.guest,
           promoted: PromotionStatus.promoted,
           tags: null,
@@ -41,7 +54,7 @@ class FeedDetails {
         );
 
       case FeedType.PUBLICNEW:
-        return FeedDetails._internal(
+        return FeedDetails(
           flags: Flags.guest,
           promoted: PromotionStatus.none,
           tags: null,
@@ -49,7 +62,7 @@ class FeedDetails {
         );
 
       case FeedType.TOP:
-        return FeedDetails._internal(
+        return FeedDetails(
           flags: Flags.sfw,
           promoted: PromotionStatus.promoted,
           tags: null,
@@ -58,7 +71,7 @@ class FeedDetails {
 
       case FeedType.NEW:
       default:
-        return FeedDetails._internal(
+        return FeedDetails(
           flags: Flags.sfw,
           promoted: PromotionStatus.none,
           tags: null,

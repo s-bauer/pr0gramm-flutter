@@ -148,10 +148,13 @@ class _OverviewViewState extends State<OverviewView> {
     Navigator.push(
       context,
       new MaterialPageRoute(
-        builder: (context) => PostPageView(
-          index: index,
+        builder: (context) => FeedInherited(
           feed: currentFeed,
-        ),
+          child: PostPageView(
+            index: index,
+            feed: currentFeed,
+          ),
+        )
       ),
     );
   }

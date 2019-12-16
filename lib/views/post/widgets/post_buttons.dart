@@ -125,10 +125,23 @@ class _PostButtonsState extends State<PostButtons> {
   void initState() {
     _voteService.getVoteOfItem(widget.info.item).then((vote) {
       setState(() {
-        if (vote == Vote.up || vote == Vote.favorite)
+        if (vote == Vote.up || vote == Vote.favorite) {
           _upAnimationName = "voted";
-        if (vote == Vote.down) _downAnimationName = "voted";
-        if (vote == Vote.favorite) _favoriteAnimationName = "voted";
+          if(vote == Vote.up) {
+            _favoriteAnimationName = "unfocus";
+            _downAnimationName = "unfocus";
+          }
+        }
+        if (vote == Vote.down) {
+          _downAnimationName = "voted";
+          _favoriteAnimationName = "unfocus";
+          _upAnimationName = "unfocus";
+        }
+        if (vote == Vote.favorite) {
+          _favoriteAnimationName = "voted";
+          _upAnimationName = "unfocus";
+          _downAnimationName = "unfocus";
+        }
         currentVote = vote;
         init = false;
       });

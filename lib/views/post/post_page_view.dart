@@ -73,15 +73,14 @@ class _PostPageViewState extends State<PostPageView> {
       builder: (context, snapshot) {
         return SliverFillViewport(
           delegate: !snapshot.hasData
-              ? SliverChildListDelegate(
-                  [Center(child: CircularProgressIndicator())])
+              ? SliverChildListDelegate([Center(child: CircularProgressIndicator())])
               : SliverChildBuilderDelegate((context, index) {
                   return PostPage(
                     item: snapshot.data[index],
                     feed: widget.feed,
                     index: index,
                   );
-                }, childCount: snapshot.data.length),
+                }, childCount: snapshot.data.length,),
         );
       },
     );

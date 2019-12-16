@@ -24,13 +24,18 @@ class FeedDetails {
     );
   }
 
+  FeedDetails refresh() {
+    return this;
+  }
+
 
   factory FeedDetails.byFeedType(FeedType feedType) {
-    final bust = DateTime.now().millisecond / 1000.0;
+    final now = DateTime.now();
+    final bust = (now.millisecond * 1000 + now.microsecond) / 1000000.0;
 
     switch (feedType) {
       case FeedType.RANDOMTOP:
-        return FeedDetails(
+        return RandomFeedDetails(
           flags: Flags.sfw,
           promoted: PromotionStatus.promoted,
           tags: "!-(x:random | x:$bust)",
@@ -38,7 +43,7 @@ class FeedDetails {
         );
 
       case FeedType.RANDOMNEW:
-        return FeedDetails(
+        return RandomFeedDetails(
           flags: Flags.sfw,
           promoted: PromotionStatus.none,
           tags: "!-(x:random | x:$bust)",
@@ -78,5 +83,39 @@ class FeedDetails {
           name: "Neu",
         );
     }
+  }
+}
+
+class RandomFeedDetails extends FeedDetails {
+  RandomFeedDetails({
+    Flags flags,
+    PromotionStatus promoted,
+    String tags,
+    String name,
+  }) : super(
+          flags: flags,
+          promoted: promoted,
+          tags: tags,
+          name: name,
+        );
+
+
+  @override
+  FeedDetails copyWith({Flags flags, PromotionStatus promoted, String tags, String name}) {
+    return RandomFeedDetails(
+      flags: flags ?? this.flags,
+      promoted: promoted ?? this.promoted,
+      tags: tags ?? this.tags,
+      name: name ?? this.name,
+    );
+  }
+
+  @override
+  RandomFeedDetails refresh() {
+    final now = DateTime.now();
+    final bust = (now.millisecond * 1000 + now.microsecond) / 1000000.0;
+    final newTag = "!-(x:random | x:$bust)";
+
+    return copyWith(tags: newTag);
   }
 }

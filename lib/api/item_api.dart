@@ -35,7 +35,7 @@ class GetItemsConfiguration {
     return flagStr + promotedStr + rangeStr + tagStr;
   }
 
-  GetItemsConfiguration withValues({
+  GetItemsConfiguration copyWith({
     PromotionStatus promoted,
     Flags flags,
     ItemRange range,

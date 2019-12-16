@@ -8,10 +8,10 @@ import 'package:pr0gramm/services/item_provider.dart';
 import 'enums/feed_type.dart';
 
 class Feed {
-  final FeedDetails feedDetails;
+  FeedDetails feedDetails;
   final FeedType feedType;
 
-  final ItemProvider _itemProvider;
+  final ItemProvider _itemProvider = new ItemProvider();
 
   List<Item> _forwardList = [];
   List<Item> _backwardsList = [];
@@ -24,7 +24,7 @@ class Feed {
   Feed({
     @required this.feedDetails,
     @required this.feedType,
-  }) : _itemProvider = new ItemProvider(feedDetails) {
+  }) {
     refresh();
   }
 
@@ -37,7 +37,7 @@ class Feed {
   get backwardData => _backwardsList;
 
   Future loadForward() async {
-    final nextBatch = await _itemProvider.getOlderBatch();
+    final nextBatch = await _itemProvider.getOlderBatch(feedDetails);
     if (nextBatch != null) {
       _forwardList.addAll(nextBatch.items);
       _forwardStream.add(_forwardList);
@@ -45,7 +45,7 @@ class Feed {
   }
 
   Future loadBackwards() async {
-    final prevBatch = await _itemProvider.getNewerBatch();
+    final prevBatch = await _itemProvider.getNewerBatch(feedDetails);
     if (prevBatch != null) {
       _backwardsList.addAll(prevBatch.items);
       _backwardStream.add(_backwardsList);
@@ -53,7 +53,9 @@ class Feed {
   }
 
   Future refresh() async {
-    final firstBatch = await _itemProvider.getFirstBatch();
+    feedDetails = feedDetails.refresh();
+
+    final firstBatch = await _itemProvider.getFirstBatch(feedDetails);
 
     _backwardsList = null;
     _forwardList = firstBatch.items;

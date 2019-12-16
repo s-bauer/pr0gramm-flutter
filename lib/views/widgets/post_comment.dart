@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:pr0gramm/entities/enums/vote.dart';
 import 'package:pr0gramm/entities/linked_comment.dart';
 import 'package:pr0gramm/helpers/time_formatter.dart';
+import 'package:pr0gramm/services/vote_service.dart';
+import 'package:pr0gramm/views/post/widgets/vote_buttons.dart';
 import 'package:pr0gramm/views/widgets/user_mark.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -16,6 +19,8 @@ class PostComment extends StatefulWidget {
 }
 
 class _PostCommentState extends State<PostComment> {
+  final VoteService _voteService = VoteService.instance;
+
   @override
   Widget build(BuildContext context) {
     final padding = EdgeInsets.only(
@@ -56,6 +61,21 @@ class _PostCommentState extends State<PostComment> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                FutureBuilder<Vote>(
+                  future: _voteService
+                      .getCommentOfItem(widget.linkedComment.comment),
+                  builder: (BuildContext context, snapshot) {
+                    if (!snapshot.hasData)
+                      return Center(child: CircularProgressIndicator());
+                    return VoteButtons(
+                      initialVote: snapshot.data,
+                      withFavorite: false,
+                      size: 15,
+                      onVoteChange: (Vote vote) => _voteService.voteComment(
+                          widget.linkedComment.comment, vote),
+                    );
+                  },
+                ),
                 Column(
                   children: <Widget>[
                     SizedBox(

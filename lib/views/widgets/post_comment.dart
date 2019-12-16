@@ -1,3 +1,4 @@
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
@@ -22,14 +23,49 @@ class _PostCommentState extends State<PostComment> {
   Vote currentVote;
   final VoteService _voteService = VoteService.instance;
 
+  String _upAnimationName = "enabled";
+  String _downAnimationName = "enabled";
+
   Future voteComment(Vote vote) async {
     if (vote == currentVote) {
-        vote = Vote.none;
+      vote = Vote.none;
     }
 
     try {
       await _voteService.voteComment(widget.linkedComment.comment, vote);
       setState(() {
+        if (vote == Vote.down) {
+          if (currentVote == Vote.none)
+            _downAnimationName = "voteAll";
+          else
+            _downAnimationName = "vote";
+          _upAnimationName = "unfocus";
+
+          if (currentVote == Vote.up) {
+            _upAnimationName = "clear";
+          }
+        }
+        if (vote == Vote.none) {
+          _downAnimationName = "enabled";
+          _upAnimationName = "enabled";
+          if (currentVote == Vote.up) {
+            _upAnimationName = "clearAll";
+          }
+          if (currentVote == Vote.down) {
+            _downAnimationName = "clearAll";
+          }
+        }
+        if (vote == Vote.up) {
+          if (currentVote == Vote.none)
+            _upAnimationName = "voteAll";
+          else
+            _upAnimationName = "vote";
+          _downAnimationName = "unfocus";
+
+          if (currentVote == Vote.down) {
+            _downAnimationName = "clear";
+          }
+        }
         currentVote = vote;
       });
     } on Exception catch (e) {
@@ -38,20 +74,30 @@ class _PostCommentState extends State<PostComment> {
     }
   }
 
-
   @override
   void initState() {
     _voteService.getCommentOfItem(widget.linkedComment.comment).then((vote) {
       setState(() {
+        if (vote == Vote.up) {
+          _upAnimationName = "voted";
+          _downAnimationName = "unfocus";
+        }
+        if (vote == Vote.down) {
+          _downAnimationName = "voted";
+          _upAnimationName = "unfocus";
+        }
         currentVote = vote;
+        init = false;
       });
     });
     super.initState();
   }
 
+  bool init = true;
 
   @override
   Widget build(BuildContext context) {
+    if (init) return Center(child: CircularProgressIndicator());
     final padding = EdgeInsets.only(
       top: 5,
       left: 10.0,
@@ -95,26 +141,36 @@ class _PostCommentState extends State<PostComment> {
               children: <Widget>[
                 Column(
                   children: <Widget>[
-                    SizedBox(
-                        height: 15.0,
-                        width: 15.0,
-                        child: IconButton(
-                          padding: EdgeInsets.all(0),
-                          iconSize: 12,
-                          icon: Icon(Icons.add_circle_outline),
-                          color: currentVote == Vote.up ? votedColor : enabledColor,
-                          onPressed: () => voteComment(Vote.up),
-                        )),
-                    SizedBox(
-                        height: 15.0,
-                        width: 15.0,
-                        child: IconButton(
-                          padding: EdgeInsets.all(0),
-                          iconSize: 12,
-                          color:  currentVote == Vote.down ? Colors.white : enabledColor,
-                          icon: Icon(Icons.remove_circle_outline),
-                          onPressed: () => voteComment(Vote.down),
-                        )),
+                    Padding(
+                      padding: EdgeInsets.only(top: 2),
+                      child: SizedBox(
+                        width: 15,
+                        height: 15,
+                        child: GestureDetector(
+                          onTap: () => voteComment(Vote.up),
+                          child: FlareActor(
+                            'assets/vote_add.flr',
+                            animation: _upAnimationName,
+                            fit: BoxFit.fitWidth,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 2, left: 1),
+                      child: SizedBox(
+                        width: 15,
+                        height: 15,
+                        child: GestureDetector(
+                          onTap: () => voteComment(Vote.down),
+                          child: FlareActor(
+                            'assets/vote_remove.flr',
+                            animation: _downAnimationName,
+                            fit: BoxFit.fitWidth,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 SizedBox(width: 5),

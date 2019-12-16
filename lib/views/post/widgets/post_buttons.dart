@@ -50,7 +50,12 @@ class _PostButtonsState extends State<PostButtons> {
       await _voteService.voteItem(widget.info.item, vote);
       setState(() {
         if (vote == Vote.down) {
-          _downAnimationName = "vote";
+          if (currentVote == Vote.none)
+            _downAnimationName = "voteAll";
+          else
+            _downAnimationName = "vote";
+          _upAnimationName = "unfocus";
+          _favoriteAnimationName = "unfocus";
           if (currentVote == Vote.favorite) {
             _upAnimationName = "clear";
             _favoriteAnimationName = "clear";
@@ -60,19 +65,27 @@ class _PostButtonsState extends State<PostButtons> {
           }
         }
         if (vote == Vote.none) {
+          _downAnimationName = "enabled";
+          _upAnimationName = "enabled";
+          _favoriteAnimationName = "enabled";
           if (currentVote == Vote.favorite) {
-            _upAnimationName = "clear";
-            _favoriteAnimationName = "clear";
+            _upAnimationName = "clearAll";
+            _favoriteAnimationName = "clearAll";
           }
           if (currentVote == Vote.up) {
-            _upAnimationName = "clear";
+            _upAnimationName = "clearAll";
           }
           if (currentVote == Vote.down) {
-            _downAnimationName = "clear";
+            _downAnimationName = "clearAll";
           }
         }
         if (vote == Vote.up) {
-          _upAnimationName = "vote";
+          if (currentVote == Vote.none)
+            _upAnimationName = "voteAll";
+          else
+            _upAnimationName = "vote";
+          _downAnimationName = "unfocus";
+          _favoriteAnimationName = "unfocus";
           if (currentVote == Vote.favorite) {
             _upAnimationName = "voted";
             _favoriteAnimationName = "clear";
@@ -82,9 +95,17 @@ class _PostButtonsState extends State<PostButtons> {
           }
         }
         if (vote == Vote.favorite) {
-          _favoriteAnimationName = "vote";
+          if (currentVote == Vote.none)
+            _favoriteAnimationName = "voteAll";
+          else
+            _favoriteAnimationName = "vote";
+          _downAnimationName = "unfocus";
+          _upAnimationName = "unfocus";
           if (currentVote != Vote.up) {
-            _upAnimationName = "vote";
+            if (currentVote == Vote.none)
+              _upAnimationName = "voteAll";
+            else
+              _upAnimationName = "vote";
           } else {
             _upAnimationName = "voted";
           }

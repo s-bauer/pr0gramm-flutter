@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:pr0gramm/entities/linked_comment.dart';
 import 'package:pr0gramm/helpers/time_formatter.dart';
+import 'package:pr0gramm/services/vote_service.dart';
 import 'package:pr0gramm/views/widgets/user_mark.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../entities/enums/vote.dart';
 
 class PostComment extends StatefulWidget {
   final LinkedComment linkedComment;
@@ -16,6 +19,37 @@ class PostComment extends StatefulWidget {
 }
 
 class _PostCommentState extends State<PostComment> {
+  Vote currentVote;
+  final VoteService _voteService = VoteService.instance;
+
+  Future voteComment(Vote vote) async {
+    if (vote == currentVote) {
+        vote = Vote.none;
+    }
+
+    try {
+      await _voteService.voteComment(widget.linkedComment.comment, vote);
+      setState(() {
+        currentVote = vote;
+      });
+    } on Exception catch (e) {
+      print(e);
+      // ignore for now
+    }
+  }
+
+
+  @override
+  void initState() {
+    _voteService.getCommentOfItem(widget.linkedComment.comment).then((vote) {
+      setState(() {
+        currentVote = vote;
+      });
+    });
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final padding = EdgeInsets.only(
@@ -41,6 +75,9 @@ class _PostCommentState extends State<PostComment> {
     final points =
         widget.linkedComment.comment.up - widget.linkedComment.comment.down;
 
+    final votedColor = new Color(0xffee4d2e);
+    final enabledColor = Colors.white60;
+
     final commentsColumn = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -65,8 +102,8 @@ class _PostCommentState extends State<PostComment> {
                           padding: EdgeInsets.all(0),
                           iconSize: 12,
                           icon: Icon(Icons.add_circle_outline),
-                          color: Colors.white,
-                          onPressed: () {},
+                          color: currentVote == Vote.up ? votedColor : enabledColor,
+                          onPressed: () => voteComment(Vote.up),
                         )),
                     SizedBox(
                         height: 15.0,
@@ -74,9 +111,9 @@ class _PostCommentState extends State<PostComment> {
                         child: IconButton(
                           padding: EdgeInsets.all(0),
                           iconSize: 12,
-                          color: Colors.white,
+                          color:  currentVote == Vote.down ? Colors.white : enabledColor,
                           icon: Icon(Icons.remove_circle_outline),
-                          onPressed: () {},
+                          onPressed: () => voteComment(Vote.down),
                         )),
                   ],
                 ),

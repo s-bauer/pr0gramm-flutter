@@ -125,9 +125,6 @@ class _PostButtonsState extends State<PostButtons> {
           _downAnimationName = _favoriteAnimationName = "disabled";
     }
     if (init) return Center(child: CircularProgressIndicator());
-    print("up: $_upAnimationName");
-    print("down: $_downAnimationName");
-    print("fav: $_favoriteAnimationName");
     return Padding(
       padding: EdgeInsets.only(top: 5),
       child: Row(

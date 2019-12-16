@@ -33,6 +33,8 @@ class _PostButtonsState extends State<PostButtons> {
   Vote currentVote;
   String _upAnimationName = "enabled";
 
+  String _downAnimationName = "enabled";
+
   Future voteItem(Vote vote) async {
     if (vote == currentVote) {
       if (vote == Vote.favorite) {
@@ -47,10 +49,19 @@ class _PostButtonsState extends State<PostButtons> {
     try {
       await _voteService.voteItem(widget.info.item, vote);
       setState(() {
-        if ((currentVote == Vote.favorite || currentVote == Vote.up) &&
-            (vote == Vote.none || vote == Vote.down))
+        if (currentVote == Vote.up && vote != Vote.up && vote != Vote.favorite)
           _upAnimationName = "clear";
-        if (vote == Vote.up) _upAnimationName = "vote";
+        if (vote == Vote.up ||
+            currentVote != Vote.up &&
+                currentVote != Vote.favorite &&
+                vote == Vote.favorite) _upAnimationName = "vote";
+
+        if (currentVote == Vote.down && vote != Vote.down)
+          _downAnimationName = "clear";
+        if (vote == Vote.down) _downAnimationName = "vote";
+
+        if(currentVote == Vote.favorite && vote != Vote.up)
+          _upAnimationName = "clear";
         currentVote = vote;
       });
     } on Exception catch (e) {
@@ -64,6 +75,7 @@ class _PostButtonsState extends State<PostButtons> {
     _voteService.getVoteOfItem(widget.info.item).then((vote) {
       setState(() {
         if (vote == Vote.up) _upAnimationName = "voted";
+        if (vote == Vote.down) _downAnimationName = "voted";
         currentVote = vote;
       });
     });
@@ -93,11 +105,19 @@ class _PostButtonsState extends State<PostButtons> {
             ),
           ),
         ),
-        IconButton(
-          color: currentVote == Vote.down ? Colors.white : enabledColor,
-          icon: Icon(Icons.remove_circle_outline),
-          onPressed: loggedIn ? () => voteItem(Vote.down) : null,
-          disabledColor: disabledColor,
+        Center(
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: GestureDetector(
+              onTap: () => voteItem(Vote.down),
+              child: FlareActor(
+                'assets/rotating_remove.flr',
+                animation: _downAnimationName,
+                fit: BoxFit.fitWidth,
+              ),
+            ),
+          ),
         ),
         IconButton(
           color: currentVote == Vote.favorite ? votedColor : enabledColor,

@@ -16,14 +16,14 @@ const postTimeTextStyle = const TextStyle(
   color: Colors.white70,
 );
 
-
 class OPInfo extends StatelessWidget {
   final Item item;
+
   OPInfo({Key key, this.item}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return         Expanded(
+    return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

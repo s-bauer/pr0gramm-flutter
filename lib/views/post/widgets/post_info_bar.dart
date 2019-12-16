@@ -7,23 +7,16 @@ import 'package:pr0gramm/views/post/widgets/op_info.dart';
 import 'package:pr0gramm/views/post/widgets/post_buttons.dart';
 import 'package:pr0gramm/widgets/global_inherited.dart';
 
-class ItemDetail extends StatefulWidget {
+class PostInfoBar extends StatelessWidget {
   final Item item;
 
-  ItemDetail({Key key, this.item}) : super(key: key);
-
-  @override
-  _ItemDetailState createState() => _ItemDetailState();
-}
-
-class _ItemDetailState extends State<ItemDetail> {
-
+  PostInfoBar({Key key, this.item}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        PostButtons(item: widget.item, direction: Axis.horizontal,),
+        PostButtons(item: item, direction: Axis.horizontal,),
         Container(
           height: 30.0,
           width: 1.0,
@@ -31,7 +24,7 @@ class _ItemDetailState extends State<ItemDetail> {
           margin: const EdgeInsets.only(left: 10.0, right: 20.0),
         ),
         OPInfo(
-          item: widget.item,
+          item: item,
         ),
       ],
     );

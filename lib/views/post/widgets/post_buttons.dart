@@ -67,32 +67,33 @@ class _PostButtonsState extends State<PostButtons> {
   Widget build(BuildContext context) {
     final loggedIn = GlobalInherited.of(context).isLoggedIn;
     final votedColor = new Color(0xffee4d2e);
-
+    final enabledColor = Colors.white60;
+    final disabledColor = Colors.white30;
     return Row(
       children: [
         IconButton(
           icon: Icon(Icons.add_circle_outline),
           color: currentVote == Vote.up || currentVote == Vote.favorite
               ? votedColor
-              : Colors.white,
+              : enabledColor,
           onPressed: loggedIn ? () => voteItem(Vote.up) : null,
-          disabledColor: Colors.white30,
+          disabledColor: disabledColor,
         ),
         IconButton(
-          color: currentVote == Vote.down ? votedColor : Colors.white,
+          color: currentVote == Vote.down ? Colors.white : enabledColor,
           icon: Icon(Icons.remove_circle_outline),
           onPressed: loggedIn ? () => voteItem(Vote.down) : null,
-          disabledColor: Colors.white30,
+          disabledColor: disabledColor,
         ),
         IconButton(
-          color: currentVote == Vote.favorite ? votedColor : Colors.white,
+          color: currentVote == Vote.favorite ? votedColor : enabledColor,
           icon: Icon(
             currentVote == Vote.favorite
                 ? Icons.favorite
                 : Icons.favorite_border,
           ),
           onPressed: loggedIn ? () => voteItem(Vote.favorite) : null,
-          disabledColor: Colors.white30,
+          disabledColor: disabledColor,
         ),
         Container(
           height: 30.0,

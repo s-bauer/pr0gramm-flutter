@@ -49,46 +49,46 @@ class _PostButtonsState extends State<PostButtons> {
     try {
       await _voteService.voteItem(widget.info.item, vote);
       setState(() {
-        if(vote == Vote.down) {
+        if (vote == Vote.down) {
           _downAnimationName = "vote";
-          if(currentVote == Vote.favorite){
+          if (currentVote == Vote.favorite) {
             _upAnimationName = "clear";
             _favoriteAnimationName = "clear";
           }
-          if(currentVote == Vote.up){
+          if (currentVote == Vote.up) {
             _upAnimationName = "clear";
           }
         }
-        if(vote == Vote.none) {
-          if(currentVote == Vote.favorite){
+        if (vote == Vote.none) {
+          if (currentVote == Vote.favorite) {
             _upAnimationName = "clear";
             _favoriteAnimationName = "clear";
           }
-          if(currentVote == Vote.up){
+          if (currentVote == Vote.up) {
             _upAnimationName = "clear";
           }
-          if(currentVote == Vote.down){
+          if (currentVote == Vote.down) {
             _downAnimationName = "clear";
           }
         }
-        if(vote == Vote.up) {
+        if (vote == Vote.up) {
           _upAnimationName = "vote";
-          if(currentVote == Vote.favorite){
+          if (currentVote == Vote.favorite) {
             _upAnimationName = "voted";
             _favoriteAnimationName = "clear";
           }
-          if(currentVote == Vote.down){
+          if (currentVote == Vote.down) {
             _downAnimationName = "clear";
           }
         }
-        if(vote == Vote.favorite) {
+        if (vote == Vote.favorite) {
           _favoriteAnimationName = "vote";
-          if(currentVote != Vote.up){
+          if (currentVote != Vote.up) {
             _upAnimationName = "vote";
           } else {
             _upAnimationName = "voted";
           }
-          if(currentVote == Vote.down){
+          if (currentVote == Vote.down) {
             _downAnimationName = "clear";
           }
         }
@@ -128,124 +128,136 @@ class _PostButtonsState extends State<PostButtons> {
     print("up: $_upAnimationName");
     print("down: $_downAnimationName");
     print("fav: $_favoriteAnimationName");
-    return Row(
-      children: [
-        Center(
-          child: SizedBox(
-            width: 24,
-            height: 24,
-            child: GestureDetector(
-              onTap: () => voteItem(Vote.up),
-              child: FlareActor(
-                'assets/vote_add.flr',
-                animation: _upAnimationName,
-                fit: BoxFit.fitWidth,
-              ),
-            ),
-          ),
-        ),
-        Center(
-          child: SizedBox(
-            width: 24,
-            height: 24,
-            child: GestureDetector(
-              onTap: () => voteItem(Vote.down),
-              child: FlareActor(
-                'assets/vote_remove.flr',
-                animation: _downAnimationName,
-                fit: BoxFit.fitWidth,
-              ),
-            ),
-          ),
-        ),
-        Center(
-          child: SizedBox(
-            width: 24,
-            height: 24,
-            child: GestureDetector(
-              onTap: () => voteItem(Vote.favorite),
-              child: FlareActor(
-                'assets/vote_favorite.flr',
-                animation: _favoriteAnimationName,
-                fit: BoxFit.fitWidth,
-              ),
-            ),
-          ),
-        ),
-        Container(
-          height: 30.0,
-          width: 1.0,
-          color: Colors.white30,
-          margin: const EdgeInsets.only(left: 10.0, right: 20.0),
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(bottom: 3),
-                child: Row(
-                  children: [
-                    Text(
-                      widget.info.item.user,
-                      style: authorTextStyle,
-                    ),
-                    UserMarkWidget(
-                      userMark: widget.info.item.mark,
-                      radius: 2.5,
-                    )
-                  ],
+    return Padding(
+      padding: EdgeInsets.only(top: 5),
+      child: Row(
+        children: [
+          Center(
+            child: Padding(
+              padding: EdgeInsets.all(5),
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: GestureDetector(
+                  onTap: () => voteItem(Vote.up),
+                  child: FlareActor(
+                    'assets/vote_add.flr',
+                    animation: _upAnimationName,
+                    fit: BoxFit.fitWidth,
+                  ),
                 ),
               ),
-              Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: 2),
-                    child: Center(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Icon(
-                          Icons.add_circle,
-                          size: 8,
-                          color: Colors.white70,
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: EdgeInsets.all(5),
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: GestureDetector(
+                  onTap: () => voteItem(Vote.down),
+                  child: FlareActor(
+                    'assets/vote_remove.flr',
+                    animation: _downAnimationName,
+                    fit: BoxFit.fitWidth,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: EdgeInsets.all(5),
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: GestureDetector(
+                  onTap: () => voteItem(Vote.favorite),
+                  child: FlareActor(
+                    'assets/vote_favorite.flr',
+                    animation: _favoriteAnimationName,
+                    fit: BoxFit.fitWidth,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Container(
+            height: 30.0,
+            width: 1.0,
+            color: Colors.white30,
+            margin: const EdgeInsets.only(left: 10.0, right: 15.0),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(bottom: 3),
+                  child: Row(
+                    children: [
+                      Text(
+                        widget.info.item.user,
+                        style: authorTextStyle,
+                      ),
+                      UserMarkWidget(
+                        userMark: widget.info.item.mark,
+                        radius: 2.5,
+                      )
+                    ],
+                  ),
+                ),
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 2),
+                      child: Center(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Icon(
+                            Icons.add_circle,
+                            size: 8,
+                            color: Colors.white70,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(right: 4),
-                    child: Text(
-                      "${widget.info.item.up - widget.info.item.down} Benis",
+                    Padding(
+                      padding: EdgeInsets.only(right: 4),
+                      child: Text(
+                        "${widget.info.item.up - widget.info.item.down} Benis",
+                        style: postTimeTextStyle,
+                        softWrap: true,
+                        overflow: TextOverflow.visible,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(right: 2),
+                      child: Center(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Icon(
+                            Icons.watch_later,
+                            size: 8,
+                            color: Colors.white70,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Text(
+                      formatTime(widget.info.item.created * 1000),
                       style: postTimeTextStyle,
                       softWrap: true,
                       overflow: TextOverflow.visible,
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(right: 2),
-                    child: Center(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Icon(
-                          Icons.watch_later,
-                          size: 8,
-                          color: Colors.white70,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Text(
-                    formatTime(widget.info.item.created * 1000),
-                    style: postTimeTextStyle,
-                    softWrap: true,
-                    overflow: TextOverflow.visible,
-                  ),
-                ],
-              )
-            ],
-          ),
-        )
-      ],
+                  ],
+                )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

@@ -17,6 +17,8 @@ class _MyScaffoldState extends State<MyScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    bool isSearchRoute = ModalRoute.of(context).settings?.name == "/search";
+
     return NotificationListener<EndSearchNotification>(
       onNotification: onEndSearchNotification,
       child: NotificationListener<StartSearchNotification>(
@@ -24,7 +26,7 @@ class _MyScaffoldState extends State<MyScaffold> {
         child: Scaffold(
           backgroundColor: Colors.black45,
           appBar: isSearching ? MySearchBar() : MyAppBar(),
-          drawer: CustomDrawer(),
+          drawer: isSearchRoute ? null : CustomDrawer(),
           body: RefreshIndicator(
             onRefresh: FeedInherited.of(context).feed.refresh,
             child: widget.body,

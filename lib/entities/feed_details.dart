@@ -8,16 +8,15 @@ class FeedDetails {
   final String tags;
   final String name;
 
-  FeedDetails._internal({this.flags, this.promoted, this.tags, this.name});
+  FeedDetails({this.flags, this.promoted, this.tags, this.name});
 
-  FeedDetails.custom({this.flags, this.promoted, this.tags, this.name});
-
-  FeedDetails refresh() {
-    return this;
-  }
-
-  FeedDetails copyWith({Flags flags, PromotionStatus promoted, String tags, String name}) {
-    return FeedDetails._internal(
+  FeedDetails copyWith({
+    Flags flags,
+    PromotionStatus promoted,
+    String tags,
+    String name,
+  }) {
+    return FeedDetails(
       flags: flags ?? this.flags,
       promoted: promoted ?? this.promoted,
       tags: tags ?? this.tags,
@@ -25,7 +24,12 @@ class FeedDetails {
     );
   }
 
-  factory FeedDetails(FeedType feedType) {
+  FeedDetails refresh() {
+    return this;
+  }
+
+
+  factory FeedDetails.byFeedType(FeedType feedType) {
     final now = DateTime.now();
     final bust = (now.millisecond * 1000 + now.microsecond) / 1000000.0;
 
@@ -47,7 +51,7 @@ class FeedDetails {
         );
 
       case FeedType.PUBLICTOP:
-        return FeedDetails._internal(
+        return FeedDetails(
           flags: Flags.guest,
           promoted: PromotionStatus.promoted,
           tags: null,
@@ -55,7 +59,7 @@ class FeedDetails {
         );
 
       case FeedType.PUBLICNEW:
-        return FeedDetails._internal(
+        return FeedDetails(
           flags: Flags.guest,
           promoted: PromotionStatus.none,
           tags: null,
@@ -63,7 +67,7 @@ class FeedDetails {
         );
 
       case FeedType.TOP:
-        return FeedDetails._internal(
+        return FeedDetails(
           flags: Flags.sfw,
           promoted: PromotionStatus.promoted,
           tags: null,
@@ -72,7 +76,7 @@ class FeedDetails {
 
       case FeedType.NEW:
       default:
-        return FeedDetails._internal(
+        return FeedDetails(
           flags: Flags.sfw,
           promoted: PromotionStatus.none,
           tags: null,
@@ -88,7 +92,7 @@ class RandomFeedDetails extends FeedDetails {
     PromotionStatus promoted,
     String tags,
     String name,
-  }) : super._internal(
+  }) : super(
           flags: flags,
           promoted: promoted,
           tags: tags,

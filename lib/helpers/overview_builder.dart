@@ -13,7 +13,7 @@ class OverviewBuilder {
   OverviewBuilder._();
 
   Widget buildByType(FeedType type) {
-    final feedDetails = new FeedDetails(type);
+    final feedDetails = new FeedDetails.byFeedType(type);
     return buildByDetails(feedDetails, type);
   }
 
@@ -31,7 +31,7 @@ class OverviewBuilder {
         .settings
         .arguments;
 
-    final feedDetails = new FeedDetails.custom(
+    final feedDetails = new FeedDetails(
       flags: Flags.sfw,
       promoted: arguments.baseType == FeedType.TOP
           ? PromotionStatus.promoted

@@ -4,6 +4,7 @@ import 'package:pr0gramm/api/dtos/item/item.dart';
 import 'package:pr0gramm/entities/feed.dart';
 import 'package:pr0gramm/services/my_image_provider.dart';
 import 'package:pr0gramm/views/post/post_page_view.dart';
+import 'package:pr0gramm/views/widgets/drawer.dart';
 
 class FeedInherited extends InheritedWidget {
   final Feed feed;
@@ -49,12 +50,15 @@ class _OverviewViewState extends State<OverviewView> {
       initialData: currentFeed.forwardData,
       builder: (context, snapshot) {
         final grid = SliverGrid(
-          gridDelegate:
-              new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+          gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            crossAxisSpacing: 3,
+            mainAxisSpacing: 3,
+          ),
           delegate: new SliverChildBuilderDelegate(
-              (context, index) =>
-                  buildItem(context, snapshot.data[index], index),
-              childCount: snapshot.data?.length ?? 0),
+            (context, index) => buildItem(context, snapshot.data[index], index),
+            childCount: snapshot.data?.length ?? 0,
+          ),
         );
 
         final circ = SliverFillViewport(
@@ -87,14 +91,20 @@ class _OverviewViewState extends State<OverviewView> {
       },
     );
 
-    return RefreshIndicator(
-      onRefresh: currentFeed.refresh,
-      child: CustomScrollView(
-        controller: _controller,
-        center: widget._centerKey,
-        slivers: <Widget>[backwardsBuilder, forwardBuilder],
-      ),
-    );
+    return Scaffold(
+        backgroundColor: Colors.black45,
+        appBar: AppBar(
+          title: Text(FeedInherited.of(context).feed.feedDetails.name),
+        ),
+        drawer: CustomDrawer(),
+        body: RefreshIndicator(
+          onRefresh: currentFeed.refresh,
+          child: CustomScrollView(
+            controller: _controller,
+            center: widget._centerKey,
+            slivers: <Widget>[backwardsBuilder, forwardBuilder],
+          ),
+        ));
   }
 
   @override

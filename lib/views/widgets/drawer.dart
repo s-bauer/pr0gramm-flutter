@@ -31,15 +31,55 @@ class CustomDrawer extends Drawer {
       ),
     );
 
-    return Drawer(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [isLoggedIn ? loginButton : logoutButton],
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.6,
+      child: Drawer(
+        elevation: 0,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text("pr0gramm"),
+              decoration: BoxDecoration(color: Colors.black45),
+            ),
+            buildRouteButton(context, "TOP", "/top", Icons.home),
+            buildRouteButton(context, "NEW", "/new", Icons.trending_up),
+            buildRouteButton(context, "Zufall", "/random", Icons.shuffle),
+            Divider(),
+            isLoggedIn ? loginButton : logoutButton,
+          ],
+        ),
       ),
     );
   }
 
-  logOut(BuildContext context) {
+  Widget buildRouteButton(
+    BuildContext context,
+    String name,
+    String route,
+    IconData icon,
+  ) {
+    final currentRoute = ModalRoute.of(context).settings.name;
+
+    final color =
+        currentRoute == route ? Theme.of(context).primaryColor : Colors.black;
+
+    return FlatButton(
+      child: Row(
+        children: <Widget>[
+          Icon(icon, color: color),
+          Text(name, style: TextStyle(color: color)),
+        ],
+      ),
+      onPressed: () => navigateTo(context, route),
+    );
+  }
+
+  void navigateTo(BuildContext context, String route) {
+    Navigator.popAndPushNamed(context, route);
+  }
+
+  void logOut(BuildContext context) {
     final apiClient = ApiClient();
     apiClient.logout();
     GlobalInherited.of(context).onStatusChange(false, null);

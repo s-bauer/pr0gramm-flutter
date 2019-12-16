@@ -4,18 +4,19 @@ import 'package:pr0gramm/entities/enums/vote.dart';
 import 'package:pr0gramm/services/vote_service.dart';
 import 'package:pr0gramm/widgets/global_inherited.dart';
 
-class PostButtons extends StatefulWidget {
+class VoteButtons extends StatefulWidget {
   final Item item;
   final Axis direction;
 
-
-  PostButtons({Key key, this.item, this.direction}) : super(key: key);
+  VoteButtons({Key key, this.item, bool withFavorite = true})
+      : direction = withFavorite ? Axis.horizontal : Axis.vertical,
+        super(key: key);
 
   @override
-  _PostButtonsState createState() => _PostButtonsState();
+  _VoteButtonsState createState() => _VoteButtonsState();
 }
 
-class _PostButtonsState extends State<PostButtons> {
+class _VoteButtonsState extends State<VoteButtons> {
   final VoteService _voteService = VoteService.instance;
   Vote currentVote;
 

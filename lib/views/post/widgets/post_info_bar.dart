@@ -4,7 +4,7 @@ import 'package:pr0gramm/entities/enums/vote.dart';
 import 'package:pr0gramm/entities/post_info.dart';
 import 'package:pr0gramm/services/vote_service.dart';
 import 'package:pr0gramm/views/post/widgets/op_info.dart';
-import 'package:pr0gramm/views/post/widgets/post_buttons.dart';
+import 'package:pr0gramm/views/post/widgets/vote_buttons.dart';
 import 'package:pr0gramm/widgets/global_inherited.dart';
 
 class PostInfoBar extends StatelessWidget {
@@ -16,7 +16,7 @@ class PostInfoBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        PostButtons(item: item, direction: Axis.horizontal,),
+        VoteButtons(item: item, withFavorite: true,),
         Container(
           height: 30.0,
           width: 1.0,

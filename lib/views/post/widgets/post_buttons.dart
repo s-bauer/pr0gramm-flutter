@@ -49,23 +49,49 @@ class _PostButtonsState extends State<PostButtons> {
     try {
       await _voteService.voteItem(widget.info.item, vote);
       setState(() {
-        if (currentVote == Vote.up && vote != Vote.up && vote != Vote.favorite)
-          _upAnimationName = "clear";
-        if (vote == Vote.up ||
-            currentVote != Vote.up &&
-                currentVote != Vote.favorite &&
-                vote == Vote.favorite) _upAnimationName = "vote";
-
-        if (currentVote == Vote.down && vote != Vote.down)
-          _downAnimationName = "clear";
-        if (vote == Vote.down) _downAnimationName = "vote";
-
-        if (currentVote == Vote.favorite) {
-          if (vote != Vote.favorite) _favoriteAnimationName = "clear";
-          if (vote != Vote.up) _upAnimationName = "clear";
+        if(vote == Vote.down) {
+          _downAnimationName = "vote";
+          if(currentVote == Vote.favorite){
+            _upAnimationName = "clear";
+            _favoriteAnimationName = "clear";
+          }
+          if(currentVote == Vote.up){
+            _upAnimationName = "clear";
+          }
         }
-        if (vote == Vote.favorite) _favoriteAnimationName = "vote";
-
+        if(vote == Vote.none) {
+          if(currentVote == Vote.favorite){
+            _upAnimationName = "clear";
+            _favoriteAnimationName = "clear";
+          }
+          if(currentVote == Vote.up){
+            _upAnimationName = "clear";
+          }
+          if(currentVote == Vote.down){
+            _downAnimationName = "clear";
+          }
+        }
+        if(vote == Vote.up) {
+          _upAnimationName = "vote";
+          if(currentVote == Vote.favorite){
+            _upAnimationName = "voted";
+            _favoriteAnimationName = "clear";
+          }
+          if(currentVote == Vote.down){
+            _downAnimationName = "clear";
+          }
+        }
+        if(vote == Vote.favorite) {
+          _favoriteAnimationName = "vote";
+          if(currentVote != Vote.up){
+            _upAnimationName = "vote";
+          } else {
+            _upAnimationName = "voted";
+          }
+          if(currentVote == Vote.down){
+            _downAnimationName = "clear";
+          }
+        }
         currentVote = vote;
       });
     } on Exception catch (e) {
@@ -78,17 +104,18 @@ class _PostButtonsState extends State<PostButtons> {
   void initState() {
     _voteService.getVoteOfItem(widget.info.item).then((vote) {
       setState(() {
-        if (vote == Vote.up) _upAnimationName = "voted";
-        if (vote == Vote.down) _downAnimationName = "voted";
-        if (vote == Vote.favorite) {
+        if (vote == Vote.up || vote == Vote.favorite)
           _upAnimationName = "voted";
-          _favoriteAnimationName = "voted";
-        }
+        if (vote == Vote.down) _downAnimationName = "voted";
+        if (vote == Vote.favorite) _favoriteAnimationName = "voted";
         currentVote = vote;
+        init = false;
       });
     });
     super.initState();
   }
+
+  bool init = true;
 
   @override
   Widget build(BuildContext context) {
@@ -97,9 +124,10 @@ class _PostButtonsState extends State<PostButtons> {
       _upAnimationName =
           _downAnimationName = _favoriteAnimationName = "disabled";
     }
-    final votedColor = new Color(0xffee4d2e);
-    final enabledColor = Colors.white60;
-    final disabledColor = Colors.white30;
+    if (init) return Center(child: CircularProgressIndicator());
+    print("up: $_upAnimationName");
+    print("down: $_downAnimationName");
+    print("fav: $_favoriteAnimationName");
     return Row(
       children: [
         Center(
@@ -109,7 +137,7 @@ class _PostButtonsState extends State<PostButtons> {
             child: GestureDetector(
               onTap: () => voteItem(Vote.up),
               child: FlareActor(
-                'assets/rotating_add.flr',
+                'assets/vote_add.flr',
                 animation: _upAnimationName,
                 fit: BoxFit.fitWidth,
               ),
@@ -123,7 +151,7 @@ class _PostButtonsState extends State<PostButtons> {
             child: GestureDetector(
               onTap: () => voteItem(Vote.down),
               child: FlareActor(
-                'assets/rotating_remove.flr',
+                'assets/vote_remove.flr',
                 animation: _downAnimationName,
                 fit: BoxFit.fitWidth,
               ),
@@ -137,7 +165,7 @@ class _PostButtonsState extends State<PostButtons> {
             child: GestureDetector(
               onTap: () => voteItem(Vote.favorite),
               child: FlareActor(
-                'assets/rotating_favorite.flr',
+                'assets/vote_favorite.flr',
                 animation: _favoriteAnimationName,
                 fit: BoxFit.fitWidth,
               ),

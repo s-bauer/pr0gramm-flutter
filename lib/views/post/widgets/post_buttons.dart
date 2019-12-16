@@ -6,10 +6,8 @@ import 'package:pr0gramm/widgets/global_inherited.dart';
 
 class PostButtons extends StatefulWidget {
   final Item item;
-  final Axis direction;
 
-
-  PostButtons({Key key, this.item, this.direction}) : super(key: key);
+  PostButtons({Key key, this.item}) : super(key: key);
 
   @override
   _PostButtonsState createState() => _PostButtonsState();
@@ -56,8 +54,7 @@ class _PostButtonsState extends State<PostButtons> {
     final loggedIn = GlobalInherited.of(context).isLoggedIn;
     final votedColor = new Color(0xffee4d2e);
 
-    return Flex(
-      direction: widget.direction,
+    return Row(
       children: [
         IconButton(
           icon: Icon(Icons.add_circle_outline),

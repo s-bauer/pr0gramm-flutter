@@ -9,11 +9,12 @@ class VoteButtons<T> extends StatefulWidget {
   final double size;
   final Axis direction;
   final VoteChangedHandler onVoteChange;
+  final bool withFavorite;
 
   VoteButtons({
     Key key,
     this.initialVote,
-    bool withFavorite,
+    this.withFavorite,
     this.size,
     this.onVoteChange,
   })  : direction = withFavorite ? Axis.horizontal : Axis.vertical,
@@ -85,8 +86,9 @@ class _VoteButtonsState extends State<VoteButtons> {
     var voteButtons = <Widget>[
       upVoteButton,
       downVoteButton,
-      favoriteVoteButton,
     ];
+
+    if (widget.withFavorite) voteButtons.add(favoriteVoteButton);
 
     if (widget.size != null) {
       voteButtons = List.from(voteButtons.map((btn) => SizedBox(

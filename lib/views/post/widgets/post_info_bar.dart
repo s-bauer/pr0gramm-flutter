@@ -7,12 +7,12 @@ import 'package:pr0gramm/views/post/widgets/vote_buttons.dart';
 
 class PostInfoBar extends StatelessWidget {
   final Item item;
+  final VoteService _voteService = VoteService.instance;
 
   PostInfoBar({Key key, this.item}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final VoteService _voteService = VoteService.instance;
     return Row(
       children: [
         FutureBuilder<Vote>(

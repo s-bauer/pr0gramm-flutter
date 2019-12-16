@@ -32,8 +32,8 @@ class _PostButtonsState extends State<PostButtons> {
   final VoteService _voteService = VoteService.instance;
   Vote currentVote;
   String _upAnimationName = "enabled";
-
   String _downAnimationName = "enabled";
+  String _favoriteAnimationName = "enabled";
 
   Future voteItem(Vote vote) async {
     if (vote == currentVote) {
@@ -60,8 +60,12 @@ class _PostButtonsState extends State<PostButtons> {
           _downAnimationName = "clear";
         if (vote == Vote.down) _downAnimationName = "vote";
 
-        if(currentVote == Vote.favorite && vote != Vote.up)
-          _upAnimationName = "clear";
+        if (currentVote == Vote.favorite) {
+          if (vote != Vote.favorite) _favoriteAnimationName = "clear";
+          if (vote != Vote.up) _upAnimationName = "clear";
+        }
+        if (vote == Vote.favorite) _favoriteAnimationName = "vote";
+
         currentVote = vote;
       });
     } on Exception catch (e) {
@@ -76,6 +80,10 @@ class _PostButtonsState extends State<PostButtons> {
       setState(() {
         if (vote == Vote.up) _upAnimationName = "voted";
         if (vote == Vote.down) _downAnimationName = "voted";
+        if (vote == Vote.favorite) {
+          _upAnimationName = "voted";
+          _favoriteAnimationName = "voted";
+        }
         currentVote = vote;
       });
     });
@@ -85,7 +93,10 @@ class _PostButtonsState extends State<PostButtons> {
   @override
   Widget build(BuildContext context) {
     final loggedIn = GlobalInherited.of(context).isLoggedIn;
-    _upAnimationName = loggedIn ? _upAnimationName : "disabled";
+    if (!loggedIn) {
+      _upAnimationName =
+          _downAnimationName = _favoriteAnimationName = "disabled";
+    }
     final votedColor = new Color(0xffee4d2e);
     final enabledColor = Colors.white60;
     final disabledColor = Colors.white30;
@@ -119,15 +130,19 @@ class _PostButtonsState extends State<PostButtons> {
             ),
           ),
         ),
-        IconButton(
-          color: currentVote == Vote.favorite ? votedColor : enabledColor,
-          icon: Icon(
-            currentVote == Vote.favorite
-                ? Icons.favorite
-                : Icons.favorite_border,
+        Center(
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: GestureDetector(
+              onTap: () => voteItem(Vote.favorite),
+              child: FlareActor(
+                'assets/rotating_favorite.flr',
+                animation: _favoriteAnimationName,
+                fit: BoxFit.fitWidth,
+              ),
+            ),
           ),
-          onPressed: loggedIn ? () => voteItem(Vote.favorite) : null,
-          disabledColor: disabledColor,
         ),
         Container(
           height: 30.0,

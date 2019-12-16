@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/api/dtos/item/item.dart';
 import 'package:pr0gramm/entities/enums/vote.dart';
-import 'package:pr0gramm/services/vote_service.dart';
 import 'package:pr0gramm/widgets/global_inherited.dart';
 
-class VoteButtons extends StatefulWidget {
-  final Item item;
-  final Axis direction;
+typedef VoteChangedHandler = Future<void> Function(Vote vote);
 
-  VoteButtons({Key key, this.item, bool withFavorite = true})
-      : direction = withFavorite ? Axis.horizontal : Axis.vertical,
+class VoteButtons<T> extends StatefulWidget {
+  final Vote initialVote;
+  final double size;
+  final Axis direction;
+  final VoteChangedHandler onVoteChange;
+
+  VoteButtons({
+    Key key,
+    this.initialVote,
+    bool withFavorite,
+    this.size,
+    this.onVoteChange,
+  })  : direction = withFavorite ? Axis.horizontal : Axis.vertical,
         super(key: key);
 
   @override
@@ -17,7 +24,6 @@ class VoteButtons extends StatefulWidget {
 }
 
 class _VoteButtonsState extends State<VoteButtons> {
-  final VoteService _voteService = VoteService.instance;
   Vote currentVote;
 
   Future voteItem(Vote vote) async {
@@ -32,7 +38,7 @@ class _VoteButtonsState extends State<VoteButtons> {
     }
 
     try {
-      await _voteService.voteItem(widget.item, vote);
+      await widget.onVoteChange(vote);
       setState(() {
         currentVote = vote;
       });
@@ -44,11 +50,7 @@ class _VoteButtonsState extends State<VoteButtons> {
 
   @override
   void initState() {
-    _voteService.getVoteOfItem(widget.item).then((vote) {
-      setState(() {
-        currentVote = vote;
-      });
-    });
+    currentVote = widget.initialVote;
     super.initState();
   }
 
@@ -57,34 +59,45 @@ class _VoteButtonsState extends State<VoteButtons> {
     final loggedIn = GlobalInherited.of(context).isLoggedIn;
     final votedColor = new Color(0xffee4d2e);
 
+    var upVoteButton = IconButton(
+      icon: Icon(Icons.add_circle_outline),
+      color: currentVote == Vote.up || currentVote == Vote.favorite
+          ? votedColor
+          : Colors.white,
+      onPressed: loggedIn ? () => voteItem(Vote.up) : null,
+      disabledColor: Colors.white30,
+    );
+    var downVoteButton = IconButton(
+      color: currentVote == Vote.down ? votedColor : Colors.white,
+      icon: Icon(Icons.remove_circle_outline),
+      onPressed: loggedIn ? () => voteItem(Vote.down) : null,
+      disabledColor: Colors.white30,
+    );
+    var favoriteVoteButton = IconButton(
+      color: currentVote == Vote.favorite ? votedColor : Colors.white,
+      icon: Icon(
+        currentVote == Vote.favorite ? Icons.favorite : Icons.favorite_border,
+      ),
+      onPressed: loggedIn ? () => voteItem(Vote.favorite) : null,
+      disabledColor: Colors.white30,
+    );
+
+    var voteButtons = <Widget>[
+      upVoteButton,
+      downVoteButton,
+      favoriteVoteButton,
+    ];
+
+    if (widget.size != null) {
+      voteButtons = List.from(voteButtons.map((btn) => SizedBox(
+            height: widget.size,
+            width: widget.size,
+            child: btn,
+          )));
+    }
     return Flex(
       direction: widget.direction,
-      children: [
-        IconButton(
-          icon: Icon(Icons.add_circle_outline),
-          color: currentVote == Vote.up || currentVote == Vote.favorite
-              ? votedColor
-              : Colors.white,
-          onPressed: loggedIn ? () => voteItem(Vote.up) : null,
-          disabledColor: Colors.white30,
-        ),
-        IconButton(
-          color: currentVote == Vote.down ? votedColor : Colors.white,
-          icon: Icon(Icons.remove_circle_outline),
-          onPressed: loggedIn ? () => voteItem(Vote.down) : null,
-          disabledColor: Colors.white30,
-        ),
-        IconButton(
-          color: currentVote == Vote.favorite ? votedColor : Colors.white,
-          icon: Icon(
-            currentVote == Vote.favorite
-                ? Icons.favorite
-                : Icons.favorite_border,
-          ),
-          onPressed: loggedIn ? () => voteItem(Vote.favorite) : null,
-          disabledColor: Colors.white30,
-        ),
-      ],
+      children: voteButtons,
     );
   }
 }

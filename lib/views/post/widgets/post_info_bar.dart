@@ -3,7 +3,7 @@ import 'package:pr0gramm/api/dtos/item/item.dart';
 import 'package:pr0gramm/entities/enums/vote.dart';
 import 'package:pr0gramm/services/vote_service.dart';
 import 'package:pr0gramm/views/post/widgets/op_info.dart';
-import 'package:pr0gramm/views/post/widgets/vote_buttons.dart';
+import 'package:pr0gramm/views/post/widgets/post_vote.dart';
 
 class PostInfoBar extends StatelessWidget {
   final Item item;
@@ -20,10 +20,9 @@ class PostInfoBar extends StatelessWidget {
           builder: (BuildContext context, snapshot) {
             if (!snapshot.hasData)
               return Center(child: CircularProgressIndicator());
-            return VoteButtons(
+            return PostVote(
               initialVote: snapshot.data,
-              withFavorite: true,
-              onVoteChange: (Vote vote) => _voteService.voteItem(item, vote),
+              item: item,
             );
           },
         ),

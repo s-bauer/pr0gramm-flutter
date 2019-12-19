@@ -4,7 +4,7 @@ import 'package:pr0gramm/entities/enums/vote.dart';
 import 'package:pr0gramm/entities/enums/vote_button_type.dart';
 import 'package:pr0gramm/services/vote_animation_service.dart';
 import 'package:pr0gramm/services/vote_service.dart';
-import 'package:pr0gramm/views/post/widgets/vote_button.dart';
+import 'package:pr0gramm/views/widgets/vote_button.dart';
 import 'package:pr0gramm/widgets/global_inherited.dart';
 
 class PostVote extends StatelessWidget {

@@ -30,6 +30,7 @@ dependencies:
   flutter_linkify: ^2.1.0
   url_launcher: ^5.2.7
   flutter_widgets: ^0.1.7
+  retry: ^3.0.0
 
 dev_dependencies:
   flutter_test:

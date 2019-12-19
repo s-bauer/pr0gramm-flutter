@@ -73,50 +73,55 @@ class VoteAnimationService {
       _getState(type.toVote(), buttonStates[type].value, vote);
 
   VoteAnimation _getState(Vote button, VoteAnimation currentState, Vote vote) {
-    if ([
+    bool isVoted = [
       VoteAnimation.voted,
       VoteAnimation.voteFocused,
       VoteAnimation.voteUnfocused,
-    ].contains(currentState))
-      return _reduceState(
-        vote: vote,
-        button: button,
-        whenFocused: VoteAnimation.clearFocused,
-        whenVoted: VoteAnimation.voted,
-        whenElse: VoteAnimation.clearUnfocused,
-      );
+    ].contains(currentState);
 
-    if ([
-      VoteAnimation.focused,
-      VoteAnimation.clearFocused,
-    ].contains(currentState))
-      return _reduceState(
-        vote: vote,
-        button: button,
-        whenFocused: VoteAnimation.focused,
-        whenVoted: VoteAnimation.voteFocused,
-        whenElse: VoteAnimation.unfocused,
-      );
+    bool isFocused = !isVoted &&
+        [
+          VoteAnimation.focused,
+          VoteAnimation.clearFocused,
+        ].contains(currentState);
 
-    if ([
-      VoteAnimation.unfocused,
-      VoteAnimation.clearUnfocused,
-    ].contains(currentState))
-      return _reduceState(
-        vote: vote,
-        button: button,
-        whenFocused: VoteAnimation.focused,
-        whenVoted: VoteAnimation.voteUnfocused,
-        whenElse: VoteAnimation.unfocused,
-      );
+    bool isUnfocused = !isVoted &&
+        !isFocused &&
+        [
+          VoteAnimation.unfocused,
+          VoteAnimation.clearUnfocused,
+        ].contains(currentState);
 
-    assert(currentState == VoteAnimation.initial);
+    bool isInitial = !isVoted &&
+        !isFocused &&
+        !isUnfocused &&
+        currentState == VoteAnimation.initial;
+
+    VoteAnimation whenVoted;
+    VoteAnimation whenFocused;
+    VoteAnimation whenElse;
+
+    if (isVoted) {
+      whenVoted = VoteAnimation.voted;
+      whenFocused = VoteAnimation.clearFocused;
+      whenElse = VoteAnimation.clearUnfocused;
+    } else {
+      if (isInitial) {
+        whenVoted = VoteAnimation.voted;
+      } else {
+        whenVoted =
+            isFocused ? VoteAnimation.voteFocused : VoteAnimation.voteUnfocused;
+      }
+      whenFocused = VoteAnimation.focused;
+      whenElse = VoteAnimation.unfocused;
+    }
+
     return _reduceState(
       vote: vote,
       button: button,
-      whenFocused: VoteAnimation.focused,
-      whenVoted: VoteAnimation.voted,
-      whenElse: VoteAnimation.unfocused,
+      whenVoted: whenVoted,
+      whenFocused: whenFocused,
+      whenElse: whenElse,
     );
   }
 

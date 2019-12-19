@@ -131,10 +131,17 @@ class VoteAnimationService {
     VoteAnimation whenFocused,
     VoteAnimation whenVoted,
     VoteAnimation whenElse,
-  }) =>
-      _shouldFocus(vote)
-          ? whenFocused
-          : _shouldVote(vote, button) ? whenVoted : whenElse;
+  }) {
+    if (_shouldFocus(vote)) {
+      return whenFocused;
+    } else {
+      if (_shouldVote(vote, button)) {
+        return whenVoted;
+      } else {
+        return whenElse;
+      }
+    }
+  }
 
   bool _shouldFocus(Vote vote) => vote == Vote.none;
 

@@ -1,4 +1,4 @@
-import 'package:pr0gramm/entities/baseTypes/enum.dart';
+import 'package:pr0gramm/entities/base_types/enum.dart';
 import 'package:pr0gramm/entities/enums/vote.dart';
 
 class VoteButtonType extends Enum<int> {

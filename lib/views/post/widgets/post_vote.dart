@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/item/item.dart';
 import 'package:pr0gramm/entities/enums/vote.dart';
-import 'package:pr0gramm/entities/enums/voteButtonType.dart';
+import 'package:pr0gramm/entities/enums/vote_button_type.dart';
 import 'package:pr0gramm/services/vote_animation_service.dart';
 import 'package:pr0gramm/services/vote_service.dart';
 import 'package:pr0gramm/views/post/widgets/vote_button.dart';

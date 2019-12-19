@@ -56,6 +56,7 @@ class VoteAnimationService {
       vote = Vote.none;
     }
     _setStates(vote);
+    voteItemHandler(vote);
     _lastVote = vote;
   }
 

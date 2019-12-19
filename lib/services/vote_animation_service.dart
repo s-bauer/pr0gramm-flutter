@@ -36,12 +36,12 @@ class VoteAnimationService {
       whenVoted: VoteAnimation.voted,
       whenElse: VoteAnimation.unfocused,
     );
-    if ((initialState == VoteAnimation.focused ||
-        initialState == VoteAnimation.clearFocused)) {
+    if (initialState == VoteAnimation.focused ||
+        initialState == VoteAnimation.clearFocused) {
       return focusedColor;
-    } else if ((initialState == VoteAnimation.voted ||
+    } else if (initialState == VoteAnimation.voted ||
         initialState == VoteAnimation.voteFocused ||
-        initialState == VoteAnimation.voteUnfocused)) {
+        initialState == VoteAnimation.voteUnfocused) {
       return (type == VoteButtonType.down) ? downVotedColor : votedColor;
     } else {
       return unfocusedColor;

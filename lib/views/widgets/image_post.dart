@@ -17,14 +17,11 @@ class _ImagePostState extends State<ImagePost> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: getImage(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData)
-          return Image(
-            image: snapshot.data,
-            fit: BoxFit.fitWidth,
-          );
+    return Image.network(
+      _imageProvider.getImageUrl(widget.item),
+      frameBuilder: (context, child, frame, sync) {
+        if(child != null)
+          return child;
 
         return PreviewItem(item: widget.item);
       },

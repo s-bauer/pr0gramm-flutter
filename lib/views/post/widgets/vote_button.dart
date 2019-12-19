@@ -28,6 +28,7 @@ class _VoteButtonState extends State<VoteButton> with TickerProviderStateMixin {
   AnimationController favoriteController;
   Animation<Color> colorTween;
   Animation<double> favoriteMorph;
+  CurvedAnimation favoriteMorphCurveAnimation;
   Color color;
   Color lastColor;
   IconData icon;
@@ -89,6 +90,10 @@ class _VoteButtonState extends State<VoteButton> with TickerProviderStateMixin {
         ColorTween(begin: lastColor, end: color).animate(colorController);
     if (widget.type == VoteButtonType.favorite) {
       icon = null;
+      favoriteMorphCurveAnimation = CurvedAnimation(
+          parent: favoriteController,
+          curve: Curves.easeOutCubic,
+          reverseCurve: Curves.easeInCubic);
       favoriteMorph = Tween(
               begin: widget.animationService.initialVote == Vote.favorite
                   ? 1.0
@@ -96,7 +101,7 @@ class _VoteButtonState extends State<VoteButton> with TickerProviderStateMixin {
               end: widget.animationService.initialVote != Vote.favorite
                   ? 1.0
                   : 0.0)
-          .animate(favoriteController);
+          .animate(favoriteMorphCurveAnimation);
     }
   }
 
@@ -124,13 +129,14 @@ class _VoteButtonState extends State<VoteButton> with TickerProviderStateMixin {
                 builder: (_, __) => RotationTransition(
                   turns: rotationController,
                   child: Stack(
+                    alignment: Alignment.center,
                     children: <Widget>[
-                      Opacity(
-                        opacity: favoriteMorph.value,
+                      ScaleTransition(
+                        scale: favoriteMorph,
                         child: Icon(Icons.favorite),
                       ),
                       Opacity(
-                        opacity: 1.0 - favoriteMorph.value,
+                        opacity: favoriteMorph.value != 1 ? 1.0 : 0,
                         child: Icon(Icons.favorite_border),
                       ),
                     ],

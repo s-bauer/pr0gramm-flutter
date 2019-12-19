@@ -51,7 +51,9 @@ class VoteAnimationService {
   Future voteItem(Vote vote) async {
     if (vote == lastVote) {
       vote = vote == Vote.favorite ? Vote.up : Vote.none;
-    } else if (vote == Vote.up && lastVote == Vote.favorite) vote = Vote.none;
+    } else if (vote == Vote.up && lastVote == Vote.favorite) {
+      vote = Vote.none;
+    }
     _setStates(vote);
     lastVote = vote;
   }

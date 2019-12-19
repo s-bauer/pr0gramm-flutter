@@ -146,5 +146,5 @@ class VoteAnimationService {
   bool _shouldFocus(Vote vote) => vote == Vote.none;
 
   bool _shouldVote(Vote vote, Vote button) =>
-      vote == button || vote == Vote.favorite && button == Vote.up;
+      vote == button || (vote == Vote.favorite && button == Vote.up);
 }

@@ -30,7 +30,7 @@ class VoteAnimationService {
 
   Color getInitialColor(VoteButtonType type) {
     VoteAnimation initialState = _reduceState(
-      vote: initialVote,
+      vote: initialVote ?? Vote.none,
       button: type.toVote(),
       whenFocused: VoteAnimation.focused,
       whenVoted: VoteAnimation.voted,

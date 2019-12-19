@@ -18,8 +18,6 @@ class PostInfoBar extends StatelessWidget {
         FutureBuilder<Vote>(
           future: _voteService.getVoteOfItem(item),
           builder: (BuildContext context, snapshot) {
-            if (!snapshot.hasData)
-              return Center(child: CircularProgressIndicator());
             return PostVote(
               initialVote: snapshot.data,
               item: item,

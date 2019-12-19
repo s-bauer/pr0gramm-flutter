@@ -68,10 +68,8 @@ class _VideoPostState extends State<VideoPost> {
     if (_isDisposed) return;
 
     if (info.visibleFraction < 0.8) {
-      print("not visible");
       _controller.setVolume(0);
     } else {
-      print("visible");
       _controller.setVolume(1.0);
     }
   }

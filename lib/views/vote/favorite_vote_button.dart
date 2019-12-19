@@ -5,6 +5,7 @@ import 'package:pr0gramm/entities/enums/vote_button_type.dart';
 import 'package:pr0gramm/services/vote_animation_service.dart';
 import 'package:pr0gramm/views/vote/vote_button.dart';
 import 'package:pr0gramm/views/vote/vote_button_animation_integration.dart';
+import 'package:pr0gramm/views/vote/vote_button_color_animation.dart';
 
 class FavoriteVoteButton extends VoteButton {
   FavoriteVoteButton({
@@ -26,7 +27,8 @@ class FavoriteVoteButton extends VoteButton {
 class _FavoriteVoteButtonState extends State<FavoriteVoteButton>
     with
         TickerProviderStateMixin,
-        VoteButtonAnimationIntegration<FavoriteVoteButton> {
+        VoteButtonAnimationIntegration<FavoriteVoteButton>,
+        VoteButtonColorAnimation<FavoriteVoteButton> {
   AnimationController _controller;
   CurvedAnimation _morphCurve;
   Animation<double> _morphProgress;
@@ -42,7 +44,6 @@ class _FavoriteVoteButtonState extends State<FavoriteVoteButton>
         voteAnimation == VoteAnimation.clearUnfocused;
     if (fadeIn || fadeOut) {
       setState(() {
-        print("animate favorite ${(fadeIn || fadeOut) ^ _votedColorAtBegin}");
         if (fadeIn ^ _votedColorAtBegin)
           _controller.forward();
         else

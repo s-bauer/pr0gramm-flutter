@@ -4,9 +4,10 @@ import 'package:pr0gramm/constants/vote_constants.dart';
 import 'package:pr0gramm/services/vote_animation_service.dart';
 import 'package:pr0gramm/views/vote/vote_button.dart';
 import 'package:pr0gramm/views/vote/vote_button_animation_integration.dart';
+import 'package:pr0gramm/views/vote/vote_button_color_animation.dart';
 
 mixin VoteButtonRotateAnimation<T extends VoteButton>
-on VoteButtonAnimationIntegration<T> {
+    on VoteButtonAnimationIntegration<T>, VoteButtonColorAnimation<T> {
   AnimationController rotationController;
 
   @override
@@ -34,6 +35,12 @@ on VoteButtonAnimationIntegration<T> {
       vsync: this,
       duration: voteAnimationDuration,
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    rotationController.dispose();
   }
 
   Widget buildRotatingButton({IconButton button}) {

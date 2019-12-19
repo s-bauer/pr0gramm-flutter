@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pr0gramm/constants/vote_constants.dart';
 import 'package:pr0gramm/entities/enums/vote.dart';
 import 'package:pr0gramm/entities/enums/vote_button_type.dart';
-import 'package:pr0gramm/views/widgets/vote_button.dart';
 
 enum VoteAnimation {
   initial,
@@ -37,14 +36,16 @@ class VoteAnimationService {
       whenVoted: VoteAnimation.voted,
       whenElse: VoteAnimation.unfocused,
     );
-    return (initialState == VoteAnimation.focused ||
-            initialState == VoteAnimation.clearFocused)
-        ? focusedColor
-        : (initialState == VoteAnimation.voted ||
-                initialState == VoteAnimation.voteFocused ||
-                initialState == VoteAnimation.voteUnfocused)
-            ? (type == VoteButtonType.down) ? downVotedColor : votedColor
-            : unfocusedColor;
+    if ((initialState == VoteAnimation.focused ||
+        initialState == VoteAnimation.clearFocused)) {
+      return focusedColor;
+    } else if ((initialState == VoteAnimation.voted ||
+        initialState == VoteAnimation.voteFocused ||
+        initialState == VoteAnimation.voteUnfocused)) {
+      return (type == VoteButtonType.down) ? downVotedColor : votedColor;
+    } else {
+      return unfocusedColor;
+    }
   }
 
   Future voteItem(Vote vote) async {

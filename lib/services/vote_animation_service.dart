@@ -29,6 +29,24 @@ class VoteAnimationService {
   final Map<VoteButtonType, ValueNotifier<VoteAnimation>> buttonStates =
       new Map();
 
+  Color getInitialColor(VoteButtonType type) {
+    VoteAnimation initialState = _reduceState(
+      vote: initialVote,
+      button: type.toVote(),
+      whenFocused: VoteAnimation.focused,
+      whenVoted: VoteAnimation.voted,
+      whenElse: VoteAnimation.unfocused,
+    );
+    return (initialState == VoteAnimation.focused ||
+            initialState == VoteAnimation.clearFocused)
+        ? focusedColor
+        : (initialState == VoteAnimation.voted ||
+                initialState == VoteAnimation.voteFocused ||
+                initialState == VoteAnimation.voteUnfocused)
+            ? (type == VoteButtonType.down) ? downVotedColor : votedColor
+            : unfocusedColor;
+  }
+
   Future voteItem(Vote vote) async {
     if (vote == lastVote) {
       vote = vote == Vote.favorite ? Vote.up : Vote.none;

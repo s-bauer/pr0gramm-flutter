@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pr0gramm/constants/vote_constants.dart';
 import 'package:pr0gramm/entities/enums/vote.dart';
-import 'package:pr0gramm/entities/enums/voteButtonType.dart';
+import 'package:pr0gramm/entities/enums/vote_button_type.dart';
 import 'package:pr0gramm/services/vote_animation_service.dart';
 
 class VoteButton extends StatefulWidget {
@@ -21,33 +22,82 @@ class VoteButton extends StatefulWidget {
   }
 }
 
-class _VoteButtonState extends State<VoteButton>
-    with SingleTickerProviderStateMixin {
+class _VoteButtonState extends State<VoteButton> with TickerProviderStateMixin {
+  AnimationController rotationController;
+  AnimationController colorController;
+  AnimationController favoriteController;
+  Animation<Color> colorTween;
+  Animation<double> favoriteMorph;
   Color color;
+  Color lastColor;
   IconData icon;
 
   onStateChange(VoteAnimation voteAnimation) {
     setState(() {
+      lastColor = color;
       color = _getColorByAnimation(voteAnimation);
-      if (widget.type == VoteButtonType.favorite) {
-        icon = voteAnimation == VoteAnimation.voted ||
-                voteAnimation == VoteAnimation.voteUnfocused ||
-                voteAnimation == VoteAnimation.voteFocused
-            ? Icons.favorite
-            : Icons.favorite_border;
+
+      if (voteAnimation == VoteAnimation.voteFocused ||
+          voteAnimation == VoteAnimation.voteUnfocused) {
+        if (widget.type == VoteButtonType.favorite) {
+          if (widget.animationService.initialVote == Vote.favorite)
+            favoriteController.reverse();
+          else
+            favoriteController.forward();
+        } else
+          rotationController.forward();
+      } else if (voteAnimation == VoteAnimation.clearFocused ||
+          voteAnimation == VoteAnimation.clearUnfocused) {
+        if (widget.type == VoteButtonType.favorite) {
+          if (widget.animationService.initialVote != Vote.favorite)
+            favoriteController.reverse();
+          else
+            favoriteController.forward();
+        } else
+          rotationController.reverse();
+      }
+
+      if (lastColor != color) {
+        colorTween =
+            ColorTween(begin: lastColor, end: color).animate(colorController);
+        colorController.forward(from: 0);
       }
     });
   }
 
   @override
   void initState() {
+    super.initState();
+    lastColor = color = _getInitialColor();
+    rotationController = new AnimationController(
+      vsync: this,
+      duration: voteAnimationDuration,
+    );
+    colorController = new AnimationController(
+      vsync: this,
+      duration: voteAnimationDuration,
+    );
+    favoriteController = new AnimationController(
+      vsync: this,
+      duration: voteAnimationDuration,
+    );
     widget.animationService.addButtonStateListener(widget.type, onStateChange);
     icon = widget.type == VoteButtonType.up
         ? Icons.add_circle_outline
-        : widget.type == VoteButtonType.down
-            ? Icons.remove_circle_outline
-            : Icons.favorite_border;
-    super.initState();
+        : Icons.remove_circle_outline;
+    colorTween =
+        ColorTween(begin: lastColor, end: color).animate(colorController);
+    if (widget.type == VoteButtonType.favorite) {
+      icon = null;
+      favoriteMorph = Tween(
+              begin: widget.animationService.initialVote == Vote.favorite
+                  ? 1.0
+                  : 0.0,
+              end: widget.animationService.initialVote != Vote.favorite
+                  ? 1.0
+                  : 0.0)
+          .animate(favoriteController);
+    }
   }
 
   @override
@@ -57,11 +107,36 @@ class _VoteButtonState extends State<VoteButton>
 
   @override
   Widget build(BuildContext context) {
-    return _baseUpVoteButton(color: color ?? focusedColor, icon: icon);
+    return AnimatedBuilder(
+      animation: colorTween,
+      builder: (_, __) => RotationTransition(
+        turns: rotationController,
+        child: _buildBaseVoteButton(color: colorTween.value, icon: icon),
+      ),
+    );
   }
 
-  IconButton _baseUpVoteButton({Color color, IconData icon}) => IconButton(
-        icon: Icon(icon),
+  IconButton _buildBaseVoteButton({Color color, IconData icon}) => IconButton(
+        icon: icon != null
+            ? Icon(icon)
+            : AnimatedBuilder(
+                animation: favoriteMorph,
+                builder: (_, __) => RotationTransition(
+                  turns: rotationController,
+                  child: Stack(
+                    children: <Widget>[
+                      Opacity(
+                        opacity: favoriteMorph.value,
+                        child: Icon(Icons.favorite),
+                      ),
+                      Opacity(
+                        opacity: 1.0 - favoriteMorph.value,
+                        child: Icon(Icons.favorite_border),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
         color: color,
         onPressed: !widget.disabled
             ? () => widget.animationService.voteItem(
@@ -83,12 +158,7 @@ class _VoteButtonState extends State<VoteButton>
               voteAnimation == VoteAnimation.voteUnfocused)
           ? (widget.type == VoteButtonType.down) ? downVotedColor : votedColor
           : unfocusedColor;
+
+  Color _getInitialColor() =>
+      widget.animationService.getInitialColor(widget.type);
 }
-
-const focusedColor = Color(0x99FFFFFF);
-const unfocusedColor = Color(0x66FFFFFF);
-const disabledColor = Color(0x33FFFFFF);
-const votedColor = Color(0xFFEE4D2E);
-const downVotedColor = Color(0xFFFFFFFF);
-
-const voteAnimationDuration = Duration(milliseconds: 500);

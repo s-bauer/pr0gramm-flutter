@@ -1,44 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/item/item.dart';
 import 'package:pr0gramm/entities/enums/vote.dart';
-import 'package:pr0gramm/entities/enums/vote_button_type.dart';
 import 'package:pr0gramm/services/vote_animation_service.dart';
 import 'package:pr0gramm/services/vote_service.dart';
-import 'package:pr0gramm/views/widgets/vote_button.dart';
+import 'package:pr0gramm/views/vote/down_vote_button.dart';
+import 'package:pr0gramm/views/vote/favorite_vote_button.dart';
+import 'package:pr0gramm/views/vote/up_vote_button.dart';
 import 'package:pr0gramm/widgets/global_inherited.dart';
 
 class PostVote extends StatelessWidget {
   final Item item;
-  final Vote initialVote;
+  final Future<Vote> initialVoteFuture;
   final VoteService _voteService = VoteService.instance;
 
   PostVote({
     Key key,
     @required this.item,
-    this.initialVote,
+    this.initialVoteFuture,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final VoteAnimationService animationService = VoteAnimationService(
       voteItemHandler: (vote) => _voteService.voteItem(item, vote),
-      initialVote: initialVote,
+      initialVoteFuture: initialVoteFuture,
     );
     final isLoggedIn = GlobalInherited.of(context).isLoggedIn;
     return Row(
       children: <Widget>[
-        VoteButton(
-          type: VoteButtonType.up,
+        UpVoteButton(
           disabled: !isLoggedIn,
           animationService: animationService,
         ),
-        VoteButton(
-          type: VoteButtonType.down,
+        DownVoteButton(
           disabled: !isLoggedIn,
           animationService: animationService,
         ),
-        VoteButton(
-          type: VoteButtonType.favorite,
+        FavoriteVoteButton(
           disabled: !isLoggedIn,
           animationService: animationService,
         ),

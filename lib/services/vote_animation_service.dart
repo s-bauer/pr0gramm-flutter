@@ -19,33 +19,34 @@ typedef VoteStateChangedHandler = void Function(VoteAnimation voteAnimation);
 
 class VoteAnimationService {
   final VoteItemFn voteItemHandler;
-  final Vote initialVote;
-  Vote lastVote;
+  Vote _lastVote;
 
-  VoteAnimationService({this.voteItemHandler, this.initialVote})
-      : lastVote = initialVote;
+  Vote get lastVote => _lastVote ?? initialVote;
+
+  Vote get initialVote => _initialVote ?? Vote.none;
+  Vote _initialVote;
+
+  VoteAnimationService({
+    this.voteItemHandler,
+    Future<Vote> initialVoteFuture,
+  }) {
+    initialVoteFuture.then((vote) {
+      _initialVote = vote;
+      _setStates(vote);
+    });
+  }
 
   final Map<VoteButtonType, ValueNotifier<VoteAnimation>> buttonStates =
       new Map();
 
-  Color getInitialColor(VoteButtonType type) {
-    VoteAnimation initialState = _reduceState(
-      vote: initialVote ?? Vote.none,
+  VoteAnimation getInitialState(VoteButtonType type) {
+    return _reduceState(
+      vote: initialVote,
       button: type.toVote(),
       whenFocused: VoteAnimation.focused,
       whenVoted: VoteAnimation.voted,
       whenElse: VoteAnimation.unfocused,
     );
-    if (initialState == VoteAnimation.focused ||
-        initialState == VoteAnimation.clearFocused) {
-      return focusedColor;
-    } else if (initialState == VoteAnimation.voted ||
-        initialState == VoteAnimation.voteFocused ||
-        initialState == VoteAnimation.voteUnfocused) {
-      return (type == VoteButtonType.down) ? downVotedColor : votedColor;
-    } else {
-      return unfocusedColor;
-    }
   }
 
   Future voteItem(Vote vote) async {
@@ -55,7 +56,7 @@ class VoteAnimationService {
       vote = Vote.none;
     }
     _setStates(vote);
-    lastVote = vote;
+    _lastVote = vote;
   }
 
   void addButtonStateListener(

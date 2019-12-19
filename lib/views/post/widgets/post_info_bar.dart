@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/item/item.dart';
-import 'package:pr0gramm/entities/enums/vote.dart';
 import 'package:pr0gramm/services/vote_service.dart';
 import 'package:pr0gramm/views/post/widgets/op_info.dart';
-import 'package:pr0gramm/views/post/widgets/post_vote.dart';
+import 'package:pr0gramm/views/vote/post_vote.dart';
 
 class PostInfoBar extends StatelessWidget {
   final Item item;
@@ -15,14 +14,9 @@ class PostInfoBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        FutureBuilder<Vote>(
-          future: _voteService.getVoteOfItem(item),
-          builder: (BuildContext context, snapshot) {
-            return PostVote(
-              initialVote: snapshot.data,
-              item: item,
-            );
-          },
+        PostVote(
+          initialVoteFuture: _voteService.getVoteOfItem(item),
+          item: item,
         ),
         Container(
           height: 30.0,

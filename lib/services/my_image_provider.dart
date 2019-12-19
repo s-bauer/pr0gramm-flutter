@@ -18,7 +18,7 @@ class MyImageProvider {
   final apiClient = ApiClient();
 
   String getThumbUrl(Item item) {
-    return "$imageBase/${item.thumb}";
+    return "$thumbBaseUrl/${item.thumb}";
   }
 
   Future<Uint8List> getThumb(Item item) async {

@@ -14,7 +14,7 @@ class PostVote extends StatelessWidget {
 
   PostVote({
     Key key,
-    this.item,
+    @required this.item,
     this.initialVote,
   }) : super(key: key);
 

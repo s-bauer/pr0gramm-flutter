@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:pr0gramm/entities/linked_comment.dart';
 import 'package:pr0gramm/helpers/time_formatter.dart';
+import 'package:pr0gramm/services/vote_service.dart';
+import 'package:pr0gramm/views/vote/comment_vote.dart';
 import 'package:pr0gramm/views/widgets/user_mark.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,6 +20,8 @@ class PostComment extends StatefulWidget {
 class _PostCommentState extends State<PostComment> {
   @override
   Widget build(BuildContext context) {
+    final VoteService _voteService = VoteService.instance;
+
     final padding = EdgeInsets.only(
       top: 5,
       left: 10.0,
@@ -38,8 +42,10 @@ class _PostCommentState extends State<PostComment> {
       color: Colors.white70,
     );
 
+    final comment = widget.linkedComment.comment;
+
     final points =
-        widget.linkedComment.comment.up - widget.linkedComment.comment.down;
+        comment.up - comment.down;
 
     final commentsColumn = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,29 +62,9 @@ class _PostCommentState extends State<PostComment> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    SizedBox(
-                        height: 15.0,
-                        width: 15.0,
-                        child: IconButton(
-                          padding: EdgeInsets.all(0),
-                          iconSize: 12,
-                          icon: Icon(Icons.add_circle_outline),
-                          color: Colors.white,
-                          onPressed: () {},
-                        )),
-                    SizedBox(
-                        height: 15.0,
-                        width: 15.0,
-                        child: IconButton(
-                          padding: EdgeInsets.all(0),
-                          iconSize: 12,
-                          color: Colors.white,
-                          icon: Icon(Icons.remove_circle_outline),
-                          onPressed: () {},
-                        )),
-                  ],
+                CommentVote(
+                  initialVoteFuture: _voteService.getVoteOfComment(comment),
+                  comment: comment,
                 ),
                 SizedBox(width: 5),
                 Expanded(
@@ -96,7 +82,7 @@ class _PostCommentState extends State<PostComment> {
                               await launch(link.url);
                             }
                           },
-                          text: widget.linkedComment.comment.content,
+                          text: comment.content,
                           style: textStyle,
                           textAlign: TextAlign.left,
                           humanize: true,
@@ -105,18 +91,18 @@ class _PostCommentState extends State<PostComment> {
                         SizedBox(height: 3),
                         Row(children: [
                           Text(
-                            widget.linkedComment.comment.name,
+                            comment.name,
                             style: authorTextStyle,
                             softWrap: true,
                             overflow: TextOverflow.visible,
                           ),
                           UserMarkWidget(
-                            userMark: widget.linkedComment.comment.mark,
+                            userMark: comment.mark,
                             radius: 2,
                           )
                         ]),
                         Text(
-                          "$points Punkte  ${formatTime(widget.linkedComment.comment.created * 1000)}",
+                          "$points Punkte  ${formatTime(comment.created * 1000)}",
                           style: pointTextStyle,
                           softWrap: true,
                           overflow: TextOverflow.visible,

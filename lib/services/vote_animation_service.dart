@@ -49,6 +49,10 @@ class VoteAnimationService {
     );
   }
 
+  void disposeStateListener(VoteButtonType type) {
+    buttonStates.remove(type).dispose();
+  }
+
   Future voteItem(Vote vote) async {
     if (vote == lastVote) {
       vote = vote == Vote.favorite ? Vote.up : Vote.none;

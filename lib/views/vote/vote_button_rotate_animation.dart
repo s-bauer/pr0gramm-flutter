@@ -43,7 +43,7 @@ mixin VoteButtonRotateAnimation<T extends VoteButton>
     rotationController.dispose();
   }
 
-  Widget buildRotatingButton({IconButton button}) {
+  Widget buildRotatingButton({Widget button}) {
     return AnimatedBuilder(
       animation: colorTween,
       child: button,

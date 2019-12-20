@@ -6,11 +6,17 @@ abstract class VoteButton extends StatefulWidget {
   final VoteAnimationService animationService;
   final VoteButtonType type;
   final bool disabled;
+  final bool isSized;
+  final double height;
+  final double width;
 
   VoteButton({
     Key key,
     @required this.type,
+    @required this.animationService,
     this.disabled = false,
-    this.animationService,
-  }) : super(key: key);
+    this.height,
+    this.width,
+  })  : isSized = height != null && width != null,
+        super(key: key);
 }

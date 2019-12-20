@@ -53,7 +53,7 @@ class VoteService {
     );
   }
 
-  Future<Vote> getCommentOfItem(ItemComment comment) async {
+  Future<Vote> getVoteOfComment(ItemComment comment) async {
     final voteItem =
     await _voteRepository.findOne(itemId: comment.id, itemType: ItemType.comment);
 

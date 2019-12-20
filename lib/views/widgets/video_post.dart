@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:pr0gramm/api/dtos/item/item.dart';
 import 'package:pr0gramm/views/post/widgets/post_preview_item.dart';
 import 'package:video_player/video_player.dart';
@@ -18,11 +18,14 @@ class _VideoPostState extends State<VideoPost> {
   ScrollableState _scrollable;
 
   bool _didInitState = false;
-
+  bool _isDisposed = false;
 
   @override
   void didChangeDependencies() {
-    if(!_didInitState) {
+    if (!_didInitState) {
+      VisibilityDetectorController.instance.updateInterval =
+          Duration(milliseconds: 150);
+
       final firstScrollable = Scrollable.of(context);
       _scrollable = Scrollable.of(firstScrollable.context);
       _scrollable.position.isScrollingNotifier.addListener(_onScrollNotifier);
@@ -32,8 +35,7 @@ class _VideoPostState extends State<VideoPost> {
 
       _controller = VideoPlayerController.network(url)
         ..initialize().then((_) {
-          if(!isScrolling)
-            _controller.play();
+          if (!isScrolling) _controller.play();
           _controller.setLooping(true);
           setState(() {});
         });
@@ -53,7 +55,6 @@ class _VideoPostState extends State<VideoPost> {
 
   void _onScrollNotifier() {
     final isScrolling = _scrollable.position.isScrollingNotifier.value;
-    // final isInViewport = determineIsInViewport();
 
     if (isScrolling) {
       _controller.pause();
@@ -62,43 +63,38 @@ class _VideoPostState extends State<VideoPost> {
     }
   }
 
-  bool determineIsInViewport() {
-    final RenderObject object = context.findRenderObject();
+  void _handleVisibilityChanged(VisibilityInfo info) {
+    if (_isDisposed) return;
 
-
-    final RenderAbstractViewport viewport = RenderAbstractViewport.of(object);
-    final double vpWidth = viewport.paintBounds.width;
-    final ScrollPosition scrollPosition = _scrollable.position;
-    final RevealedOffset vpOffset = viewport.getOffsetToReveal(object, 0.0);
-
-    // Retrieve the dimensions of the item
-    final Size size = object?.semanticBounds?.size;
-
-    // Check if the item is in the viewport
-    final double deltaLeft = vpOffset.offset - scrollPosition.pixels;
-    final double deltaRight = deltaLeft + size.width;
-
-    bool isInViewport = false;
-
-    isInViewport = (deltaLeft >= 0.0 && deltaRight < vpWidth);
-    return isInViewport;
+    if (info.visibleFraction < 0.8) {
+      _controller.setVolume(0);
+    } else {
+      _controller.setVolume(1.0);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return _controller?.value?.initialized ?? false
-        ? GestureDetector(
-            onTap: handleTap,
-            child: AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              child: VideoPlayer(_controller),
-            ),
-          )
-        : PreviewItem(item: widget.item);
+    if (_controller?.value?.initialized == false) {
+      return PreviewItem(item: widget.item);
+    }
+
+    return VisibilityDetector(
+      onVisibilityChanged: _handleVisibilityChanged,
+      key: ValueKey(widget.item.id),
+      child: GestureDetector(
+        onTap: handleTap,
+        child: AspectRatio(
+          aspectRatio: _controller.value.aspectRatio,
+          child: VideoPlayer(_controller),
+        ),
+      ),
+    );
   }
 
   @override
   void dispose() {
+    _isDisposed = true;
     _controller?.dispose();
     _scrollable.position.isScrollingNotifier.removeListener(_onScrollNotifier);
 

@@ -8,16 +8,34 @@ class FeedDetails {
   final String tags;
   final String name;
 
-  FeedDetails._internal({this.flags, this.promoted, this.tags, this.name});
+  FeedDetails({this.flags, this.promoted, this.tags, this.name});
 
-  FeedDetails.custom({this.flags, this.promoted, this.tags, this.name});
+  FeedDetails copyWith({
+    Flags flags,
+    PromotionStatus promoted,
+    String tags,
+    String name,
+  }) {
+    return FeedDetails(
+      flags: flags ?? this.flags,
+      promoted: promoted ?? this.promoted,
+      tags: tags ?? this.tags,
+      name: name ?? this.name,
+    );
+  }
 
-  factory FeedDetails(FeedType feedType) {
-    final bust = DateTime.now().millisecond / 1000.0;
+  FeedDetails refresh() {
+    return this;
+  }
+
+
+  factory FeedDetails.byFeedType(FeedType feedType) {
+    final now = DateTime.now();
+    final bust = (now.millisecond * 1000 + now.microsecond) / 1000000.0;
 
     switch (feedType) {
       case FeedType.RANDOMTOP:
-        return FeedDetails._internal(
+        return RandomFeedDetails(
           flags: Flags.sfw,
           promoted: PromotionStatus.promoted,
           tags: "!-(x:random | x:$bust)",
@@ -25,7 +43,7 @@ class FeedDetails {
         );
 
       case FeedType.RANDOMNEW:
-        return FeedDetails._internal(
+        return RandomFeedDetails(
           flags: Flags.sfw,
           promoted: PromotionStatus.none,
           tags: "!-(x:random | x:$bust)",
@@ -33,7 +51,7 @@ class FeedDetails {
         );
 
       case FeedType.PUBLICTOP:
-        return FeedDetails._internal(
+        return FeedDetails(
           flags: Flags.guest,
           promoted: PromotionStatus.promoted,
           tags: null,
@@ -41,7 +59,7 @@ class FeedDetails {
         );
 
       case FeedType.PUBLICNEW:
-        return FeedDetails._internal(
+        return FeedDetails(
           flags: Flags.guest,
           promoted: PromotionStatus.none,
           tags: null,
@@ -49,7 +67,7 @@ class FeedDetails {
         );
 
       case FeedType.TOP:
-        return FeedDetails._internal(
+        return FeedDetails(
           flags: Flags.sfw,
           promoted: PromotionStatus.promoted,
           tags: null,
@@ -58,12 +76,46 @@ class FeedDetails {
 
       case FeedType.NEW:
       default:
-        return FeedDetails._internal(
+        return FeedDetails(
           flags: Flags.sfw,
           promoted: PromotionStatus.none,
           tags: null,
           name: "Neu",
         );
     }
+  }
+}
+
+class RandomFeedDetails extends FeedDetails {
+  RandomFeedDetails({
+    Flags flags,
+    PromotionStatus promoted,
+    String tags,
+    String name,
+  }) : super(
+          flags: flags,
+          promoted: promoted,
+          tags: tags,
+          name: name,
+        );
+
+
+  @override
+  FeedDetails copyWith({Flags flags, PromotionStatus promoted, String tags, String name}) {
+    return RandomFeedDetails(
+      flags: flags ?? this.flags,
+      promoted: promoted ?? this.promoted,
+      tags: tags ?? this.tags,
+      name: name ?? this.name,
+    );
+  }
+
+  @override
+  RandomFeedDetails refresh() {
+    final now = DateTime.now();
+    final bust = (now.millisecond * 1000 + now.microsecond) / 1000000.0;
+    final newTag = "!-(x:random | x:$bust)";
+
+    return copyWith(tags: newTag);
   }
 }

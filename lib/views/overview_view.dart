@@ -132,12 +132,7 @@ class _OverviewViewState extends State<OverviewView> {
 
   Widget buildItem(BuildContext context, Item item, int index) {
     return GestureDetector(
-      child: new FutureBuilder(
-        future: _imageProvider.getThumb(item),
-        builder: (context, snap) {
-          return snap.hasData ? Image.memory(snap.data) : new Container();
-        },
-      ),
+      child: Image.network(_imageProvider.getThumbUrl(item)),
       onTap: () {
         onThumbTap(index);
       },
@@ -148,10 +143,13 @@ class _OverviewViewState extends State<OverviewView> {
     Navigator.push(
       context,
       new MaterialPageRoute(
-        builder: (context) => PostPageView(
-          index: index,
+        builder: (context) => FeedInherited(
           feed: currentFeed,
-        ),
+          child: PostPageView(
+            index: index,
+            feed: currentFeed,
+          ),
+        )
       ),
     );
   }

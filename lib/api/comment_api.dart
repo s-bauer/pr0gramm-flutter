@@ -5,9 +5,9 @@ import '../entities/enums/vote.dart';
 
 
 class CommentApi extends BaseApi {
-  Future vote(int itemId, Vote vote, String nonce) async {
+  Future vote(int commentId, Vote vote, String nonce) async {
     final data = {
-      "id": itemId,
+      "id": commentId,
       "vote": vote.value,
       "_nonce": nonce,
     };

@@ -28,25 +28,26 @@ class VoteAnimationService {
     });
   }
 
-  Future voteItem(Vote vote) async {
+  Future voteItem(Vote targetVote) async {
     if (currentVote == Vote.favorite) {
-      if (vote == Vote.favorite) {
-        vote = Vote.up;
-      } else if (vote == Vote.up) {
-        vote = Vote.none;
+      if (targetVote == Vote.favorite) {
+        targetVote = Vote.up;
+      } else if (targetVote == Vote.up) {
+        targetVote = Vote.none;
       }
-    } else if(currentVote == Vote.up && vote == Vote.up) {
-      vote = Vote.none;
-    } else if(currentVote == Vote.down && vote == Vote.down) {
-      vote = Vote.none;
+    } else if(currentVote == Vote.up && targetVote == Vote.up) {
+      targetVote = Vote.none;
+    } else if(currentVote == Vote.down && targetVote == Vote.down) {
+      targetVote = Vote.none;
     }
 
-    final lastVote = _currentVote;
-    currentVote = vote;
-
-    voteItemHandler(vote).catchError((err) {
+    final lastVote = currentVote;
+    try {
+      currentVote = targetVote;
+      await voteItemHandler(targetVote);
+    } catch(e) {
       currentVote = lastVote;
-    });
+    }
   }
 
   void addListener(VoteButtonType type, _StateChangeHandler handler) {

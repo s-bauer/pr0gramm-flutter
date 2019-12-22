@@ -27,8 +27,8 @@ class VoteService {
   }
 
   Future voteItem(Item item, Vote vote) async {
-    _itemApi.vote(item.id, vote, await getNonce());
-    _voteRepository.saveVote(
+    await _itemApi.vote(item.id, vote, await getNonce());
+    await _voteRepository.saveVote(
       itemId: item.id,
       itemType: ItemType.item,
       vote: vote,
@@ -45,8 +45,8 @@ class VoteService {
   }
 
   Future voteComment(ItemComment comment, Vote vote) async {
-    _commentApi.vote(comment.id, vote, await getNonce());
-    _voteRepository.saveVote(
+    await _commentApi.vote(comment.id, vote, await getNonce());
+    await _voteRepository.saveVote(
       itemId: comment.id,
       itemType: ItemType.comment,
       vote: vote,

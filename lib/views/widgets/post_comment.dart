@@ -4,7 +4,7 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:pr0gramm/entities/linked_comment.dart';
 import 'package:pr0gramm/helpers/time_formatter.dart';
 import 'package:pr0gramm/services/vote_service.dart';
-import 'package:pr0gramm/views/vote/comment_vote.dart';
+import 'package:pr0gramm/views/vote/comment_vote_buttons.dart';
 import 'package:pr0gramm/views/widgets/user_mark.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -62,10 +62,7 @@ class _PostCommentState extends State<PostComment> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                CommentVote(
-                  initialVoteFuture: _voteService.getVoteOfComment(comment),
-                  comment: comment,
-                ),
+                CommentVoteButtons(comment: comment),
                 SizedBox(width: 5),
                 Expanded(
                   child: ConstrainedBox(

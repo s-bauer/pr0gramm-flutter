@@ -12,9 +12,7 @@ class PostInfoBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        PostVoteButtons(
-          item: item,
-        ),
+        PostVoteButtons(item: item),
         Container(
           height: 30.0,
           width: 1.0,

@@ -6,9 +6,10 @@ abstract class VoteButton extends StatefulWidget {
   final VoteAnimationService animationService;
   final VoteButtonType type;
   final bool disabled;
-  final bool isSized;
   final double height;
   final double width;
+
+  bool get isSized => height != null && width != null;
 
   VoteButton({
     Key key,
@@ -17,6 +18,5 @@ abstract class VoteButton extends StatefulWidget {
     this.disabled = false,
     this.height,
     this.width,
-  })  : isSized = height != null && width != null,
-        super(key: key);
+  }) : super(key: key);
 }

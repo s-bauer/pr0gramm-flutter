@@ -6,46 +6,47 @@ import 'package:pr0gramm/views/vote/vote_button_animation_integration.dart';
 
 mixin VoteButtonColorAnimation<T extends VoteButton>
 on VoteButtonAnimationIntegration<T> {
-  Color color;
-  Color lastColor;
+  Color _endColor;
+  Color _beginColor;
 
-  AnimationController colorController;
-  Animation<Color> colorTween;
+  AnimationController _colorController;
+  Animation<Color> _colorTweenAnimation;
+  ColorTween _colorTween;
+
 
   @override
   void initState() {
     super.initState();
-    colorController = new AnimationController(
+
+    _colorController = new AnimationController(
       vsync: this,
       duration: voteAnimationDuration,
     );
-    colorTween =
-        ColorTween(begin: lastColor, end: color).animate(colorController);
-    _initAnimationState();
-  }
 
-  _initAnimationState() {
-    var currentState = widget.animationService.getInitialState(widget.type);
-    onStateChange(currentState);
+    _colorTween = ColorTween();
+    _colorTweenAnimation = _colorTween.animate(_colorController);
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    colorController.dispose();
-  }
+  void onStateChange(VoteAnimation voteAnimation, [bool skipAnimation = false]) {
+    super.onStateChange(voteAnimation, false);
 
-  @override
-  onStateChange(VoteAnimation voteAnimation) {
-    setState(() {
-      lastColor = color;
-      color = getColorByAnimation(voteAnimation);
-      if (lastColor != color) {
-        colorTween =
-            ColorTween(begin: lastColor, end: color).animate(colorController);
-        colorController.forward(from: 0);
+    _beginColor = _endColor;
+    _endColor = getColorByAnimation(voteAnimation);
+
+    if (_beginColor != _endColor) {
+
+      print("skip: $skipAnimation");
+
+      if(skipAnimation) {
+        _colorTween.begin = _endColor;
+      } else {
+        _colorTween.begin = _beginColor;
       }
-    });
+
+      _colorTween.end = _endColor;
+      _colorController.forward(from: 0);
+    }
   }
 
   Color getColorByAnimation(VoteAnimation voteAnimation) {
@@ -59,5 +60,18 @@ on VoteButtonAnimationIntegration<T> {
     } else {
       return unfocusedColor;
     }
+  }
+
+  Widget buildColorAnimation({Widget Function(BuildContext context, Color color) builder}) {
+    return AnimatedBuilder(
+      animation: _colorTweenAnimation,
+      builder: (context, _) => builder(context, _colorTweenAnimation.value),
+    );
+  }
+
+  @override
+  void dispose() {
+    _colorController?.dispose();
+    super.dispose();
   }
 }

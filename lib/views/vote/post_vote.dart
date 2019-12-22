@@ -8,10 +8,9 @@ import 'package:pr0gramm/views/vote/favorite_vote_button.dart';
 import 'package:pr0gramm/views/vote/up_vote_button.dart';
 import 'package:pr0gramm/widgets/global_inherited.dart';
 
-class PostVote extends StatelessWidget {
+class PostVote extends StatefulWidget {
   final Item item;
   final Future<Vote> initialVoteFuture;
-  final VoteService _voteService = VoteService.instance;
 
   PostVote({
     Key key,
@@ -20,11 +19,25 @@ class PostVote extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final VoteAnimationService animationService = VoteAnimationService(
-      voteItemHandler: (vote) => _voteService.voteItem(item, vote),
-      initialVoteFuture: initialVoteFuture,
+  _PostVoteState createState() => _PostVoteState();
+}
+
+class _PostVoteState extends State<PostVote> {
+  final VoteService _voteService = VoteService.instance;
+  VoteAnimationService animationService;
+
+  @override
+  void initState() {
+    super.initState();
+
+    animationService = VoteAnimationService(
+      voteItemHandler: (vote) => _voteService.voteItem(widget.item, vote),
+      initialVoteFuture: widget.initialVoteFuture,
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final isLoggedIn = GlobalInherited.of(context).isLoggedIn;
     return Row(
       children: <Widget>[
@@ -42,5 +55,12 @@ class PostVote extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    animationService.dispose();
+
+    super.dispose();
   }
 }

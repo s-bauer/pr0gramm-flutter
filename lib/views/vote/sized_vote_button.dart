@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:pr0gramm/views/vote/vote_button.dart';
 
 mixin SizedVoteButton<T extends VoteButton> on State<T> {
-  Widget buildSized({IconButton child}) {
+  Widget buildSized({Widget child}) {
     if (!widget.isSized) return child;
     return SizedBox(
       width: widget.width,

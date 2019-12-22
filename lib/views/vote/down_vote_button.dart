@@ -40,32 +40,33 @@ class _DownVoteButtonState extends State<DownVoteButton>
   @override
   void initState() {
     super.initState();
-    widget.animationService.addButtonStateListener(widget.type, onStateChange);
+    widget.animationService.addListener(widget.type, onStateChange);
   }
 
   @override
   Color getColorByAnimation(VoteAnimation voteAnimation) {
     var color = super.getColorByAnimation(voteAnimation);
-    if (color == votedColor) {
-      return downVotedColor;
-    }
-    return color;
+    return color == votedColor ? downVotedColor : color;
   }
 
   @override
   Widget build(BuildContext context) {
-    return buildRotatingButton(
-      button: buildSized(
-        child: IconButton(
-          iconSize: iconSize,
-          padding: EdgeInsets.all(0.0),
-          icon: Icon(Icons.remove_circle_outline),
-          color: color,
-          onPressed: !widget.disabled
-              ? () => widget.animationService.voteItem(widget.type.toVote())
-              : null,
-          disabledColor: disabledColor,
-        ),
+    return buildRotatingAnimation(
+      child: buildColorAnimation(
+        builder: (context, color) {
+          return buildSized(
+            child: IconButton(
+              iconSize: iconSize,
+              padding: EdgeInsets.all(0.0),
+              icon: Icon(Icons.remove_circle_outline),
+              color: color,
+              onPressed: !widget.disabled
+                  ? () => widget.animationService.voteItem(widget.type.toVote())
+                  : null,
+              disabledColor: disabledColor,
+            ),
+          );
+        }
       ),
     );
   }

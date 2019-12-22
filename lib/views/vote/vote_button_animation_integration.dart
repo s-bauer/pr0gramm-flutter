@@ -5,11 +5,12 @@ import 'package:pr0gramm/views/vote/vote_button.dart';
 
 mixin VoteButtonAnimationIntegration<T extends VoteButton>
     on State<T>, TickerProvider {
-  onStateChange(VoteAnimation voteAnimation);
+
+  void onStateChange(VoteAnimation voteAnimation, [bool skipAnimation = false]) {}
 
   @override
   void dispose() {
-    super.dispose();
     widget.animationService.disposeStateListener(widget.type);
+    super.dispose();
   }
 }

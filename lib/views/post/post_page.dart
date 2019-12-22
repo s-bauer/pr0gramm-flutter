@@ -4,7 +4,6 @@ import 'package:pr0gramm/api/dtos/item/item.dart';
 import 'package:pr0gramm/entities/feed.dart';
 import 'package:pr0gramm/entities/post_info.dart';
 import 'package:pr0gramm/views/post/post_view.dart';
-import 'package:pr0gramm/views/post/widgets/post_comments.dart';
 import 'package:pr0gramm/views/post/widgets/post_info_bar.dart';
 import 'package:pr0gramm/views/post/widgets/post_tags.dart';
 import 'package:retry/retry.dart';
@@ -57,7 +56,7 @@ class _PostPageState extends State<PostPage> {
     return FutureBuilder<PostInfo>(
       future: _future,
       builder: (context, snapshot) {
-        if (!snapshot.hasData)
+          if (!snapshot.hasData)
           return Center(child: CircularProgressIndicator());
 
         return RefreshIndicator(
@@ -70,7 +69,7 @@ class _PostPageState extends State<PostPage> {
                 PostView(item: snapshot.data.item),
                 PostInfoBar(item: snapshot.data.item),
                 PostTags(info: snapshot.data),
-                PostComments(info: snapshot.data)
+                // PostComments(info: snapshot.data)
               ],
             ),
           ),

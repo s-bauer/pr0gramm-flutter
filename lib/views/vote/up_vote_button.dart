@@ -37,26 +37,31 @@ class _UpVoteButtonState extends State<UpVoteButton>
         VoteButtonAnimationIntegration<UpVoteButton>,
         VoteButtonColorAnimation<UpVoteButton>,
         VoteButtonRotateAnimation<UpVoteButton> {
+
   @override
   void initState() {
     super.initState();
-    widget.animationService.addButtonStateListener(widget.type, onStateChange);
+    widget.animationService.addListener(widget.type, onStateChange);
   }
 
   @override
   Widget build(BuildContext context) {
-    return buildRotatingButton(
-      button: buildSized(
-        child: IconButton(
-          iconSize: iconSize,
-          padding: EdgeInsets.all(0.0),
-          icon: Icon(Icons.add_circle_outline),
-          color: color,
-          onPressed: !widget.disabled
-              ? () => widget.animationService.voteItem(widget.type.toVote())
-              : null,
-          disabledColor: disabledColor,
-        ),
+    return buildRotatingAnimation(
+      child: buildColorAnimation(
+        builder: (context, color) {
+          return buildSized(
+            child: IconButton(
+              iconSize: iconSize,
+              padding: EdgeInsets.all(0.0),
+              icon: Icon(Icons.add_circle_outline),
+              color: color,
+              onPressed: !widget.disabled
+                  ? () => widget.animationService.voteItem(widget.type.toVote())
+                  : null,
+              disabledColor: disabledColor,
+            ),
+          );
+        }
       ),
     );
   }

@@ -20,7 +20,9 @@ class VoteService {
 
   Future<String> getNonce() async {
     final prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey(SharedPrefKeys.MeToken)) return null;
+    if (!prefs.containsKey(SharedPrefKeys.MeToken))
+      throw new Exception("no me token found!");
+
     final urlEncodedMeCookie = prefs.getString(SharedPrefKeys.MeToken);
     final meToken = MeCookie.fromUrlEncodedJson(urlEncodedMeCookie);
     return meToken.id.substring(0, 16);

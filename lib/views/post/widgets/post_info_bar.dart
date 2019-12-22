@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/item/item.dart';
-import 'package:pr0gramm/services/vote_service.dart';
 import 'package:pr0gramm/views/post/widgets/op_info.dart';
 import 'package:pr0gramm/views/vote/post_vote.dart';
 
 class PostInfoBar extends StatelessWidget {
   final Item item;
-  final VoteService _voteService = VoteService.instance;
 
   PostInfoBar({Key key, this.item}) : super(key: key);
 
@@ -15,7 +13,6 @@ class PostInfoBar extends StatelessWidget {
     return Row(
       children: [
         PostVote(
-          initialVoteFuture: _voteService.getVoteOfItem(item),
           item: item,
         ),
         Container(
@@ -24,9 +21,7 @@ class PostInfoBar extends StatelessWidget {
           color: Colors.white30,
           margin: const EdgeInsets.only(left: 10.0, right: 20.0),
         ),
-        OPInfo(
-          item: item,
-        ),
+        OPInfo(item: item),
       ],
     );
   }

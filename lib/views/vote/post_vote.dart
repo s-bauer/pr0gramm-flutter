@@ -11,12 +11,10 @@ import 'buttons/down_vote_button.dart';
 
 class PostVote extends StatefulWidget {
   final Item item;
-  final Future<Vote> initialVoteFuture;
 
   PostVote({
     Key key,
     @required this.item,
-    this.initialVoteFuture,
   }) : super(key: key);
 
   @override
@@ -33,7 +31,7 @@ class _PostVoteState extends State<PostVote> {
 
     animationService = VoteAnimationService(
       voteItemHandler: (vote) => _voteService.voteItem(widget.item, vote),
-      initialVoteFuture: widget.initialVoteFuture,
+      initialVoteFuture: _voteService.getVoteOfItem(widget.item),
     );
   }
 

@@ -23,7 +23,7 @@ class PostPage extends StatefulWidget {
 class _PostPageState extends State<PostPage> {
   final itemApi = new ItemApi();
   final retryConfig =
-  new RetryOptions(maxAttempts: 7, maxDelay: Duration(seconds: 5));
+      new RetryOptions(maxAttempts: 7, maxDelay: Duration(seconds: 5));
 
   bool _isInitialized = false;
   Future<PostInfo> _future;
@@ -32,8 +32,7 @@ class _PostPageState extends State<PostPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (_isInitialized)
-      return;
+    if (_isInitialized) return;
 
     loadPostInfo().then((_) {
       _isInitialized = true;
@@ -42,10 +41,10 @@ class _PostPageState extends State<PostPage> {
 
   Future loadPostInfo() {
     setState(() {
-      _future = retryConfig.retry(() =>
-          itemApi
-              .getItemInfo(widget.item.id)
-              .then((info) => PostInfo(info: info, item: widget.item)),
+      _future = retryConfig.retry(
+        () => itemApi
+            .getItemInfo(widget.item.id)
+            .then((info) => PostInfo(info: info, item: widget.item)),
       );
     });
 
@@ -57,7 +56,7 @@ class _PostPageState extends State<PostPage> {
     return FutureBuilder<PostInfo>(
       future: _future,
       builder: (context, snapshot) {
-          if (!snapshot.hasData)
+        if (!snapshot.hasData)
           return Center(child: CircularProgressIndicator());
 
         return RefreshIndicator(

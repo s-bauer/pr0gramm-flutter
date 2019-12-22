@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:pr0gramm/constants/vote_constants.dart';
 import 'package:pr0gramm/services/vote_animation_service.dart';
-import 'package:pr0gramm/views/vote/vote_button.dart';
-import 'package:pr0gramm/views/vote/vote_button_animation_integration.dart';
+import 'package:pr0gramm/views/vote/buttons/base/vote_button.dart';
+import 'package:pr0gramm/views/vote/mixins/vote_button_animation_integration.dart';
 
 mixin VoteButtonColorAnimation<T extends VoteButton>
 on VoteButtonAnimationIntegration<T> {

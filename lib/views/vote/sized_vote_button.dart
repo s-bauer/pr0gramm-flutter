@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pr0gramm/views/vote/vote_button.dart';
+import 'package:pr0gramm/views/vote/buttons/base/vote_button.dart';
 
 mixin SizedVoteButton<T extends VoteButton> on State<T> {
   Widget buildSized({Widget child}) {

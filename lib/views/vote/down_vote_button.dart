@@ -45,8 +45,10 @@ class _DownVoteButtonState extends State<DownVoteButton>
 
   @override
   Color getColorByAnimation(VoteAnimation voteAnimation) {
-    var color = super.getColorByAnimation(voteAnimation);
-    return color == votedColor ? downVotedColor : color;
+    if(voteAnimation == VoteAnimation.vote)
+      return downVotedColor;
+
+    return super.getColorByAnimation(voteAnimation);
   }
 
   @override

@@ -35,9 +35,6 @@ on VoteButtonAnimationIntegration<T> {
     _endColor = getColorByAnimation(voteAnimation);
 
     if (_beginColor != _endColor) {
-
-      print("skip: $skipAnimation");
-
       if(skipAnimation) {
         _colorTween.begin = _endColor;
       } else {
@@ -50,16 +47,13 @@ on VoteButtonAnimationIntegration<T> {
   }
 
   Color getColorByAnimation(VoteAnimation voteAnimation) {
-    if (voteAnimation == VoteAnimation.focused ||
-        voteAnimation == VoteAnimation.clearFocused) {
+    if(voteAnimation == VoteAnimation.none)
       return focusedColor;
-    } else if (voteAnimation == VoteAnimation.voted ||
-        voteAnimation == VoteAnimation.voteFocused ||
-        voteAnimation == VoteAnimation.voteUnfocused) {
+
+    if(voteAnimation == VoteAnimation.vote)
       return votedColor;
-    } else {
-      return unfocusedColor;
-    }
+
+    return unfocusedColor;
   }
 
   Widget buildColorAnimation({Widget Function(BuildContext context, Color color) builder}) {

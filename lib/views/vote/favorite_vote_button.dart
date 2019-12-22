@@ -44,10 +44,8 @@ class _FavoriteVoteButtonState extends State<FavoriteVoteButton>
   onStateChange(VoteAnimation voteAnimation, [bool skipAnimation = false]) {
     super.onStateChange(voteAnimation);
 
-    var fadeIn = voteAnimation == VoteAnimation.voteFocused ||
-        voteAnimation == VoteAnimation.voteUnfocused;
-    var fadeOut = voteAnimation == VoteAnimation.clearFocused ||
-        voteAnimation == VoteAnimation.clearUnfocused;
+    var fadeIn = voteAnimation == VoteAnimation.vote;
+    var fadeOut = voteAnimation == VoteAnimation.clear;
     if (fadeIn || fadeOut) {
       if (fadeIn ^ _votedColorAtBegin)
         _controller.forward();

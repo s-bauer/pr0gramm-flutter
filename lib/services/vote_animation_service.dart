@@ -2,28 +2,21 @@ import 'package:pr0gramm/entities/enums/vote.dart';
 import 'package:pr0gramm/entities/enums/vote_button_type.dart';
 
 enum VoteAnimation {
-  voted,
-  focused,
-  unfocused,
-  voteFocused,
-  voteUnfocused,
-  clearFocused,
-  clearUnfocused,
+  none,
+  vote,
+  clear,
 }
 
-typedef VoteItemFn = Future Function(Vote vote);
-typedef VoteStateChangedHandler = void Function(VoteAnimation voteAnimation);
+typedef _VoteItemFunction = Future Function(Vote vote);
+typedef _StateChangeHandler = void Function(VoteAnimation voteAnimation);
 
 class VoteAnimationService {
-  final VoteItemFn voteItemHandler;
-  final Map<VoteButtonType, VoteStateChangedHandler> _stateChangeHandlers =
-      new Map();
+  final _VoteItemFunction voteItemHandler;
+  final Map<VoteButtonType, _StateChangeHandler> _changeHandlers = new Map();
   final Map<VoteButtonType, VoteAnimation> _buttonStates = new Map();
 
   Vote _currentVote;
-
   Vote get currentVote => _currentVote ?? Vote.none;
-
   set currentVote(Vote value) {
     _currentVote = value;
     _notifySubscribers();
@@ -56,90 +49,39 @@ class VoteAnimationService {
     });
   }
 
-  void addListener(VoteButtonType type, VoteStateChangedHandler handler) {
-    _stateChangeHandlers[type] = handler;
+  void addListener(VoteButtonType type, _StateChangeHandler handler) {
+    _changeHandlers[type] = handler;
   }
 
   void disposeStateListener(VoteButtonType type) {
-    _stateChangeHandlers.remove(type);
+    _changeHandlers.remove(type);
   }
 
   void dispose() {
-    _stateChangeHandlers.clear();
+    _changeHandlers.clear();
     _buttonStates.clear();
   }
 
   void _notifySubscribers() {
-    final buttonTypes = _stateChangeHandlers.keys;
+    final buttonTypes = _changeHandlers.keys;
     for (final bType in buttonTypes) {
-      _buttonStates[bType] = _getState(bType, _currentVote);
+      _buttonStates[bType] = _getState(bType);
 
-      final callback = _stateChangeHandlers[bType];
+      final callback = _changeHandlers[bType];
       callback(_buttonStates[bType]);
     }
   }
 
-  VoteAnimation _getState(VoteButtonType buttonType, Vote vote) {
-    final currentState = _buttonStates[buttonType];
+  VoteAnimation _getState(VoteButtonType buttonType) {
+    if(currentVote == Vote.none)
+      return VoteAnimation.none;
 
-    bool isVoted = [
-      VoteAnimation.voted,
-      VoteAnimation.voteFocused,
-      VoteAnimation.voteUnfocused,
-    ].contains(currentState);
+    if(buttonType.toVote() == currentVote)
+      return VoteAnimation.vote;
 
-    if (isVoted) {
-      final whenVoted = VoteAnimation.voted;
-      final whenFocused = VoteAnimation.clearFocused;
-      final whenElse = VoteAnimation.clearUnfocused;
-    }
+    if(buttonType == VoteButtonType.up && currentVote == Vote.favorite)
+      return VoteAnimation.vote;
 
-    bool isFocused = !isVoted &&
-        [
-          VoteAnimation.focused,
-          VoteAnimation.clearFocused,
-        ].contains(currentState);
-
-    VoteAnimation whenVoted;
-    VoteAnimation whenFocused;
-    VoteAnimation whenElse;
-
-     else {
-      whenVoted =
-          isFocused ? VoteAnimation.voteFocused : VoteAnimation.voteUnfocused;
-      whenFocused = VoteAnimation.focused;
-      whenElse = VoteAnimation.unfocused;
-    }
-
-    return _reduceState(
-      vote: vote,
-      button: buttonType,
-      whenVoted: whenVoted,
-      whenFocused: whenFocused,
-      whenElse: whenElse,
-    );
+    return VoteAnimation.clear;
   }
-
-  VoteAnimation _reduceState({
-    Vote vote,
-    VoteButtonType button,
-    VoteAnimation whenFocused,
-    VoteAnimation whenVoted,
-    VoteAnimation whenElse,
-  }) {
-    if (_shouldFocus(vote)) {
-      return whenFocused;
-    } else {
-      if (_shouldVote(vote, button.toVote())) {
-        return whenVoted;
-      } else {
-        return whenElse;
-      }
-    }
-  }
-
-  bool _shouldFocus(Vote vote) => vote == Vote.none;
-
-  bool _shouldVote(Vote vote, Vote button) =>
-      vote == button || (vote == Vote.favorite && button == Vote.up);
 }

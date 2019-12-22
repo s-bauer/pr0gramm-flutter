@@ -14,17 +14,13 @@ mixin VoteButtonRotateAnimation<T extends VoteButton>
   void onStateChange(VoteAnimation voteAnimation, [bool skipAnimation = false]) {
     super.onStateChange(voteAnimation);
 
-    var isFadeIn = voteAnimation == VoteAnimation.voteFocused ||
-        voteAnimation == VoteAnimation.voteUnfocused;
-    var isFadeOut = voteAnimation == VoteAnimation.clearFocused ||
-        voteAnimation == VoteAnimation.clearUnfocused;
+    var isFadeIn = voteAnimation == VoteAnimation.vote;
+    var isFadeOut = voteAnimation == VoteAnimation.clear || voteAnimation == VoteAnimation.none;
 
-    if (isFadeIn || isFadeOut) {
-      if (isFadeIn) {
-        _rotationController.forward();
-      } else {
-        _rotationController.reverse();
-      }
+    if(isFadeIn) {
+      _rotationController.forward();
+    } else if(isFadeOut) {
+      _rotationController.reverse();
     }
   }
 

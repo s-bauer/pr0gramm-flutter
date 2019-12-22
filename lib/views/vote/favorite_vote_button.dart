@@ -42,7 +42,7 @@ class _FavoriteVoteButtonState extends State<FavoriteVoteButton>
 
   @override
   onStateChange(VoteAnimation voteAnimation, [bool skipAnimation = false]) {
-    super.onStateChange(voteAnimation);
+    super.onStateChange(voteAnimation, skipAnimation);
 
     var fadeIn = voteAnimation == VoteAnimation.vote;
     var fadeOut = voteAnimation == VoteAnimation.clear;

@@ -12,7 +12,7 @@ mixin VoteButtonRotateAnimation<T extends VoteButton>
 
   @override
   void onStateChange(VoteAnimation voteAnimation, [bool skipAnimation = false]) {
-    super.onStateChange(voteAnimation);
+    super.onStateChange(voteAnimation, skipAnimation);
 
     var isFadeIn = voteAnimation == VoteAnimation.vote;
     var isFadeOut = voteAnimation == VoteAnimation.clear || voteAnimation == VoteAnimation.none;

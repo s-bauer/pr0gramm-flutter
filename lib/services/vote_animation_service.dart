@@ -8,7 +8,7 @@ enum VoteAnimation {
 }
 
 typedef _VoteItemFunction = Future Function(Vote vote);
-typedef _StateChangeHandler = void Function(VoteAnimation voteAnimation);
+typedef _StateChangeHandler = void Function(VoteAnimation voteAnimation, bool skipAnimation);
 
 class VoteAnimationService {
   final _VoteItemFunction voteItemHandler;
@@ -24,7 +24,8 @@ class VoteAnimationService {
 
   VoteAnimationService({this.voteItemHandler, Future<Vote> initialVoteFuture}) {
     initialVoteFuture.then((vote) {
-      currentVote = vote;
+      _currentVote = vote;
+      _notifySubscribers(true);
     });
   }
 
@@ -63,13 +64,13 @@ class VoteAnimationService {
     _buttonStates.clear();
   }
 
-  void _notifySubscribers() {
+  void _notifySubscribers([bool skipAnimation = false]) {
     final buttonTypes = _changeHandlers.keys;
     for (final bType in buttonTypes) {
       _buttonStates[bType] = _getState(bType);
 
       final callback = _changeHandlers[bType];
-      callback(_buttonStates[bType]);
+      callback(_buttonStates[bType], skipAnimation);
     }
   }
 

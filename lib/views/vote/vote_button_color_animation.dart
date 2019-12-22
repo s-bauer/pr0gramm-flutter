@@ -29,18 +29,13 @@ on VoteButtonAnimationIntegration<T> {
 
   @override
   void onStateChange(VoteAnimation voteAnimation, [bool skipAnimation = false]) {
-    super.onStateChange(voteAnimation, false);
+    super.onStateChange(voteAnimation, skipAnimation);
 
     _beginColor = _endColor;
     _endColor = getColorByAnimation(voteAnimation);
 
     if (_beginColor != _endColor) {
-      if(skipAnimation) {
-        _colorTween.begin = _endColor;
-      } else {
-        _colorTween.begin = _beginColor;
-      }
-
+      _colorTween.begin = skipAnimation ? _endColor : _beginColor;
       _colorTween.end = _endColor;
       _colorController.forward(from: 0);
     }

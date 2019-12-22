@@ -34,9 +34,9 @@ class _UpVoteButtonState extends State<UpVoteButton>
     with
         TickerProviderStateMixin,
         SizedVoteButton,
-        VoteButtonAnimationIntegration<UpVoteButton>,
-        VoteButtonColorAnimation<UpVoteButton>,
-        VoteButtonRotateAnimation<UpVoteButton> {
+        VoteButtonAnimationIntegration,
+        VoteButtonColorAnimation,
+        VoteButtonRotateAnimation {
 
   @override
   void initState() {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/comment/item_comment.dart';
-import 'package:pr0gramm/views/widgets/post_comment.dart';
+import 'package:pr0gramm/views/post/widgets/post_comment.dart';
 
 class LinkedComment {
   final ItemComment comment;

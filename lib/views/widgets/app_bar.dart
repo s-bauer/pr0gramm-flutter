@@ -1,7 +1,6 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/entities/search_arguments.dart';
-import 'package:pr0gramm/views/overview_view.dart';
+import 'package:pr0gramm/views/overview_grid.dart';
 import 'package:pr0gramm/views/widgets/scaffold.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -32,7 +31,6 @@ class MySearchBar extends StatefulWidget implements PreferredSizeWidget {
 
   @override
   final Size preferredSize = Size.fromHeight(kToolbarHeight);
-
 }
 
 class _MySearchBarState extends State<MySearchBar> {
@@ -48,17 +46,15 @@ class _MySearchBarState extends State<MySearchBar> {
   Widget build(BuildContext context) {
     final border = UnderlineInputBorder(
         borderSide: BorderSide(
-          width: 2,
-          color: Colors.white,
-        )
-    );
+      width: 2,
+      color: Colors.white,
+    ));
 
     return AppBar(
       leading: IconButton(
         icon: Icon(Icons.arrow_back),
         onPressed: () => closeSearch(context),
-      )
-      ,
+      ),
       title: TextField(
         controller: _controller,
         style: TextStyle(
@@ -67,14 +63,13 @@ class _MySearchBarState extends State<MySearchBar> {
         ),
         cursorColor: Colors.white,
         decoration: InputDecoration(
-          isDense: true,
-          enabledBorder: border,
-          focusedBorder: border,
-          hintText: "Suchen",
-          hintStyle: TextStyle(
-            color: Colors.white70,
-          )
-        ),
+            isDense: true,
+            enabledBorder: border,
+            focusedBorder: border,
+            hintText: "Suchen",
+            hintStyle: TextStyle(
+              color: Colors.white70,
+            )),
       ),
       actions: <Widget>[
         IconButton(

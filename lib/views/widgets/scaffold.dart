@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/views/overview_view.dart';
+import 'package:pr0gramm/views/overview_grid.dart';
 import 'package:pr0gramm/views/widgets/app_bar.dart';
 import 'package:pr0gramm/views/widgets/drawer.dart';
 

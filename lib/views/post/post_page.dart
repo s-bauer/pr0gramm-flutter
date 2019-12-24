@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/api/item_api.dart';
 import 'package:pr0gramm/api/dtos/item/item.dart';
+import 'package:pr0gramm/api/item_api.dart';
 import 'package:pr0gramm/entities/feed.dart';
 import 'package:pr0gramm/entities/post_info.dart';
 import 'package:pr0gramm/views/post/post_view.dart';
@@ -23,7 +23,7 @@ class PostPage extends StatefulWidget {
 class _PostPageState extends State<PostPage> {
   final itemApi = new ItemApi();
   final retryConfig =
-  new RetryOptions(maxAttempts: 7, maxDelay: Duration(seconds: 5));
+      new RetryOptions(maxAttempts: 7, maxDelay: Duration(seconds: 5));
 
   bool _isInitialized = false;
   Future<PostInfo> _future;
@@ -32,8 +32,7 @@ class _PostPageState extends State<PostPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (_isInitialized)
-      return;
+    if (_isInitialized) return;
 
     loadPostInfo().then((_) {
       _isInitialized = true;
@@ -42,10 +41,10 @@ class _PostPageState extends State<PostPage> {
 
   Future loadPostInfo() {
     setState(() {
-      _future = retryConfig.retry(() =>
-          itemApi
-              .getItemInfo(widget.item.id)
-              .then((info) => PostInfo(info: info, item: widget.item)),
+      _future = retryConfig.retry(
+        () => itemApi
+            .getItemInfo(widget.item.id)
+            .then((info) => PostInfo(info: info, item: widget.item)),
       );
     });
 

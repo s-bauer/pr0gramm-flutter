@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+import 'package:flutter/material.dart';
 
 class MyPageController extends ScrollController {
   /// Creates a page controller.
@@ -10,7 +10,7 @@ class MyPageController extends ScrollController {
     this.initialPage = 0,
     this.keepPage = true,
     this.viewportFraction = 1.0,
-  }) : assert(initialPage != null),
+  })  : assert(initialPage != null),
         assert(keepPage != null),
         assert(viewportFraction != null),
         assert(viewportFraction > 0.0);
@@ -60,13 +60,13 @@ class MyPageController extends ScrollController {
   /// prior to accessing [page].
   double get page {
     assert(
-    positions.isNotEmpty,
-    'PageController.page cannot be accessed before a PageView is built with it.',
+      positions.isNotEmpty,
+      'PageController.page cannot be accessed before a PageView is built with it.',
     );
     assert(
-    positions.length == 1,
-    'The page property cannot be read when multiple PageViews are attached to '
-        'the same PageController.',
+      positions.length == 1,
+      'The page property cannot be read when multiple PageViews are attached to '
+      'the same PageController.',
     );
     final _MyPagePosition position = this.position;
     return position.page;
@@ -79,10 +79,10 @@ class MyPageController extends ScrollController {
   ///
   /// The `duration` and `curve` arguments must not be null.
   Future<void> animateToPage(
-      int page, {
-        @required Duration duration,
-        @required Curve curve,
-      }) {
+    int page, {
+    @required Duration duration,
+    @required Curve curve,
+  }) {
     final _MyPagePosition position = this.position;
     return position.animateTo(
       position.getPixelsFromPage(page.toDouble()),
@@ -106,7 +106,7 @@ class MyPageController extends ScrollController {
   /// The returned [Future] resolves when the animation completes.
   ///
   /// The `duration` and `curve` arguments must not be null.
-  Future<void> nextPage({ @required Duration duration, @required Curve curve }) {
+  Future<void> nextPage({@required Duration duration, @required Curve curve}) {
     return animateToPage(page.round() + 1, duration: duration, curve: curve);
   }
 
@@ -116,12 +116,14 @@ class MyPageController extends ScrollController {
   /// The returned [Future] resolves when the animation completes.
   ///
   /// The `duration` and `curve` arguments must not be null.
-  Future<void> previousPage({ @required Duration duration, @required Curve curve }) {
+  Future<void> previousPage(
+      {@required Duration duration, @required Curve curve}) {
     return animateToPage(page.round() - 1, duration: duration, curve: curve);
   }
 
   @override
-  ScrollPosition createScrollPosition(ScrollPhysics physics, ScrollContext context, ScrollPosition oldPosition) {
+  ScrollPosition createScrollPosition(ScrollPhysics physics,
+      ScrollContext context, ScrollPosition oldPosition) {
     return _MyPagePosition(
       physics: physics,
       context: context,
@@ -140,10 +142,10 @@ class MyPageController extends ScrollController {
   }
 }
 
-
 const double precisionErrorTolerance = 1e-10;
 
-class _MyPagePosition extends ScrollPositionWithSingleContext implements PageMetrics {
+class _MyPagePosition extends ScrollPositionWithSingleContext
+    implements PageMetrics {
   _MyPagePosition({
     ScrollPhysics physics,
     ScrollContext context,
@@ -151,19 +153,19 @@ class _MyPagePosition extends ScrollPositionWithSingleContext implements PageMet
     bool keepPage = true,
     double viewportFraction = 1.0,
     ScrollPosition oldPosition,
-  }) : assert(initialPage != null),
+  })  : assert(initialPage != null),
         assert(keepPage != null),
         assert(viewportFraction != null),
         assert(viewportFraction > 0.0),
         _viewportFraction = viewportFraction,
         _pageToUseOnStartup = initialPage.toDouble(),
         super(
-        physics: physics,
-        context: context,
-        initialPixels: null,
-        keepScrollOffset: keepPage,
-        oldPosition: oldPosition,
-      );
+          physics: physics,
+          context: context,
+          initialPixels: null,
+          keepScrollOffset: keepPage,
+          oldPosition: oldPosition,
+        );
 
   final int initialPage;
   double _pageToUseOnStartup;
@@ -171,13 +173,12 @@ class _MyPagePosition extends ScrollPositionWithSingleContext implements PageMet
   @override
   double get viewportFraction => _viewportFraction;
   double _viewportFraction;
+
   set viewportFraction(double value) {
-    if (_viewportFraction == value)
-      return;
+    if (_viewportFraction == value) return;
     final double oldPage = page;
     _viewportFraction = value;
-    if (oldPage != null)
-      forcePixels(getPixelsFromPage(oldPage));
+    if (oldPage != null) forcePixels(getPixelsFromPage(oldPage));
   }
 
   // The amount of offset that will be added to [minScrollExtent] and subtracted
@@ -186,10 +187,12 @@ class _MyPagePosition extends ScrollPositionWithSingleContext implements PageMet
   //
   // The value is 0 if viewportFraction is less than or equal to 1, larger than 0
   // otherwise.
-  double get _initialPageOffset => math.max(0, viewportDimension * (viewportFraction - 1) / 2);
+  double get _initialPageOffset =>
+      math.max(0, viewportDimension * (viewportFraction - 1) / 2);
 
   double getPageFromPixels(double pixels, double viewportDimension) {
-    final double actual = math.max(0.0, pixels - _initialPageOffset) / math.max(1.0, viewportDimension * viewportFraction);
+    final double actual = math.max(0.0, pixels - _initialPageOffset) /
+        math.max(1.0, viewportDimension * viewportFraction);
     final double round = actual.roundToDouble();
     if ((actual - round).abs() < precisionErrorTolerance) {
       return round;
@@ -204,23 +207,27 @@ class _MyPagePosition extends ScrollPositionWithSingleContext implements PageMet
   @override
   double get page {
     assert(
-    pixels == null || (minScrollExtent != null && maxScrollExtent != null),
-    'Page value is only available after content dimensions are established.',
+      pixels == null || (minScrollExtent != null && maxScrollExtent != null),
+      'Page value is only available after content dimensions are established.',
     );
-    return pixels == null ? null : getPageFromPixels(pixels.clamp(minScrollExtent, maxScrollExtent), viewportDimension);
+    return pixels == null
+        ? null
+        : getPageFromPixels(
+            pixels.clamp(minScrollExtent, maxScrollExtent), viewportDimension);
   }
 
   @override
   void saveScrollOffset() {
-    PageStorage.of(context.storageContext)?.writeState(context.storageContext, getPageFromPixels(pixels, viewportDimension));
+    PageStorage.of(context.storageContext)?.writeState(
+        context.storageContext, getPageFromPixels(pixels, viewportDimension));
   }
 
   @override
   void restoreScrollOffset() {
     if (pixels == null) {
-      final double value = PageStorage.of(context.storageContext)?.readState(context.storageContext);
-      if (value != null)
-        _pageToUseOnStartup = value;
+      final double value = PageStorage.of(context.storageContext)
+          ?.readState(context.storageContext);
+      if (value != null) _pageToUseOnStartup = value;
     }
   }
 
@@ -229,7 +236,9 @@ class _MyPagePosition extends ScrollPositionWithSingleContext implements PageMet
     final double oldViewportDimensions = this.viewportDimension;
     final bool result = super.applyViewportDimension(viewportDimension);
     final double oldPixels = pixels;
-    final double page = (oldPixels == null || oldViewportDimensions == 0.0) ? _pageToUseOnStartup : getPageFromPixels(oldPixels, oldViewportDimensions);
+    final double page = (oldPixels == null || oldViewportDimensions == 0.0)
+        ? _pageToUseOnStartup
+        : getPageFromPixels(oldPixels, oldViewportDimensions);
     final double newPixels = getPixelsFromPage(page);
 
     if (newPixels != oldPixels) {

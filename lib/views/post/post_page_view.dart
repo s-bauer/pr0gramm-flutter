@@ -1,8 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:pr0gramm/controllers/pageController.dart';
 import 'package:pr0gramm/api/dtos/item/item.dart';
+import 'package:pr0gramm/controllers/pageController.dart';
 import 'package:pr0gramm/entities/feed.dart';
 import 'package:pr0gramm/views/post/post_page.dart';
 
@@ -73,14 +73,18 @@ class _PostPageViewState extends State<PostPageView> {
       builder: (context, snapshot) {
         return SliverFillViewport(
           delegate: !snapshot.hasData
-              ? SliverChildListDelegate([Center(child: CircularProgressIndicator())])
-              : SliverChildBuilderDelegate((context, index) {
-                  return PostPage(
-                    item: snapshot.data[index],
-                    feed: widget.feed,
-                    index: index,
-                  );
-                }, childCount: snapshot.data.length,),
+              ? SliverChildListDelegate(
+                  [Center(child: CircularProgressIndicator())])
+              : SliverChildBuilderDelegate(
+                  (context, index) {
+                    return PostPage(
+                      item: snapshot.data[index],
+                      feed: widget.feed,
+                      index: index,
+                    );
+                  },
+                  childCount: snapshot.data.length,
+                ),
         );
       },
     );

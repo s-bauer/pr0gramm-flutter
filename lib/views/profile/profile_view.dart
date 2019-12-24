@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/profile_info.dart';
-import 'package:pr0gramm/entities/enums/feed_type.dart';
-import 'package:pr0gramm/entities/enums/flags.dart';
-import 'package:pr0gramm/entities/enums/promotion_status.dart';
-import 'package:pr0gramm/entities/feed_details.dart';
 import 'package:pr0gramm/views/profile/widgets/profile_info_bar.dart';
 import 'package:pr0gramm/views/profile/widgets/profile_tab_bar.dart';
 import 'package:pr0gramm/views/profile/widgets/profile_upload_overview.dart';
-import 'package:pr0gramm/widgets/global_inherited.dart';
 
 class ProfileView extends StatefulWidget {
   final ProfileInfo info;
@@ -35,7 +30,6 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: <Widget>[
         ProfileInfoBar(

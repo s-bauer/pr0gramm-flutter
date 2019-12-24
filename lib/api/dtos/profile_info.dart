@@ -1,8 +1,8 @@
-import 'package:pr0gramm/api/dtos/item/liked_item.dart';
 import 'package:pr0gramm/api/dtos/comment/liked_profile_comment.dart';
 import 'package:pr0gramm/api/dtos/comment/profile_comment.dart';
-import 'package:pr0gramm/api/dtos/user/profile_badge.dart';
+import 'package:pr0gramm/api/dtos/item/liked_item.dart';
 import 'package:pr0gramm/api/dtos/item/profile_upload_item.dart';
+import 'package:pr0gramm/api/dtos/user/profile_badge.dart';
 import 'package:pr0gramm/api/dtos/user/user.dart';
 
 class ProfileInfo {

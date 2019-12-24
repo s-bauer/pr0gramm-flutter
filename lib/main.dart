@@ -26,7 +26,6 @@ class MyApp extends StatelessWidget {
 
   MyApp({Key key, this.initResult}) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     return GlobalInherited(
@@ -42,7 +41,7 @@ class MyApp extends StatelessWidget {
   }
 
   Route onGenerateRoute(RouteSettings settings) {
-    if(!routes.containsKey(settings.name)) {
+    if (!routes.containsKey(settings.name)) {
       final route = routes["/top"];
       settings = settings.copyWith(name: "/top");
       return FadingRoute(builder: route, settings: settings);
@@ -54,7 +53,7 @@ class MyApp extends StatelessWidget {
 }
 
 class FadingRoute<T> extends MaterialPageRoute<T> {
-  FadingRoute({ WidgetBuilder builder, RouteSettings settings })
+  FadingRoute({WidgetBuilder builder, RouteSettings settings})
       : super(builder: builder, settings: settings);
 
   @override
@@ -63,11 +62,3 @@ class FadingRoute<T> extends MaterialPageRoute<T> {
     return new FadeTransition(opacity: animation, child: child);
   }
 }
-
-
-
-
-
-
-
-

@@ -8,6 +8,7 @@ import 'package:pr0gramm/widgets/global_inherited.dart';
 
 class ProfileUploadOverview extends StatelessWidget {
   final String user;
+
   ProfileUploadOverview({Key key, this.user}) : super(key: key);
   final OverviewBuilder _overviewBuilder = OverviewBuilder.instance;
 

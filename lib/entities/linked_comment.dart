@@ -10,12 +10,13 @@ class LinkedComment {
   List<LinkedComment> children;
 
   LinkedComment.root(this.comment, List<ItemComment> allComments)
-      : parent = null, depth = 0 {
+      : parent = null,
+        depth = 0 {
     children = getChildren(allComments);
   }
 
   LinkedComment.child(this.comment, List<ItemComment> allComments, this.parent)
-      : depth = parent.depth + 1{
+      : depth = parent.depth + 1 {
     children = getChildren(allComments);
   }
 
@@ -24,7 +25,8 @@ class LinkedComment {
         .where((c) => c.parent == comment.id)
         .map((c) => LinkedComment.child(c, allComments, this))
         .toList()
-        ..sort((a, b) => a.comment.confidence.compareTo(b.comment.confidence));
+          ..sort(
+              (a, b) => a.comment.confidence.compareTo(b.comment.confidence));
   }
 
   Widget buildWidget() {

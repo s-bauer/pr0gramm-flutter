@@ -32,11 +32,10 @@ class VoteService {
   }
 
   Future<Vote> getVoteOfItem(Item item) async {
-    final voteItem = await _voteRepository
-          .findOne(itemId: item.id, itemType: ItemType.item);
+    final voteItem =
+        await _voteRepository.findOne(itemId: item.id, itemType: ItemType.item);
 
-    if(voteItem == null)
-      return Vote.none;
+    if (voteItem == null) return Vote.none;
 
     return voteItem.voteValue;
   }

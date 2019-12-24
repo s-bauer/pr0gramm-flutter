@@ -3,6 +3,7 @@ import 'package:pr0gramm/api/dtos/profile_info.dart';
 
 class ProfileInfoBar extends StatefulWidget {
   final ProfileInfo info;
+
   ProfileInfoBar({Key key, @required this.info}) : super(key: key);
 
   @override

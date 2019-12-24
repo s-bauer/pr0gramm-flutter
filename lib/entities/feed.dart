@@ -41,8 +41,7 @@ class Feed {
   get backwardData => _backwardsList;
 
   Future loadForward() async {
-    if(_isBusy)
-      return;
+    if (_isBusy) return;
 
     try {
       _isBusy = true;
@@ -60,8 +59,7 @@ class Feed {
   }
 
   Future loadBackwards() async {
-    if(_isBusy)
-      return;
+    if (_isBusy) return;
 
     try {
       _isBusy = true;
@@ -79,8 +77,7 @@ class Feed {
   }
 
   Future refresh() async {
-    if(_isBusy)
-      return;
+    if (_isBusy) return;
 
     try {
       _isBusy = true;

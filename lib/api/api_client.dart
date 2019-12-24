@@ -1,10 +1,9 @@
 import 'dart:io';
 
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:cookie_jar/cookie_jar.dart';
-
 
 class ApiClient {
   static const baseUrl = "https://pr0gramm.com/api";
@@ -44,9 +43,3 @@ class ApiClient {
     jar = CookieJar();
   }
 }
-
-
-
-
-
-

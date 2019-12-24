@@ -28,7 +28,6 @@ class FeedDetails {
     return this;
   }
 
-
   factory FeedDetails.byFeedType(FeedType feedType) {
     final now = DateTime.now();
     final bust = (now.millisecond * 1000 + now.microsecond) / 1000000.0;
@@ -99,9 +98,9 @@ class RandomFeedDetails extends FeedDetails {
           name: name,
         );
 
-
   @override
-  FeedDetails copyWith({Flags flags, PromotionStatus promoted, String tags, String name}) {
+  FeedDetails copyWith(
+      {Flags flags, PromotionStatus promoted, String tags, String name}) {
     return RandomFeedDetails(
       flags: flags ?? this.flags,
       promoted: promoted ?? this.promoted,

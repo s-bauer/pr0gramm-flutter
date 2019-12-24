@@ -5,7 +5,8 @@ import 'base_api.dart';
 
 class ProfileApi extends BaseApi {
   Future<ProfileInfo> getProfileInfo({String name, Flags flags}) async {
-    final response = await client.get("/profile/info?name=$name&flags=${flags.value}");
+    final response =
+        await client.get("/profile/info?name=$name&flags=${flags.value}");
     return ProfileInfo.fromJson(response.data);
   }
 }

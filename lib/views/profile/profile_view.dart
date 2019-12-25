@@ -80,6 +80,7 @@ class _ProfileViewState extends State<ProfileView> {
                       ? OverviewGrid()
                       : ProfileCommentOverview(
                           comments: snapshot.data.comments,
+                          user: info.user,
                         ),
                 )
               ],

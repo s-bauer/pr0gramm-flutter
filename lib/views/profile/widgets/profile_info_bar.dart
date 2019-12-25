@@ -2,20 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/profile_info.dart';
 import 'package:pr0gramm/views/widgets/user_mark.dart';
 
-const userMarkStyle = TextStyle(
-  color: Colors.white70,
-  fontSize: 16,
-);
-const usernameStyle = TextStyle(
-  color: Colors.white70,
-  fontSize: 20,
-);
-
-const benisStyle = TextStyle(
-  color: Colors.white54,
-  fontSize: 16,
-);
-
 class ProfileInfoBar extends StatelessWidget {
   final ProfileInfo info;
 
@@ -23,6 +9,21 @@ class ProfileInfoBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userMarkStyle = TextStyle(
+      color: info.user.mark.color,
+      fontSize: 16,
+    );
+
+    const usernameStyle = TextStyle(
+      color: Colors.white70,
+      fontSize: 20,
+    );
+
+    const benisStyle = TextStyle(
+      color: Colors.white54,
+      fontSize: 16,
+    );
+
     return Padding(
       padding: EdgeInsets.all(10),
       child: Column(
@@ -34,7 +35,7 @@ class ProfileInfoBar extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      info.user.mark.name,
+                      info.user.mark.name.toUpperCase(),
                       style: userMarkStyle,
                     ),
                     Row(

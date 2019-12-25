@@ -104,18 +104,22 @@ class _PostCommentState extends State<PostComment> {
                           linkStyle: TextStyle(color: Color(0xFFee4d2e)),
                         ),
                         SizedBox(height: 3),
-                        Row(children: [
-                          Text(
-                            comment.name,
-                            style: authorTextStyle,
-                            softWrap: true,
-                            overflow: TextOverflow.visible,
-                          ),
-                          UserMarkWidget(
-                            userMark: comment.mark,
-                            radius: 2,
-                          )
-                        ]),
+                        GestureDetector(
+                          onTap: () => Navigator.pushNamed(context, "/profile",
+                              arguments: comment.name),
+                          child: Row(children: [
+                            Text(
+                              comment.name,
+                              style: authorTextStyle,
+                              softWrap: true,
+                              overflow: TextOverflow.visible,
+                            ),
+                            UserMarkWidget(
+                              userMark: comment.mark,
+                              radius: 2,
+                            )
+                          ]),
+                        ),
                         Text(
                           "$points Punkte  ${formatTime(comment.created * 1000)}",
                           style: pointTextStyle,

@@ -27,17 +27,21 @@ class OPInfo extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Row(
-            children: [
-              Text(
-                item.user,
-                style: authorTextStyle,
-              ),
-              UserMarkWidget(
-                userMark: item.mark,
-                radius: 2.5,
-              )
-            ],
+          GestureDetector(
+            onTap: () =>
+                Navigator.pushNamed(context, "/profile", arguments: item.user),
+            child: Row(
+              children: [
+                Text(
+                  item.user,
+                  style: authorTextStyle,
+                ),
+                UserMarkWidget(
+                  userMark: item.mark,
+                  radius: 2.5,
+                )
+              ],
+            ),
           ),
           Row(
             children: [

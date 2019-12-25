@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-const TextStyle titleTextStyle = TextStyle(
-  fontSize: 8,
-);
+const TextStyle titleTextStyle = TextStyle(fontSize: 14, color: Colors.white70);
 
 class ProfileTabBar extends StatelessWidget {
   final int uploadCount;
@@ -23,27 +21,59 @@ class ProfileTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        GestureDetector(
-          onTap: showUploadsHandler,
-          child: ProfileTabButton(
-            title: "UPLOADS",
-            count: uploadCount,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: Colors.white30,
+            width: 1.0,
           ),
         ),
-        GestureDetector(
-          onTap: showCommentsHandler,
-          child: ProfileTabButton(
-            title: "COMMENTS",
-            count: commentCount,
-          ),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 10),
+        child: Flex(
+          direction: Axis.horizontal,
+          children: <Widget>[
+            Expanded(
+              child: GestureDetector(
+                onTap: showUploadsHandler,
+                child: ProfileTabButton(
+                  title: "UPLOADS",
+                  count: uploadCount,
+                ),
+              ),
+            ),
+            Container(
+              height: 30.0,
+              width: 1.0,
+              color: Colors.white30,
+              margin: const EdgeInsets.only(left: 10.0, right: 20.0),
+            ),
+            Expanded(
+              child: GestureDetector(
+                onTap: showCommentsHandler,
+                child: ProfileTabButton(
+                  title: "COMMENTS",
+                  count: commentCount,
+                ),
+              ),
+            ),
+            Container(
+              height: 30.0,
+              width: 1.0,
+              color: Colors.white30,
+              margin: const EdgeInsets.only(left: 10.0, right: 20.0),
+            ),
+            Expanded(
+              child: ProfileTabButton(
+                title: "TAGS",
+                count: tagCount,
+              ),
+            ),
+          ],
         ),
-        ProfileTabButton(
-          title: "TAGS",
-          count: tagCount,
-        ),
-      ],
+      ),
     );
   }
 }
@@ -56,25 +86,23 @@ class ProfileTabButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        children: <Widget>[
-          Center(
-            child: Text(
-              title,
-              style: titleTextStyle,
-              textAlign: TextAlign.center,
-            ),
+    return Column(
+      children: <Widget>[
+        Center(
+          child: Text(
+            title,
+            style: titleTextStyle,
+            textAlign: TextAlign.center,
           ),
-          Center(
-            child: Text(
-              "$count",
-              style: titleTextStyle,
-              textAlign: TextAlign.center,
-            ),
+        ),
+        Center(
+          child: Text(
+            "$count",
+            style: titleTextStyle,
+            textAlign: TextAlign.center,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

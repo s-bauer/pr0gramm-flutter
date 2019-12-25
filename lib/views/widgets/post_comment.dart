@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:pr0gramm/api/dtos/comment/item_comment.dart';
 import 'package:pr0gramm/entities/linked_comment.dart';
 import 'package:pr0gramm/helpers/time_formatter.dart';
 import 'package:pr0gramm/views/widgets/user_mark.dart';
@@ -39,7 +38,7 @@ class _PostCommentState extends State<PostComment> {
       color: Colors.white70,
     );
 
-    var comment = widget.linkedComment.comment as ItemComment;
+    var comment = widget.linkedComment.comment;
     final points = comment.up - comment.down;
 
     final commentsColumn = Column(

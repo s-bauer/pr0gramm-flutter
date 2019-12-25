@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/api/dtos/comment/item_comment.dart';
 import 'package:pr0gramm/entities/linked_comment.dart';
 import 'package:pr0gramm/entities/post_info.dart';
 
@@ -16,9 +15,7 @@ class PostComments extends StatelessWidget {
         .toList();
 
     return linkedComments
-      ..sort((a, b) => (b.comment as ItemComment)
-          .confidence
-          .compareTo((a.comment as ItemComment).confidence));
+      ..sort((a, b) => b.comment.confidence.compareTo(a.comment.confidence));
   }
 
   @override

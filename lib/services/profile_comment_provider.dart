@@ -8,13 +8,14 @@ import 'package:pr0gramm/entities/enums/flags.dart';
 class ProfileCommentProvider {
   final _profileApi = ProfileApi();
   final String name;
+  final Flags flags;
   final ProfileComment firstComment;
   ProfileCommentBatch _newestBatch;
   ProfileCommentBatch _oldestBatch;
 
-  ProfileCommentProvider({this.name, this.firstComment});
+  ProfileCommentProvider({this.name, this.firstComment, this.flags});
 
-  Future<ProfileCommentBatch> getFirstBatch(Flags flags) async {
+  Future<ProfileCommentBatch> getFirstBatch() async {
     final batch = await _profileApi.getProfileCommentBatch(
         name: name, flags: flags, beforeCreated: firstComment.created + 1);
     _newestBatch = batch;
@@ -22,8 +23,8 @@ class ProfileCommentProvider {
     return batch;
   }
 
-  Future<ProfileCommentBatch> getOlderBatch(Flags flags) async {
-    if (_oldestBatch == null) return await getFirstBatch(flags);
+  Future<ProfileCommentBatch> getOlderBatch() async {
+    if (_oldestBatch == null) return await getFirstBatch();
 
     if (!_oldestBatch.hasOlder) return null;
 
@@ -34,8 +35,8 @@ class ProfileCommentProvider {
     );
   }
 
-  Future<ProfileCommentBatch> getNewerBatch(Flags flags) async {
-    if (_newestBatch == null) return await getFirstBatch(flags);
+  Future<ProfileCommentBatch> getNewerBatch() async {
+    if (_newestBatch == null) return await getFirstBatch();
 
     if (!_newestBatch.hasNewer) return null;
 

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:pr0gramm/api/dtos/comment/item_comment.dart';
 import 'package:pr0gramm/entities/linked_comment.dart';
 import 'package:pr0gramm/helpers/time_formatter.dart';
 import 'package:pr0gramm/views/widgets/user_mark.dart';
@@ -38,8 +39,8 @@ class _PostCommentState extends State<PostComment> {
       color: Colors.white70,
     );
 
-    final points =
-        widget.linkedComment.comment.up - widget.linkedComment.comment.down;
+    var comment = widget.linkedComment.comment as ItemComment;
+    final points = comment.up - comment.down;
 
     final commentsColumn = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,7 +97,7 @@ class _PostCommentState extends State<PostComment> {
                               await launch(link.url);
                             }
                           },
-                          text: widget.linkedComment.comment.content,
+                          text: comment.content,
                           style: textStyle,
                           textAlign: TextAlign.left,
                           humanize: true,
@@ -105,18 +106,18 @@ class _PostCommentState extends State<PostComment> {
                         SizedBox(height: 3),
                         Row(children: [
                           Text(
-                            widget.linkedComment.comment.name,
+                            comment.name,
                             style: authorTextStyle,
                             softWrap: true,
                             overflow: TextOverflow.visible,
                           ),
                           UserMarkWidget(
-                            userMark: widget.linkedComment.comment.mark,
+                            userMark: comment.mark,
                             radius: 2,
                           )
                         ]),
                         Text(
-                          "$points Punkte  ${formatTime(widget.linkedComment.comment.created * 1000)}",
+                          "$points Punkte  ${formatTime(comment.created * 1000)}",
                           style: pointTextStyle,
                           softWrap: true,
                           overflow: TextOverflow.visible,

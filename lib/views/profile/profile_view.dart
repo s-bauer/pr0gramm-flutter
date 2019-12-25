@@ -79,7 +79,8 @@ class _ProfileViewState extends State<ProfileView> {
                   child: showUploads
                       ? OverviewGrid()
                       : ProfileCommentOverview(
-                          comments: snapshot.data.comments,
+                          firstComment: snapshot.data.comments
+                              .reduce((a, b) => a.created < b.created ? b : a),
                           user: info.user,
                         ),
                 )

@@ -90,13 +90,10 @@ class _OverviewGridState extends State<OverviewGrid> {
       },
     );
 
-    return RefreshIndicator(
-      onRefresh: currentFeed.refresh,
-      child: CustomScrollView(
-        controller: _controller,
-        center: widget._centerKey,
-        slivers: <Widget>[backwardsBuilder, forwardBuilder],
-      ),
+    return CustomScrollView(
+      controller: _controller,
+      center: widget._centerKey,
+      slivers: <Widget>[backwardsBuilder, forwardBuilder],
     );
   }
 

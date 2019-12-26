@@ -27,10 +27,7 @@ class _MyScaffoldState extends State<MyScaffold> {
           backgroundColor: Colors.black45,
           appBar: isSearching ? MySearchBar() : MyAppBar(),
           drawer: isSearchRoute ? null : CustomDrawer(),
-          body: RefreshIndicator(
-            onRefresh: FeedInherited.of(context).feed.refresh,
-            child: widget.body,
-          ),
+          body: widget.body,
         ),
       ),
     );

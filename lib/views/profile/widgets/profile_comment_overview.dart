@@ -1,39 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/comment/profile_comment.dart';
 import 'package:pr0gramm/api/dtos/user/user.dart';
-import 'package:pr0gramm/entities/enums/flags.dart';
 import 'package:pr0gramm/entities/profile_comment_feed.dart';
 
-/*class ProfileCommentOverview extends StatelessWidget {
-  final SplayTreeMap<int, Widget> commentWidgets = new SplayTreeMap();
+class CommentFeedInherited extends InheritedWidget {
+  final ProfileCommentFeed feed;
 
-  ProfileCommentOverview({
+  CommentFeedInherited({
     Key key,
-    @required ProfileComment newestComment,
-    @required User user,
-  }) : super(key: key);
+    @required this.feed,
+    @required Widget child,
+  })  : assert(child != null),
+        super(key: key, child: child);
+
+  static CommentFeedInherited of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<CommentFeedInherited>();
+  }
 
   @override
-  Widget build(BuildContext context) {
-    */ /*
-    *  .expand((c) => [
-                  c.toWidget(user),
-                  Divider(color: Colors.white24, height: 0.1),
-                ])
-                * */ /*
-    return ListView(
-      children: commentWidgets,
-    );
+  bool updateShouldNotify(InheritedWidget oldWidget) {
+    return true;
   }
-}*/
+}
+
 class ProfileCommentOverview extends StatefulWidget {
   final _centerKey = UniqueKey();
 
   final User user;
-  final ProfileComment firstComment;
 
-  ProfileCommentOverview({Key key, this.user, this.firstComment})
-      : super(key: key);
+  ProfileCommentOverview({Key key, this.user}) : super(key: key);
 
   @override
   _ProfileCommentOverviewState createState() => _ProfileCommentOverviewState();
@@ -46,10 +41,7 @@ class _ProfileCommentOverviewState extends State<ProfileCommentOverview> {
   @override
   Widget build(BuildContext context) {
     if (currentFeed == null) {
-      currentFeed = new ProfileCommentFeed(
-          user: widget.user.name,
-          firstComment: widget.firstComment,
-          flags: Flags.sfw);
+      currentFeed = CommentFeedInherited.of(context).feed;
     }
 
     final forwardBuilder = new StreamBuilder<List<ProfileComment>>(
@@ -91,13 +83,10 @@ class _ProfileCommentOverviewState extends State<ProfileCommentOverview> {
       },
     );
 
-    return RefreshIndicator(
-      onRefresh: currentFeed.refresh,
-      child: CustomScrollView(
-        controller: _controller,
-        center: widget._centerKey,
-        slivers: <Widget>[backwardsBuilder, forwardBuilder],
-      ),
+    return CustomScrollView(
+      controller: _controller,
+      center: widget._centerKey,
+      slivers: <Widget>[backwardsBuilder, forwardBuilder],
     );
   }
 

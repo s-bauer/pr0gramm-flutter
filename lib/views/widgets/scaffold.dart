@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/views/overview_grid.dart';
+import 'package:pr0gramm/views/profile/widgets/profile_comment_overview.dart';
 import 'package:pr0gramm/views/widgets/app_bar.dart';
 import 'package:pr0gramm/views/widgets/drawer.dart';
 
@@ -30,12 +31,17 @@ class _MyScaffoldState extends State<MyScaffold> {
           appBar: isSearching ? MySearchBar() : MyAppBar(),
           drawer: isSearchRoute || isProfileRoute ? null : CustomDrawer(),
           body: RefreshIndicator(
-            onRefresh: FeedInherited.of(context).feed.refresh,
+            onRefresh: () => refreshInheritedFeeds(context),
             child: widget.body,
           ),
         ),
       ),
     );
+  }
+
+  Future<void> refreshInheritedFeeds(BuildContext context) async {
+    await FeedInherited.of(context)?.feed?.refresh();
+    await CommentFeedInherited.of(context)?.feed?.refresh();
   }
 
   bool onStartSearchNotification(StartSearchNotification notification) {

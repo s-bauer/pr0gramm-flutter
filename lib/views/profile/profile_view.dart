@@ -5,6 +5,7 @@ import 'package:pr0gramm/entities/enums/flags.dart';
 import 'package:pr0gramm/entities/enums/promotion_status.dart';
 import 'package:pr0gramm/entities/feed.dart';
 import 'package:pr0gramm/entities/feed_details.dart';
+import 'package:pr0gramm/entities/profile_comment_feed.dart';
 import 'package:pr0gramm/views/overview_grid.dart';
 import 'package:pr0gramm/views/profile/widgets/profile_comment_overview.dart';
 import 'package:pr0gramm/views/profile/widgets/profile_info_bar.dart';
@@ -53,38 +54,43 @@ class _ProfileViewState extends State<ProfileView> {
           tags: "!u:$user",
           name: "by $user",
         );
-        final feed = new Feed(
+        final uploadFeed = new Feed(
           feedDetails: feedDetails,
           feedType: GlobalInherited.of(context).isLoggedIn
               ? FeedType.NEW
               : FeedType.PUBLICNEW,
         );
 
+        final commentFeed = new ProfileCommentFeed(
+            user: info.user.name,
+            firstComment: snapshot.data.comments
+                .reduce((a, b) => a.created < b.created ? b : a),
+            flags: Flags.sfw);
+
         return FeedInherited(
-          feed: feed,
-          child: MyScaffold(
-            body: Column(
-              children: <Widget>[
-                ProfileInfoBar(
-                  info: info,
-                ),
-                ProfileTabBar(
-                  showUploadsHandler: onShowUploads,
-                  showCommentsHandler: onShowComments,
-                  commentCount: info.commentCount,
-                  uploadCount: info.uploadCount,
-                  tagCount: info.tagCount,
-                ),
-                Expanded(
-                  child: showUploads
-                      ? OverviewGrid()
-                      : ProfileCommentOverview(
-                          firstComment: snapshot.data.comments
-                              .reduce((a, b) => a.created < b.created ? b : a),
-                          user: info.user,
-                        ),
-                )
-              ],
+          feed: uploadFeed,
+          child: CommentFeedInherited(
+            feed: commentFeed,
+            child: MyScaffold(
+              body: Column(
+                children: <Widget>[
+                  ProfileInfoBar(
+                    info: info,
+                  ),
+                  ProfileTabBar(
+                    showUploadsHandler: onShowUploads,
+                    showCommentsHandler: onShowComments,
+                    commentCount: info.commentCount,
+                    uploadCount: info.uploadCount,
+                    tagCount: info.tagCount,
+                  ),
+                  Expanded(
+                    child: showUploads
+                        ? OverviewGrid()
+                        : ProfileCommentOverview(user: info.user),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -93,17 +99,14 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   void onShowUploads() {
-    if (!showUploads) {
-      setState(() {
-        showUploads = true;
-      });
-    }
+    setState(() {
+      showUploads = true;
+    });
   }
 
   void onShowComments() {
-    if (showUploads)
-      setState(() {
-        showUploads = false;
-      });
+    setState(() {
+      showUploads = false;
+    });
   }
 }

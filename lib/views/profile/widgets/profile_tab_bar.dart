@@ -33,10 +33,12 @@ class ProfileTabBar extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 10),
         child: Flex(
+          mainAxisSize: MainAxisSize.max,
           direction: Axis.horizontal,
           children: <Widget>[
             Expanded(
               child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: showUploadsHandler,
                 child: ProfileTabButton(
                   title: "UPLOADS",
@@ -52,6 +54,7 @@ class ProfileTabBar extends StatelessWidget {
             ),
             Expanded(
               child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: showCommentsHandler,
                 child: ProfileTabButton(
                   title: "COMMENTS",

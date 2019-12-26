@@ -18,7 +18,6 @@ class ProfileApi extends BaseApi {
         ? beforeCreated != null ? "&before=$when" : "&after=$when"
         : "";
     var query = "name=$name&flags=${flags.value}$whenStr";
-    print("query: $query");
     final response = await client.get("/profile/comments?$query");
     return ProfileCommentBatch.fromJson(response.data);
   }

@@ -14,9 +14,12 @@ class ProfileApi extends BaseApi {
   Future<ProfileCommentBatch> getProfileCommentBatch(
       {String name, Flags flags, int beforeCreated, int afterCreated}) async {
     final when = beforeCreated ?? afterCreated;
-    final whenStr = when != null ? beforeCreated != null ? "&before$when" : "&after$when" : "";
-    final response = await client.get(
-        "/profile/comments?name=$name&flags=${flags.value}" + whenStr);
+    final whenStr = when != null
+        ? beforeCreated != null ? "&before=$when" : "&after=$when"
+        : "";
+    var query = "name=$name&flags=${flags.value}$whenStr";
+    print("query: $query");
+    final response = await client.get("/profile/comments?$query");
     return ProfileCommentBatch.fromJson(response.data);
   }
 }

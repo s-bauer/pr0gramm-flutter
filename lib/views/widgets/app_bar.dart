@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/entities/search_arguments.dart';
 import 'package:pr0gramm/views/overview_view.dart';
@@ -32,7 +31,6 @@ class MySearchBar extends StatefulWidget implements PreferredSizeWidget {
 
   @override
   final Size preferredSize = Size.fromHeight(kToolbarHeight);
-
 }
 
 class _MySearchBarState extends State<MySearchBar> {

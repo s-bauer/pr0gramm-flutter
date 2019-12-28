@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:pr0gramm/api/dtos/item/item.dart';
 import 'package:pr0gramm/views/post/widgets/post_preview_item.dart';

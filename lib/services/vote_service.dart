@@ -1,3 +1,5 @@
+import 'package:pr0gramm/api/comment_api.dart';
+import 'package:pr0gramm/api/dtos/comment/item_comment.dart';
 import 'package:pr0gramm/api/dtos/item/item.dart';
 import 'package:pr0gramm/api/item_api.dart';
 import 'package:pr0gramm/data/sharedPrefKeys.dart';
@@ -13,30 +15,51 @@ class VoteService {
   VoteService._();
 
   final ItemApi _itemApi = new ItemApi();
+  final CommentApi _commentApi = new CommentApi();
   CachedVoteRepository _voteRepository = CachedVoteRepository.instance;
 
-  Future voteItem(Item item, Vote vote) async {
+  Future<String> getNonce() async {
     final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey(SharedPrefKeys.MeToken)) {
-      final urlEncodedMeCookie = prefs.getString(SharedPrefKeys.MeToken);
-      final meToken = MeCookie.fromUrlEncodedJson(urlEncodedMeCookie);
-      final nonce = meToken.id.substring(0, 16);
+    if (!prefs.containsKey(SharedPrefKeys.MeToken))
+      throw new Exception("no me token found!");
 
-      _itemApi.vote(item.id, vote, nonce);
-      _voteRepository.saveVote(
-        itemId: item.id,
-        itemType: ItemType.item,
-        vote: vote,
-      );
-    }
+    final urlEncodedMeCookie = prefs.getString(SharedPrefKeys.MeToken);
+    final meToken = MeCookie.fromUrlEncodedJson(urlEncodedMeCookie);
+    return meToken.id.substring(0, 16);
+  }
+
+  Future voteItem(Item item, Vote vote) async {
+    await _itemApi.vote(item.id, vote, await getNonce());
+    await _voteRepository.saveVote(
+      itemId: item.id,
+      itemType: ItemType.item,
+      vote: vote,
+    );
   }
 
   Future<Vote> getVoteOfItem(Item item) async {
-    final voteItem = await _voteRepository
-          .findOne(itemId: item.id, itemType: ItemType.item);
+    final voteItem =
+        await _voteRepository.findOne(itemId: item.id, itemType: ItemType.item);
 
-    if(voteItem == null)
-      return Vote.none;
+    if (voteItem == null) return Vote.none;
+
+    return voteItem.voteValue;
+  }
+
+  Future voteComment(ItemComment comment, Vote vote) async {
+    await _commentApi.vote(comment.id, vote, await getNonce());
+    await _voteRepository.saveVote(
+      itemId: comment.id,
+      itemType: ItemType.comment,
+      vote: vote,
+    );
+  }
+
+  Future<Vote> getVoteOfComment(ItemComment comment) async {
+    final voteItem =
+    await _voteRepository.findOne(itemId: comment.id, itemType: ItemType.comment);
+
+    if (voteItem == null) return Vote.none;
 
     return voteItem.voteValue;
   }

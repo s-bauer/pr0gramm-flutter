@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/item/item.dart';
 import 'package:pr0gramm/views/post/widgets/op_info.dart';
-import 'package:pr0gramm/views/post/widgets/post_buttons.dart';
+import 'package:pr0gramm/views/vote/post_vote_buttons.dart';
 
 class PostInfoBar extends StatelessWidget {
   final Item item;
@@ -12,7 +12,7 @@ class PostInfoBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        PostButtons(item: item),
+        PostVoteButtons(item: item),
         Container(
           height: 30.0,
           width: 1.0,

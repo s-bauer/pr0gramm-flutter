@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/entities/baseTypes/enum.dart';
+import 'package:pr0gramm/entities/base_types/enum.dart';
 
 const _userMarkData = [
   const _UserMarkData(name: "Schwuchtel", color: Color(0xffffffff)),

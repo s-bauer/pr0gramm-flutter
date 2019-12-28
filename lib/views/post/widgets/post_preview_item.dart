@@ -12,7 +12,8 @@ class PreviewItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     final isHorizontalImage = item.width > item.height;
-    final previewWidth = isHorizontalImage ? deviceSize.height : deviceSize.width;
+    final previewWidth =
+        isHorizontalImage ? deviceSize.height : deviceSize.width;
     final previewFit = isHorizontalImage ? BoxFit.fitHeight : BoxFit.fitWidth;
 
     return FutureBuilder(

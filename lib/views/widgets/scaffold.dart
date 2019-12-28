@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/views/overview_view.dart';
 import 'package:pr0gramm/views/widgets/app_bar.dart';
 import 'package:pr0gramm/views/widgets/drawer.dart';
 
@@ -17,7 +16,9 @@ class _MyScaffoldState extends State<MyScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    bool isSearchRoute = ModalRoute.of(context).settings?.name == "/search";
+    var name = ModalRoute.of(context).settings?.name;
+    bool isSearchRoute = name == "/search";
+    bool isProfileRoute = name == "/profile";
 
     return NotificationListener<EndSearchNotification>(
       onNotification: onEndSearchNotification,
@@ -26,7 +27,7 @@ class _MyScaffoldState extends State<MyScaffold> {
         child: Scaffold(
           backgroundColor: Colors.black45,
           appBar: isSearching ? MySearchBar() : MyAppBar(),
-          drawer: isSearchRoute ? null : CustomDrawer(),
+          drawer: isSearchRoute || isProfileRoute ? null : CustomDrawer(),
           body: widget.body,
         ),
       ),

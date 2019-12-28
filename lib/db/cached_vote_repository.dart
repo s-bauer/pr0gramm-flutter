@@ -7,31 +7,34 @@ import 'package:sqflite/sqlite_api.dart';
 
 class CachedVoteRepository extends RepositoryBase {
   static CachedVoteRepository instance = new CachedVoteRepository._();
+
   CachedVoteRepository._();
 
   Future saveVote({int itemId, ItemType itemType, Vote vote}) async {
-    final insertSql = "INSERT OR REPLACE INTO cachedVote (id, itemId, itemType, voteValue) VALUES (?, ?, ?, ?)";
+    final insertSql =
+        "INSERT OR REPLACE INTO cachedVote (id, itemId, itemType, voteValue) VALUES (?, ?, ?, ?)";
     final voteId = itemType.value + 10 * itemId;
     db.rawInsert(insertSql, [voteId, itemId, itemType.value, vote.value]);
   }
 
   Future<CachedVote> findOne({int itemId, ItemType itemType}) async {
-    final querySql = "SELECT itemId, itemType, voteValue FROM cachedVote WHERE id=?";
+    final querySql =
+        "SELECT itemId, itemType, voteValue FROM cachedVote WHERE id=?";
     final voteId = itemType.value + 10 * itemId;
     final result = await db.rawQuery(querySql, [voteId]);
-    if(result.isEmpty)
-      return null;
+    if (result.isEmpty) return null;
 
     return CachedVote.fromMap(result.first);
   }
 
-  Future<List<CachedVote>> findSome({List<int> itemIds, ItemType itemType}) async {
-    final querySql = "SELECT itemId, itemType, voteValue FROM cachedVote WHERE id IN ?";
+  Future<List<CachedVote>> findSome(
+      {List<int> itemIds, ItemType itemType}) async {
+    final querySql =
+        "SELECT itemId, itemType, voteValue FROM cachedVote WHERE id IN ?";
 
     final voteIds = itemIds.map((id) => id * 10 + itemType.value);
     final result = await db.rawQuery(querySql, [voteIds]);
-    if(result.isEmpty)
-      return null;
+    if (result.isEmpty) return null;
 
     return result.map((m) => CachedVote.fromMap(m));
   }

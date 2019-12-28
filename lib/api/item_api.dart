@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:pr0gramm/api/dtos/item_batch.dart';
 import 'package:pr0gramm/api/dtos/item/item_info.dart';
+import 'package:pr0gramm/api/dtos/item_batch.dart';
 import 'package:pr0gramm/entities/enums/flags.dart';
 import 'package:pr0gramm/entities/enums/item_range.dart';
 import 'package:pr0gramm/entities/enums/promotion_status.dart';

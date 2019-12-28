@@ -1,5 +1,5 @@
-import 'package:pr0gramm/entities/enums/flags.dart';
 import 'package:pr0gramm/api/dtos/user/user_mark.dart';
+import 'package:pr0gramm/entities/enums/flags.dart';
 
 class Item {
   int id;

@@ -1,4 +1,3 @@
-
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -10,7 +9,6 @@ import 'package:pr0gramm/data/sharedPrefKeys.dart';
 import 'package:pr0gramm/entities/enums/flags.dart';
 import 'package:pr0gramm/widgets/global_inherited.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class LoginView extends StatefulWidget {
   @override
@@ -43,7 +41,7 @@ class _LoginViewState extends State<LoginView> {
       captcha: captcha,
     );
 
-    if(result?.success ?? false) {
+    if (result?.success ?? false) {
       final prefs = await SharedPreferences.getInstance();
       prefs.setString(SharedPrefKeys.UserName, result.username);
       prefs.setString(SharedPrefKeys.Token, result.token);
@@ -58,7 +56,8 @@ class _LoginViewState extends State<LoginView> {
 
       Navigator.pop(context);
     } else {
-      showAlertDialog(context, "Login Failure", "Unable to login: ${result?.error}");
+      showAlertDialog(
+          context, "Login Failure", "Unable to login: ${result?.error}");
       newCaptcha();
     }
   }
@@ -110,7 +109,7 @@ class _LoginViewState extends State<LoginView> {
                         child: Image.memory(snapshot.data.captchaBytes),
                       );
                     else
-                      return Center(child:CircularProgressIndicator());
+                      return Center(child: CircularProgressIndicator());
                   },
                 ),
               ),
@@ -126,9 +125,7 @@ class _LoginViewState extends State<LoginView> {
                       textAlign: TextAlign.center,
                       autocorrect: false,
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: "Captcha"
-                      ),
+                          border: OutlineInputBorder(), labelText: "Captcha"),
                     ),
                     SizedBox(height: 10),
                     TextField(
@@ -136,9 +133,7 @@ class _LoginViewState extends State<LoginView> {
                       textAlign: TextAlign.center,
                       autocorrect: false,
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: "User"
-                      ),
+                          border: OutlineInputBorder(), labelText: "User"),
                     ),
                     SizedBox(height: 10),
                     TextField(
@@ -147,9 +142,7 @@ class _LoginViewState extends State<LoginView> {
                       obscureText: true,
                       autocorrect: false,
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: "Password"
-                      ),
+                          border: OutlineInputBorder(), labelText: "Password"),
                     ),
                   ],
                 ),

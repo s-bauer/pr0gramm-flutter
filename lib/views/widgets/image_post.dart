@@ -20,8 +20,7 @@ class _ImagePostState extends State<ImagePost> {
     return Image.network(
       _imageProvider.getImageUrl(widget.item),
       frameBuilder: (context, child, frame, sync) {
-        if(child != null)
-          return child;
+        if (child != null) return child;
 
         return PreviewItem(item: widget.item);
       },

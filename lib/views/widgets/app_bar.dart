@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/entities/search_arguments.dart';
-import 'package:pr0gramm/views/overview_view.dart';
+import 'package:pr0gramm/views/overview_grid.dart';
 import 'package:pr0gramm/views/widgets/scaffold.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -45,18 +45,17 @@ class _MySearchBarState extends State<MySearchBar> {
   @override
   Widget build(BuildContext context) {
     final border = UnderlineInputBorder(
-        borderSide: BorderSide(
-          width: 2,
-          color: Colors.white,
-        )
+      borderSide: BorderSide(
+        width: 2,
+        color: Colors.white,
+      ),
     );
 
     return AppBar(
       leading: IconButton(
         icon: Icon(Icons.arrow_back),
         onPressed: () => closeSearch(context),
-      )
-      ,
+      ),
       title: TextField(
         controller: _controller,
         style: TextStyle(
@@ -71,7 +70,7 @@ class _MySearchBarState extends State<MySearchBar> {
           hintText: "Suchen",
           hintStyle: TextStyle(
             color: Colors.white70,
-          )
+          ),
         ),
       ),
       actions: <Widget>[

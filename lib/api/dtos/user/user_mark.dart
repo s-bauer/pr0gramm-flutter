@@ -9,12 +9,15 @@ const _userMarkData = [
   const _UserMarkData(name: "Gebannt", color: Color(0xff444444)),
   const _UserMarkData(name: "Moderator", color: Color(0xff008fff)),
   const _UserMarkData(name: "Fliesentisch", color: Color(0xff6c432b)),
-  const _UserMarkData(name: "LebendeLegende", color: Color(0xff1cb992)), //content:'\25C6';margin-left:0.4em;}
-  const _UserMarkData(name: "Wichtel", color: Color(0xffd23c22)), //content:'\25A7';margin-left:0.4em;}
+  const _UserMarkData(name: "LebendeLegende", color: Color(0xff1cb992)),
+  //content:'\25C6';margin-left:0.4em;}
+  const _UserMarkData(name: "Wichtel", color: Color(0xffd23c22)),
+  //content:'\25A7';margin-left:0.4em;}
   const _UserMarkData(name: "EdlerSpender", color: Color(0xff1cb992)),
   const _UserMarkData(name: "Mittelaltschwuchtel", color: Color(0xffaddc8d)),
   const _UserMarkData(name: "Altmoderator", color: Color(0xff7fc7ff)),
-  const _UserMarkData(name: "Communityhelfer", color: Color(0xffc52b2f)), // content:'\2764';margin-left:0.4em;}
+  const _UserMarkData(name: "Communityhelfer", color: Color(0xffc52b2f)),
+  // content:'\2764';margin-left:0.4em;}
   const _UserMarkData(name: "Nutzerbot", color: Color(0xff10366f)),
   const _UserMarkData(name: "Systembot", color: Color(0xffffc166))
 ];
@@ -43,11 +46,13 @@ class UserMark extends Enum<int> {
   static UserMark nutzerbot = UserMark(13);
   static UserMark systembot = UserMark(14);
 
-  UserMark(int val) : _data = _userMarkData[val], super(val);
+  UserMark(int val)
+      : _data = _userMarkData[val],
+        super(val);
 
   final _UserMarkData _data;
 
   Color get color => _data.color;
+
   String get name => _data.name;
 }
-

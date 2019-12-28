@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:pr0gramm/entities/linked_comment.dart';
 import 'package:pr0gramm/helpers/time_formatter.dart';
-import 'package:pr0gramm/services/vote_service.dart';
 import 'package:pr0gramm/views/vote/comment_vote_buttons.dart';
 import 'package:pr0gramm/views/widgets/user_mark.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -20,8 +19,6 @@ class PostComment extends StatefulWidget {
 class _PostCommentState extends State<PostComment> {
   @override
   Widget build(BuildContext context) {
-    final VoteService _voteService = VoteService.instance;
-
     final padding = EdgeInsets.only(
       top: 5,
       left: 10.0,
@@ -43,9 +40,7 @@ class _PostCommentState extends State<PostComment> {
     );
 
     final comment = widget.linkedComment.comment;
-
-    final points =
-        comment.up - comment.down;
+    final points = comment.up - comment.down;
 
     final commentsColumn = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,18 +81,27 @@ class _PostCommentState extends State<PostComment> {
                           linkStyle: TextStyle(color: Color(0xFFee4d2e)),
                         ),
                         SizedBox(height: 3),
-                        Row(children: [
-                          Text(
-                            comment.name,
-                            style: authorTextStyle,
-                            softWrap: true,
-                            overflow: TextOverflow.visible,
+                        GestureDetector(
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            "/profile",
+                            arguments: comment.name,
                           ),
-                          UserMarkWidget(
-                            userMark: comment.mark,
-                            radius: 2,
-                          )
-                        ]),
+                          child: Row(
+                            children: [
+                              Text(
+                                comment.name,
+                                style: authorTextStyle,
+                                softWrap: true,
+                                overflow: TextOverflow.visible,
+                              ),
+                              UserMarkWidget(
+                                userMark: comment.mark,
+                                radius: 2,
+                              )
+                            ],
+                          ),
+                        ),
                         Text(
                           "$points Punkte  ${formatTime(comment.created * 1000)}",
                           style: pointTextStyle,

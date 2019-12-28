@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import 'package:pr0gramm/entities/enums/feed_type.dart';
 import 'package:pr0gramm/helpers/overview_builder.dart';
 import 'package:pr0gramm/services/initialization_service.dart';
+import 'package:pr0gramm/views/profile/profile_builder.dart';
 import 'package:pr0gramm/widgets/global_inherited.dart';
 
 void main() async {
@@ -15,6 +16,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   static final OverviewBuilder _overviewBuilder = OverviewBuilder.instance;
+  static final ProfileBuilder _profileBuilder = ProfileBuilder.instance;
 
   final InitializationResult initResult;
   final routes = {
@@ -22,10 +24,10 @@ class MyApp extends StatelessWidget {
     "/new": (context) => _overviewBuilder.buildByType(FeedType.NEW),
     "/random": (context) => _overviewBuilder.buildByType(FeedType.RANDOMNEW),
     "/search": (context) => _overviewBuilder.buildByRoute(context),
+    "/profile": (context) => _profileBuilder.buildByRoute(context),
   };
 
   MyApp({Key key, this.initResult}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,7 @@ class MyApp extends StatelessWidget {
   }
 
   Route onGenerateRoute(RouteSettings settings) {
-    if(!routes.containsKey(settings.name)) {
+    if (!routes.containsKey(settings.name)) {
       final route = routes["/top"];
       settings = settings.copyWith(name: "/top");
       return FadingRoute(builder: route, settings: settings);
@@ -54,7 +56,7 @@ class MyApp extends StatelessWidget {
 }
 
 class FadingRoute<T> extends MaterialPageRoute<T> {
-  FadingRoute({ WidgetBuilder builder, RouteSettings settings })
+  FadingRoute({WidgetBuilder builder, RouteSettings settings})
       : super(builder: builder, settings: settings);
 
   @override
@@ -63,11 +65,3 @@ class FadingRoute<T> extends MaterialPageRoute<T> {
     return new FadeTransition(opacity: animation, child: child);
   }
 }
-
-
-
-
-
-
-
-

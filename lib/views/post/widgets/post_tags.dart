@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/tag/tag.dart';
 import 'package:pr0gramm/entities/post_info.dart';
 import 'package:pr0gramm/entities/search_arguments.dart';
-import 'package:pr0gramm/views/overview_view.dart';
+import 'package:pr0gramm/views/overview_grid.dart';
 
 class PostTags extends StatelessWidget {
   final PostInfo info;

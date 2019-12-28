@@ -7,6 +7,11 @@ class OverviewView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MyScaffold(body: OverviewGrid());
+    final feed = FeedInherited.of(context).feed;
+
+    return RefreshIndicator(
+      onRefresh: () => feed.refresh(),
+      child: MyScaffold(body: OverviewGrid()),
+    );
   }
 }

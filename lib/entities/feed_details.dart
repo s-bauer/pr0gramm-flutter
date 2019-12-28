@@ -99,8 +99,12 @@ class RandomFeedDetails extends FeedDetails {
         );
 
   @override
-  FeedDetails copyWith(
-      {Flags flags, PromotionStatus promoted, String tags, String name}) {
+  FeedDetails copyWith({
+    Flags flags,
+    PromotionStatus promoted,
+    String tags,
+    String name,
+  }) {
     return RandomFeedDetails(
       flags: flags ?? this.flags,
       promoted: promoted ?? this.promoted,

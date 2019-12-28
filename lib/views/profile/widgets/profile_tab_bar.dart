@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -7,8 +9,8 @@ class ProfileTabBar extends StatelessWidget {
   final int uploadCount;
   final int commentCount;
   final int tagCount;
-  final void Function() showUploadsHandler;
-  final void Function() showCommentsHandler;
+  final VoidCallback showUploadsHandler;
+  final VoidCallback showCommentsHandler;
 
   ProfileTabBar({
     Key key,
@@ -109,3 +111,4 @@ class ProfileTabButton extends StatelessWidget {
     );
   }
 }
+

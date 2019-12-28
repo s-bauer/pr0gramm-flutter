@@ -4,8 +4,8 @@ import 'package:pr0gramm/entities/enums/flags.dart';
 import 'package:pr0gramm/views/profile/profile_view.dart';
 
 class ProfileBuilder {
-  static ProfileBuilder instance = ProfileBuilder._();
-  final ProfileApi profileAPi = ProfileApi();
+  static ProfileBuilder instance = new ProfileBuilder._();
+  final ProfileApi profileAPi = new ProfileApi();
 
   ProfileBuilder._();
 

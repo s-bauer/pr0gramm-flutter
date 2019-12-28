@@ -32,6 +32,7 @@ class ProfileCommentView extends StatelessWidget {
       fontSize: 8,
       color: Colors.white70,
     );
+
     final points = _comment.up - _comment.down;
     return Padding(
       padding: EdgeInsets.all(5),

@@ -45,10 +45,11 @@ class _MySearchBarState extends State<MySearchBar> {
   @override
   Widget build(BuildContext context) {
     final border = UnderlineInputBorder(
-        borderSide: BorderSide(
-      width: 2,
-      color: Colors.white,
-    ));
+      borderSide: BorderSide(
+        width: 2,
+        color: Colors.white,
+      ),
+    );
 
     return AppBar(
       leading: IconButton(
@@ -63,13 +64,14 @@ class _MySearchBarState extends State<MySearchBar> {
         ),
         cursorColor: Colors.white,
         decoration: InputDecoration(
-            isDense: true,
-            enabledBorder: border,
-            focusedBorder: border,
-            hintText: "Suchen",
-            hintStyle: TextStyle(
-              color: Colors.white70,
-            )),
+          isDense: true,
+          enabledBorder: border,
+          focusedBorder: border,
+          hintText: "Suchen",
+          hintStyle: TextStyle(
+            color: Colors.white70,
+          ),
+        ),
       ),
       actions: <Widget>[
         IconButton(

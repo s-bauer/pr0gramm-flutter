@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:pr0gramm/entities/linked_comment.dart';
 import 'package:pr0gramm/helpers/time_formatter.dart';
-import 'package:pr0gramm/services/vote_service.dart';
 import 'package:pr0gramm/views/vote/comment_vote_buttons.dart';
 import 'package:pr0gramm/views/widgets/user_mark.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -20,8 +19,6 @@ class PostComment extends StatefulWidget {
 class _PostCommentState extends State<PostComment> {
   @override
   Widget build(BuildContext context) {
-    final VoteService _voteService = VoteService.instance;
-
     final padding = EdgeInsets.only(
       top: 5,
       left: 10.0,
@@ -85,20 +82,25 @@ class _PostCommentState extends State<PostComment> {
                         ),
                         SizedBox(height: 3),
                         GestureDetector(
-                          onTap: () => Navigator.pushNamed(context, "/profile",
-                              arguments: comment.name),
-                          child: Row(children: [
-                            Text(
-                              comment.name,
-                              style: authorTextStyle,
-                              softWrap: true,
-                              overflow: TextOverflow.visible,
-                            ),
-                            UserMarkWidget(
-                              userMark: comment.mark,
-                              radius: 2,
-                            )
-                          ]),
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            "/profile",
+                            arguments: comment.name,
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                comment.name,
+                                style: authorTextStyle,
+                                softWrap: true,
+                                overflow: TextOverflow.visible,
+                              ),
+                              UserMarkWidget(
+                                userMark: comment.mark,
+                                radius: 2,
+                              )
+                            ],
+                          ),
                         ),
                         Text(
                           "$points Punkte  ${formatTime(comment.created * 1000)}",

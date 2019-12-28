@@ -61,9 +61,14 @@ class _OverviewGridState extends State<OverviewGrid> {
         );
 
         final circ = SliverFillViewport(
-            delegate: SliverChildListDelegate([
-          Center(child: CircularProgressIndicator()),
-        ]));
+          delegate: SliverChildListDelegate(
+            <Widget>[
+              Center(
+                child: CircularProgressIndicator(),
+              ),
+            ],
+          ),
+        );
 
         return SliverSafeArea(
           sliver: snapshot.hasData ? grid : circ,
@@ -80,12 +85,13 @@ class _OverviewGridState extends State<OverviewGrid> {
         }
 
         return SliverGrid(
-          gridDelegate:
-              new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
-          delegate: new SliverChildBuilderDelegate(
-              (context, index) =>
-                  buildItem(context, snapshot.data[index], index),
-              childCount: snapshot.data?.length ?? 0),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+          ),
+          delegate: SliverChildBuilderDelegate(
+            (context, idx) => buildItem(context, snapshot.data[idx], idx),
+            childCount: snapshot.data?.length ?? 0,
+          ),
         );
       },
     );
@@ -136,13 +142,14 @@ class _OverviewGridState extends State<OverviewGrid> {
     Navigator.push(
       context,
       new MaterialPageRoute(
-          builder: (context) => FeedInherited(
-                feed: currentFeed,
-                child: PostPageView(
-                  index: index,
-                  feed: currentFeed,
-                ),
-              )),
+        builder: (context) => FeedInherited(
+          feed: currentFeed,
+          child: PostPageView(
+            index: index,
+            feed: currentFeed,
+          ),
+        ),
+      ),
     );
   }
 }

@@ -24,16 +24,20 @@ class ProfileView extends StatefulWidget {
   }
 }
 
-class _ProfileViewState extends State<ProfileView> {
+class _ProfileViewState extends State<ProfileView>
+    with SingleTickerProviderStateMixin {
   bool showUploads = true;
+  TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = new TabController(length: 2, vsync: this);
   }
 
   @override
   void dispose() {
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -45,68 +49,87 @@ class _ProfileViewState extends State<ProfileView> {
         if (!snapshot.hasData)
           return Center(child: CircularProgressIndicator());
 
-        var info = snapshot.data;
-        final user = info.user.name;
-        final feedDetails = FeedDetails(
-          promoted: PromotionStatus.none,
-          flags:
-              GlobalInherited.of(context).isLoggedIn ? Flags.sfw : Flags.guest,
-          tags: "!u:$user",
-          name: "by $user",
-        );
-        final uploadFeed = new Feed(
-          feedDetails: feedDetails,
-          feedType: GlobalInherited.of(context).isLoggedIn
-              ? FeedType.NEW
-              : FeedType.PUBLICNEW,
-        );
-
-        final commentFeed = new ProfileCommentFeed(
-            user: info.user.name,
-            firstComment: snapshot.data.comments
-                .reduce((a, b) => a.created < b.created ? b : a),
-            flags: Flags.sfw);
-
-        return FeedInherited(
-          feed: uploadFeed,
-          child: CommentFeedInherited(
-            feed: commentFeed,
-            child: MyScaffold(
-              body: Column(
-                children: <Widget>[
-                  ProfileInfoBar(
-                    info: info,
-                  ),
-                  ProfileTabBar(
-                    showUploadsHandler: onShowUploads,
-                    showCommentsHandler: onShowComments,
-                    commentCount: info.commentCount,
-                    uploadCount: info.uploadCount,
-                    tagCount: info.tagCount,
-                  ),
-                  Expanded(
-                    child: showUploads
-                        ? OverviewGrid()
-                        : ProfileCommentOverview(user: info.user),
-                  ),
-                ],
+        final info = snapshot.data;
+        final mainView = new MyScaffold(
+          body: Column(
+            children: <Widget>[
+              ProfileInfoBar(info: info),
+              ProfileTabBar(
+                showUploadsHandler: onShowUploads,
+                showCommentsHandler: onShowComments,
+                commentCount: info.commentCount,
+                uploadCount: info.uploadCount,
+                tagCount: info.tagCount,
               ),
-            ),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: <Widget>[
+                    OverviewGrid(),
+                    ProfileCommentOverview(user: info.user)
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+
+        return buildFeedInherited(
+          info: info,
+          child: buildCommentFeedInherited(
+            info: info,
+            child: mainView,
           ),
         );
       },
     );
   }
 
+  FeedInherited buildFeedInherited({ProfileInfo info, Widget child}) {
+    final user = info.user.name;
+
+    final feedDetails = new FeedDetails(
+      promoted: PromotionStatus.none,
+      flags: GlobalInherited.of(context).isLoggedIn ? Flags.sfw : Flags.guest,
+      tags: "!u:$user",
+      name: "by $user",
+    );
+
+    final uploadFeed = new Feed(
+      feedDetails: feedDetails,
+      feedType: GlobalInherited.of(context).isLoggedIn
+          ? FeedType.NEW
+          : FeedType.PUBLICNEW,
+    );
+
+    return FeedInherited(
+      feed: uploadFeed,
+      child: child,
+    );
+  }
+
+  CommentFeedInherited buildCommentFeedInherited({
+    ProfileInfo info,
+    Widget child,
+  }) {
+    final commentFeed = new ProfileCommentFeed(
+      user: info.user.name,
+      firstComment:
+          info.comments.reduce((a, b) => a.created < b.created ? b : a),
+      flags: Flags.sfw,
+    );
+
+    return CommentFeedInherited(
+      feed: commentFeed,
+      child: child,
+    );
+  }
+
   void onShowUploads() {
-    setState(() {
-      showUploads = true;
-    });
+    _tabController.index = 0;
   }
 
   void onShowComments() {
-    setState(() {
-      showUploads = false;
-    });
+    _tabController.index = 1;
   }
 }

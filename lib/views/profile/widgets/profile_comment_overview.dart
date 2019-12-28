@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/comment/profile_comment.dart';
 import 'package:pr0gramm/api/dtos/user/user.dart';
 import 'package:pr0gramm/entities/profile_comment_feed.dart';
+import 'package:pr0gramm/views/profile/widgets/profile_comment_view.dart';
 
 class CommentFeedInherited extends InheritedWidget {
   final ProfileCommentFeed feed;
@@ -24,8 +25,6 @@ class CommentFeedInherited extends InheritedWidget {
 }
 
 class ProfileCommentOverview extends StatefulWidget {
-  final _centerKey = UniqueKey();
-
   final User user;
 
   ProfileCommentOverview({Key key, this.user}) : super(key: key);
@@ -44,49 +43,23 @@ class _ProfileCommentOverviewState extends State<ProfileCommentOverview> {
       currentFeed = CommentFeedInherited.of(context).feed;
     }
 
-    final forwardBuilder = new StreamBuilder<List<ProfileComment>>(
-      key: widget._centerKey,
+    return StreamBuilder<List<ProfileComment>>(
       stream: currentFeed.forwardStream,
       initialData: currentFeed.forwardData,
       builder: (context, snapshot) {
-        final grid = SliverList(
-          delegate: new SliverChildBuilderDelegate(
-            (context, index) => snapshot.data[index].toWidget(widget.user),
-            childCount: snapshot.data?.length ?? 0,
-          ),
-        );
+        if (!snapshot.hasData)
+          return Center(child: CircularProgressIndicator());
 
-        final circ = SliverFillViewport(
-            delegate: SliverChildListDelegate([
-          Center(child: CircularProgressIndicator()),
-        ]));
-
-        return SliverSafeArea(
-          sliver: snapshot.hasData ? grid : circ,
+        return ListView.builder(
+          itemCount: snapshot.data.length,
+          itemBuilder: (context, index) {
+            return ProfileCommentView(
+              comment: snapshot.data[index],
+              user: widget.user,
+            );
+          },
         );
       },
-    );
-
-    final backwardsBuilder = new StreamBuilder<List<ProfileComment>>(
-      stream: currentFeed.backwardStream,
-      initialData: currentFeed.backwardData,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return SliverToBoxAdapter(child: Container());
-        }
-
-        return SliverList(
-            delegate: new SliverChildBuilderDelegate(
-          (context, index) => snapshot.data[index].toWidget(widget.user),
-          childCount: snapshot.data?.length ?? 0,
-        ));
-      },
-    );
-
-    return CustomScrollView(
-      controller: _controller,
-      center: widget._centerKey,
-      slivers: <Widget>[backwardsBuilder, forwardBuilder],
     );
   }
 
@@ -98,12 +71,7 @@ class _ProfileCommentOverviewState extends State<ProfileCommentOverview> {
 
   void _onScroll() {
     final max = _controller.position.maxScrollExtent;
-    final min = _controller.position.minScrollExtent;
     final offset = _controller.offset;
-
-    if (offset - 50 <= min) {
-      currentFeed.loadBackwards();
-    }
 
     if (offset + 50 >= max) {
       currentFeed.loadForward();

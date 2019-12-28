@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/comment/item_comment.dart';
-import 'package:pr0gramm/views/widgets/post_comment.dart';
 
 class LinkedComment {
   final ItemComment comment;
@@ -21,17 +19,14 @@ class LinkedComment {
   }
 
   List<LinkedComment> getChildren(List<ItemComment> allComments) {
-    return allComments
+    final filteredComments = allComments
         .where((c) => c.parent == comment.id)
         .map((c) => LinkedComment.child(c, allComments, this))
-        .toList()
-          ..sort(
-              (a, b) => a.comment.confidence.compareTo(b.comment.confidence));
-  }
+        .toList();
 
-  Widget buildWidget() {
-    return PostComment(
-      linkedComment: this,
-    );
+    filteredComments
+        .sort((a, b) => a.comment.confidence.compareTo(b.comment.confidence));
+
+    return filteredComments;
   }
 }

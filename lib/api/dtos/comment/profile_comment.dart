@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:pr0gramm/api/dtos/comment/comment.dart';
-import 'package:pr0gramm/api/dtos/user/user.dart';
-import 'package:pr0gramm/views/profile/widgets/profile_comment_view.dart';
 
 class ProfileComment extends Comment {
   int itemId;
@@ -28,9 +24,5 @@ class ProfileComment extends Comment {
     data['itemId'] = this.itemId;
     data['thumb'] = this.thumb;
     return data;
-  }
-
-  Widget toWidget(User user) {
-    return ProfileCommentView(comment: this, user: user);
   }
 }

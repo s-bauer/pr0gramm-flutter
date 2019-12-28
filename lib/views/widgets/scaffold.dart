@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pr0gramm/views/overview_grid.dart';
-import 'package:pr0gramm/views/profile/widgets/profile_comment_overview.dart';
 import 'package:pr0gramm/views/widgets/app_bar.dart';
 import 'package:pr0gramm/views/widgets/drawer.dart';
 

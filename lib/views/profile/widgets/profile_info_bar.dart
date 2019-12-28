@@ -30,44 +30,8 @@ class ProfileInfoBar extends StatelessWidget {
         children: <Widget>[
           Row(
             children: <Widget>[
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      info.user.mark.name.toUpperCase(),
-                      style: userMarkStyle,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          info.user.name,
-                          style: usernameStyle,
-                        ),
-                        UserMarkWidget(
-                          userMark: info.user.mark,
-                          radius: 2.5,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    "BENIS",
-                    style: benisStyle,
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(
-                    "${info.user.score}",
-                    style: usernameStyle,
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
+              buildUserInfoText(userMarkStyle, usernameStyle),
+              buildBenisColumn(benisStyle, usernameStyle),
             ],
           ),
           Row(
@@ -75,6 +39,50 @@ class ProfileInfoBar extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+
+  Expanded buildUserInfoText(TextStyle userMarkStyle, TextStyle usernameStyle) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            info.user.mark.name.toUpperCase(),
+            style: userMarkStyle,
+          ),
+          Row(
+            children: [
+              Text(
+                info.user.name,
+                style: usernameStyle,
+              ),
+              UserMarkWidget(
+                userMark: info.user.mark,
+                radius: 2.5,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Column buildBenisColumn(TextStyle benisStyle, TextStyle usernameStyle) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          "BENIS",
+          style: benisStyle,
+          textAlign: TextAlign.center,
+        ),
+        Text(
+          "${info.user.score}",
+          style: usernameStyle,
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }

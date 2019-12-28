@@ -37,20 +37,20 @@ class _FavoriteVoteButtonState extends State<FavoriteVoteButton>
         VoteButtonColorAnimation {
   AnimationController _controller;
   CurvedAnimation _morphCurve;
-  Animation<double> _morphProgress;
-  bool _votedColorAtBegin;
+  Animation<double> _morphAnimation;
 
   @override
-  onStateChange(VoteAnimation voteAnimation, [bool skipAnimation = false]) {
+  void onStateChange(VoteAnimation voteAnimation,
+      [bool skipAnimation = false]) {
     super.onStateChange(voteAnimation, skipAnimation);
 
     var fadeIn = voteAnimation == VoteAnimation.vote;
     var fadeOut = voteAnimation == VoteAnimation.clear;
-    if (fadeIn || fadeOut) {
-      if (fadeIn ^ _votedColorAtBegin)
-        _controller.forward();
-      else
-        _controller.reverse();
+
+    if (fadeIn) {
+      _controller.forward();
+    } else if (fadeOut) {
+      _controller.reverse();
     }
   }
 
@@ -58,63 +58,61 @@ class _FavoriteVoteButtonState extends State<FavoriteVoteButton>
   void initState() {
     super.initState();
 
-    _votedColorAtBegin = false;
+    widget.animationService.addListener(widget.type, onStateChange);
+
     _controller = new AnimationController(
       vsync: this,
       duration: voteAnimationDuration,
     );
 
-    widget.animationService.addListener(widget.type, onStateChange);
-
     _morphCurve = CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOutCubic,
-        reverseCurve: Curves.easeInCubic);
-    _morphProgress = Tween(
-      begin: _votedColorAtBegin ? 1.0 : 0.0,
-      end: !_votedColorAtBegin ? 1.0 : 0.0,
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+      reverseCurve: Curves.easeInCubic,
+    );
+
+    _morphAnimation = Tween(
+      begin: 0.0,
+      end: 1.0,
     ).animate(_morphCurve);
   }
 
   @override
   void dispose() {
     _controller?.dispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return buildSized(
-      child: buildColorAnimation(
-        builder: (context, color) {
-          return IconButton(
-            iconSize: iconSize,
-            padding: EdgeInsets.all(0.0),
-            icon: AnimatedBuilder(
-              animation: _morphProgress,
-              builder: (_, __) => Stack(
-                alignment: Alignment.center,
-                children: <Widget>[
-                  ScaleTransition(
-                    scale: _morphProgress,
-                    child: Icon(Icons.favorite),
-                  ),
-                  Opacity(
-                    opacity: _morphProgress.value != 1 ? 1 : 0,
-                    child: Icon(Icons.favorite_border),
-                  ),
-                ],
-              ),
+      child: buildColorAnimation(builder: (context, color) {
+        return IconButton(
+          iconSize: iconSize,
+          padding: EdgeInsets.all(0.0),
+          icon: AnimatedBuilder(
+            animation: _morphAnimation,
+            builder: (_, __) => Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                ScaleTransition(
+                  scale: _morphAnimation,
+                  child: Icon(Icons.favorite),
+                ),
+                Opacity(
+                  opacity: _morphAnimation.value != 1 ? 1 : 0,
+                  child: Icon(Icons.favorite_border),
+                ),
+              ],
             ),
-            color: color,
-            onPressed: !widget.disabled
-                ? () => widget.animationService.voteItem(widget.type.toVote())
-                : null,
-            disabledColor: disabledColor,
-          );
-        }
-      ),
+          ),
+          color: color,
+          onPressed: !widget.disabled
+              ? () => widget.animationService.voteItem(widget.type.toVote())
+              : null,
+          disabledColor: disabledColor,
+        );
+      }),
     );
   }
 }

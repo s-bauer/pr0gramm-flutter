@@ -1,4 +1,4 @@
-import 'package:pr0gramm/entities/baseTypes/enum.dart';
+import 'package:pr0gramm/entities/base_types/enum.dart';
 
 class Vote extends Enum<int> {
   static Vote down = Vote(-1);

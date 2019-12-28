@@ -30,18 +30,10 @@ class _MyScaffoldState extends State<MyScaffold> {
           backgroundColor: Colors.black45,
           appBar: isSearching ? MySearchBar() : MyAppBar(),
           drawer: isSearchRoute || isProfileRoute ? null : CustomDrawer(),
-          body: RefreshIndicator(
-            onRefresh: () => refreshInheritedFeeds(context),
-            child: widget.body,
-          ),
+          body: widget.body,
         ),
       ),
     );
-  }
-
-  Future<void> refreshInheritedFeeds(BuildContext context) async {
-    await FeedInherited.of(context)?.feed?.refresh();
-    await CommentFeedInherited.of(context)?.feed?.refresh();
   }
 
   bool onStartSearchNotification(StartSearchNotification notification) {

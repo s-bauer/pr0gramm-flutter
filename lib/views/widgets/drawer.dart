@@ -45,6 +45,8 @@ class CustomDrawer extends Drawer {
             buildRouteButton(context, "TOP", "/top", Icons.home),
             buildRouteButton(context, "NEW", "/new", Icons.trending_up),
             buildRouteButton(context, "Zufall", "/random", Icons.shuffle),
+            buildRouteButton(
+                context, "Profil", "/profile", Icons.account_circle, arguments: GlobalInherited.of(context).profile.user.name),
             Divider(),
             isLoggedIn ? loginButton : logoutButton,
           ],
@@ -57,8 +59,9 @@ class CustomDrawer extends Drawer {
     BuildContext context,
     String name,
     String route,
-    IconData icon,
-  ) {
+    IconData icon, {
+    dynamic arguments,
+  }) {
     final currentRoute = ModalRoute.of(context).settings.name;
 
     final color =
@@ -71,12 +74,12 @@ class CustomDrawer extends Drawer {
           Text(name, style: TextStyle(color: color)),
         ],
       ),
-      onPressed: () => navigateTo(context, route),
+      onPressed: () => navigateTo(context, route, arguments: arguments),
     );
   }
 
-  void navigateTo(BuildContext context, String route) {
-    Navigator.popAndPushNamed(context, route);
+  void navigateTo(BuildContext context, String route, {dynamic arguments}) {
+    Navigator.popAndPushNamed(context, route, arguments: arguments);
   }
 
   void logOut(BuildContext context) {

@@ -1,3 +1,4 @@
+import 'package:pr0gramm/api/item_api.dart';
 import 'package:pr0gramm/entities/enums/feed_type.dart';
 import 'package:pr0gramm/entities/enums/flags.dart';
 import 'package:pr0gramm/entities/enums/promotion_status.dart';
@@ -7,20 +8,23 @@ class FeedDetails {
   final PromotionStatus promoted;
   final String tags;
   final String name;
+  final GetItemsConfiguration config;
 
-  FeedDetails({this.flags, this.promoted, this.tags, this.name});
+  FeedDetails({this.flags, this.promoted, this.tags, this.name, this.config});
 
   FeedDetails copyWith({
     Flags flags,
     PromotionStatus promoted,
     String tags,
     String name,
+    GetItemsConfiguration providerConfiguration,
   }) {
     return FeedDetails(
       flags: flags ?? this.flags,
       promoted: promoted ?? this.promoted,
       tags: tags ?? this.tags,
       name: name ?? this.name,
+      config: providerConfiguration ?? this.config,
     );
   }
 
@@ -104,6 +108,7 @@ class RandomFeedDetails extends FeedDetails {
     PromotionStatus promoted,
     String tags,
     String name,
+    GetItemsConfiguration providerConfiguration,
   }) {
     return RandomFeedDetails(
       flags: flags ?? this.flags,

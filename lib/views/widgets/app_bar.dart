@@ -4,10 +4,14 @@ import 'package:pr0gramm/views/overview_grid.dart';
 import 'package:pr0gramm/views/widgets/scaffold.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+
+  MyAppBar({Key key, this.title}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(FeedInherited.of(context).feed.feedDetails.name),
+      title: Text(title ?? FeedInherited.of(context).feed.feedDetails.name),
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.search),

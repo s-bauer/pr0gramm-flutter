@@ -4,8 +4,9 @@ import 'package:pr0gramm/views/widgets/drawer.dart';
 
 class MyScaffold extends StatefulWidget {
   final Widget body;
+  final String name;
 
-  const MyScaffold({Key key, this.body}) : super(key: key);
+  const MyScaffold({Key key, this.body, this.name}) : super(key: key);
 
   @override
   _MyScaffoldState createState() => _MyScaffoldState();
@@ -26,7 +27,7 @@ class _MyScaffoldState extends State<MyScaffold> {
         onNotification: onStartSearchNotification,
         child: Scaffold(
           backgroundColor: Colors.black45,
-          appBar: isSearching ? MySearchBar() : MyAppBar(),
+          appBar: isSearching ? MySearchBar() : MyAppBar(title: widget.name),
           drawer: isSearchRoute || isProfileRoute ? null : CustomDrawer(),
           body: widget.body,
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/profile_info.dart';
+import 'package:pr0gramm/api/item_api.dart';
 import 'package:pr0gramm/entities/enums/feed_type.dart';
 import 'package:pr0gramm/entities/enums/flags.dart';
 import 'package:pr0gramm/entities/enums/promotion_status.dart';
@@ -26,14 +27,9 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView>
     with SingleTickerProviderStateMixin {
-  bool showUploads = true;
   TabController _tabController;
 
-  @override
-  void initState() {
-    super.initState();
-    _tabController = new TabController(length: 2, vsync: this);
-  }
+
 
   @override
   void dispose() {
@@ -50,49 +46,97 @@ class _ProfileViewState extends State<ProfileView>
           return Center(child: CircularProgressIndicator());
 
         final info = snapshot.data;
-        final mainView = new MyScaffold(
+        var showFavBtn = info.likesArePublic ||
+            info.user.id == GlobalInherited.of(context).profile.user.id;
+        var tabViews = <Widget>[
+          info.uploadCount > 0
+              ? buildUploadFeedInherited(
+                  info: info,
+                  child: OverviewGrid(),
+                )
+              : SizedBox.shrink(),
+          info.commentCount > 0
+              ? buildCommentFeedInherited(
+                  info: info,
+                  child: ProfileCommentOverview(user: info.user),
+                )
+              : SizedBox.shrink(),
+        ];
+
+        if (showFavBtn) {
+          tabViews.insert(
+            1,
+            info.likeCount > 0
+                ? buildFavoritesFeedInherited(
+                    info: info,
+                    child: OverviewGrid(),
+                  )
+                : SizedBox.shrink(),
+          );
+          _tabController = new TabController(length: 3, vsync: this);
+        } else {
+          _tabController = new TabController(length: 2, vsync: this);
+        }
+
+        return MyScaffold(
+          name: "by ${info.user.name}",
           body: Column(
             children: <Widget>[
               ProfileInfoBar(info: info),
               ProfileTabBar(
                 showUploadsHandler: onShowUploads,
+                showFavoritesHandler: showFavBtn ? onShowFavorites : null,
                 showCommentsHandler: onShowComments,
                 commentCount: info.commentCount,
                 uploadCount: info.uploadCount,
                 tagCount: info.tagCount,
+                favoriteCount: info.likeCount,
               ),
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
-                  children: <Widget>[
-                    OverviewGrid(),
-                    ProfileCommentOverview(user: info.user)
-                  ],
+                  children: tabViews,
                 ),
               ),
             ],
           ),
         );
-
-        return buildFeedInherited(
-          info: info,
-          child: buildCommentFeedInherited(
-            info: info,
-            child: mainView,
-          ),
-        );
+        ;
       },
     );
   }
 
-  FeedInherited buildFeedInherited({ProfileInfo info, Widget child}) {
+  FeedInherited buildFavoritesFeedInherited({ProfileInfo info, Widget child}) {
+    final user = info.user.name;
+
+    final feedDetails = new FeedDetails(
+        promoted: PromotionStatus.none,
+        flags: GlobalInherited.of(context).isLoggedIn ? Flags.sfw : Flags.guest,
+        config: GetItemsConfiguration(
+          likes: user,
+          self: true,
+        ));
+
+    final favoriteFeed = new Feed(
+      feedDetails: feedDetails,
+      feedType: GlobalInherited.of(context).isLoggedIn
+          ? FeedType.NEW
+          : FeedType.PUBLICNEW,
+    );
+
+    return FeedInherited(
+      feed: favoriteFeed,
+      child: child,
+    );
+  }
+
+  FeedInherited buildUploadFeedInherited({ProfileInfo info, Widget child}) {
     final user = info.user.name;
 
     final feedDetails = new FeedDetails(
       promoted: PromotionStatus.none,
       flags: GlobalInherited.of(context).isLoggedIn ? Flags.sfw : Flags.guest,
       tags: "!u:$user",
-      name: "by $user",
     );
 
     final uploadFeed = new Feed(
@@ -131,5 +175,9 @@ class _ProfileViewState extends State<ProfileView>
 
   void onShowComments() {
     _tabController.index = 1;
+  }
+
+  void onShowFavorites() {
+    _tabController.index = 2;
   }
 }

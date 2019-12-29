@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/profile_info.dart';
+import 'package:pr0gramm/helpers/time_formatter.dart';
 import 'package:pr0gramm/views/widgets/user_mark.dart';
+
+const badgesUrl = "https://pr0gramm.com/media/badges/";
 
 class ProfileInfoBar extends StatelessWidget {
   final ProfileInfo info;
@@ -9,31 +12,36 @@ class ProfileInfoBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double headerFontSize = 10;
+
     final userMarkStyle = TextStyle(
       color: info.user.mark.color,
-      fontSize: 16,
+      fontSize: headerFontSize,
     );
 
-    const usernameStyle = TextStyle(
+    final usernameStyle = TextStyle(
       color: Colors.white70,
-      fontSize: 20,
+      fontSize: headerFontSize * 2,
     );
 
-    const benisStyle = TextStyle(
+    final headerStyle = TextStyle(
       color: Colors.white54,
-      fontSize: 16,
+      fontSize: headerFontSize,
     );
 
     return Padding(
       padding: EdgeInsets.all(10),
       child: Column(
         children: <Widget>[
+      Padding(
+      padding: EdgeInsets.only(bottom: 15),
+      child:
           Row(
             children: <Widget>[
               buildUserInfoText(userMarkStyle, usernameStyle),
-              buildBenisColumn(benisStyle, usernameStyle),
+              buildBenisColumn(headerStyle, usernameStyle),
             ],
-          ),
+          ),),
           Row(
             children: <Widget>[],
           )
@@ -68,19 +76,19 @@ class ProfileInfoBar extends StatelessWidget {
     );
   }
 
-  Column buildBenisColumn(TextStyle benisStyle, TextStyle usernameStyle) {
+  Column buildBenisColumn(TextStyle headerStyle, TextStyle usernameStyle) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
         Text(
           "BENIS",
-          style: benisStyle,
-          textAlign: TextAlign.center,
+          style: headerStyle,
+          textAlign: TextAlign.right,
         ),
         Text(
           "${info.user.score}",
           style: usernameStyle,
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.right,
         ),
       ],
     );

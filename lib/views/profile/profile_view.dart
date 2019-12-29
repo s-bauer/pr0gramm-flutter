@@ -29,8 +29,6 @@ class _ProfileViewState extends State<ProfileView>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
 
-
-
   @override
   void dispose() {
     _tabController.dispose();
@@ -86,7 +84,7 @@ class _ProfileViewState extends State<ProfileView>
               ProfileTabBar(
                 showUploadsHandler: onShowUploads,
                 showFavoritesHandler: showFavBtn ? onShowFavorites : null,
-                showCommentsHandler: onShowComments,
+                showCommentsHandler: () => onShowComments(showFavBtn ? 2 : 1),
                 commentCount: info.commentCount,
                 uploadCount: info.uploadCount,
                 tagCount: info.tagCount,
@@ -173,11 +171,11 @@ class _ProfileViewState extends State<ProfileView>
     _tabController.index = 0;
   }
 
-  void onShowComments() {
-    _tabController.index = 1;
+  void onShowComments(int index) {
+    _tabController.index = index;
   }
 
   void onShowFavorites() {
-    _tabController.index = 2;
+    _tabController.index = 1;
   }
 }

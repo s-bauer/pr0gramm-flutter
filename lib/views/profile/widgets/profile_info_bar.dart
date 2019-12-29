@@ -43,7 +43,60 @@ class ProfileInfoBar extends StatelessWidget {
             ],
           ),),
           Row(
-            children: <Widget>[],
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Text(
+                      "Registriert ${formatTime(info.user.registered * 1000)}"
+                          .toUpperCase(),
+                      style: headerStyle,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: info.badges
+                          .map((b) => Padding(
+                                child: Image.network(
+                                  badgesUrl + b.image,
+                                  height: 24,
+                                  width: 24,
+                                ),
+                                padding: EdgeInsets.all(12),
+                              ))
+                          .toList(),
+                    ),
+                  ],
+                ),
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Text(
+                    "ACTIONS",
+                    style: headerStyle,
+                    textAlign: TextAlign.right,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(Icons.reply, color: Colors.white),
+                        onPressed: () {},
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.email, color: Colors.white),
+                        onPressed: () {},
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ],
           )
         ],
       ),

@@ -123,6 +123,7 @@ class _ProfileViewState extends State<ProfileView>
     );
 
     return FeedInherited(
+      key: PageStorageKey(info.user.id ^ (info.likeCount + info.likes.first.id)),
       feed: favoriteFeed,
       child: child,
     );
@@ -145,6 +146,7 @@ class _ProfileViewState extends State<ProfileView>
     );
 
     return FeedInherited(
+      key: PageStorageKey(info.user.id ^ (info.uploadCount + info.uploads.first.id)),
       feed: uploadFeed,
       child: child,
     );
@@ -162,6 +164,7 @@ class _ProfileViewState extends State<ProfileView>
     );
 
     return CommentFeedInherited(
+      key: PageStorageKey(info.user.id ^ (info.commentCount + info.comments.first.id)),
       feed: commentFeed,
       child: child,
     );

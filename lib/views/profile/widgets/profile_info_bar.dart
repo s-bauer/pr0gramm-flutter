@@ -1,6 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/profile_info.dart';
+import 'package:pr0gramm/api/dtos/user/profile_badge.dart';
+import 'package:pr0gramm/helpers/time_formatter.dart';
 import 'package:pr0gramm/views/widgets/user_mark.dart';
+
+const badgesUrl = "https://pr0gramm.com/media/badges/";
+
+final double _headerFontSize = 10;
+
+final _usernameStyle = TextStyle(
+  color: Colors.white70,
+  fontSize: _headerFontSize * 2,
+);
+
+final _headerStyle = TextStyle(
+  color: Colors.white54,
+  fontSize: _headerFontSize,
+);
+
 
 class ProfileInfoBar extends StatelessWidget {
   final ProfileInfo info;
@@ -9,40 +26,87 @@ class ProfileInfoBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userMarkStyle = TextStyle(
-      color: info.user.mark.color,
-      fontSize: 16,
-    );
 
-    const usernameStyle = TextStyle(
-      color: Colors.white70,
-      fontSize: 20,
-    );
-
-    const benisStyle = TextStyle(
-      color: Colors.white54,
-      fontSize: 16,
-    );
 
     return Padding(
       padding: EdgeInsets.all(10),
       child: Column(
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              buildUserInfoText(userMarkStyle, usernameStyle),
-              buildBenisColumn(benisStyle, usernameStyle),
-            ],
+          Padding(
+            padding: EdgeInsets.only(bottom: 15),
+            child: Row(
+              children: [_userInfoText, _benisColumn],
+            ),
           ),
           Row(
-            children: <Widget>[],
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [_badges, _profileActions],
           )
         ],
       ),
     );
   }
 
-  Expanded buildUserInfoText(TextStyle userMarkStyle, TextStyle usernameStyle) {
+  Column get _profileActions {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: <Widget>[
+        Text(
+          "ACTIONS",
+          style: _headerStyle,
+          textAlign: TextAlign.right,
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.reply, color: Colors.white),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.email, color: Colors.white),
+              onPressed: () {},
+            )
+          ],
+        ),
+      ],
+    );
+  }
+
+  Expanded get _badges {
+    final friendlyDate = formatTime(info.user.registered * 1000);
+    final registeredText = "Registriert $friendlyDate".toUpperCase();
+
+    final badgeWidgets = info.badges
+        .map(buildBadge)
+        .toList();
+
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Text(registeredText, style: headerStyle),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: new Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: badgeWidgets,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Expanded get _userInfoText {
+    final userMarkStyle = TextStyle(
+      color: info.user.mark.color,
+      fontSize: _headerFontSize,
+    );
+
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,7 +119,7 @@ class ProfileInfoBar extends StatelessWidget {
             children: [
               Text(
                 info.user.name,
-                style: usernameStyle,
+                style: _usernameStyle,
               ),
               UserMarkWidget(
                 userMark: info.user.mark,
@@ -68,21 +132,32 @@ class ProfileInfoBar extends StatelessWidget {
     );
   }
 
-  Column buildBenisColumn(TextStyle benisStyle, TextStyle usernameStyle) {
+  Column get _benisColumn {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
         Text(
           "BENIS",
-          style: benisStyle,
-          textAlign: TextAlign.center,
+          style: _headerStyle,
+          textAlign: TextAlign.right,
         ),
         Text(
           "${info.user.score}",
-          style: usernameStyle,
-          textAlign: TextAlign.center,
+          style: _usernameStyle,
+          textAlign: TextAlign.right,
         ),
       ],
+    );
+  }
+
+  Widget buildBadge(ProfileBadge badge) {
+    return Padding(
+      padding: EdgeInsets.all(12),
+      child: Image.network(
+        badgesUrl + badge.image,
+        height: 24,
+        width: 24,
+      ),
     );
   }
 }

@@ -9,7 +9,7 @@ class MyScaffold extends StatefulWidget {
   const MyScaffold({Key key, this.body, this.name}) : super(key: key);
 
   @override
-  _MyScaffoldState createState() => _MyScaffoldState();
+  _MyScaffoldState createState() => new _MyScaffoldState();
 }
 
 class _MyScaffoldState extends State<MyScaffold> {

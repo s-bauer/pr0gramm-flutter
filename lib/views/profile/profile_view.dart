@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pr0gramm/api/dtos/profile_info.dart';
-import 'package:pr0gramm/api/item_api.dart';
 import 'package:pr0gramm/entities/enums/feed_type.dart';
 import 'package:pr0gramm/entities/enums/flags.dart';
 import 'package:pr0gramm/entities/enums/promotion_status.dart';
@@ -44,40 +43,14 @@ class _ProfileViewState extends State<ProfileView>
           return Center(child: CircularProgressIndicator());
 
         final info = snapshot.data;
-        var showFavBtn = info.likesArePublic ||
+        final showFavBtn = info.likesArePublic ||
             info.user.id == GlobalInherited.of(context).profile.user.id;
-        var tabViews = <Widget>[
-          info.uploadCount > 0
-              ? buildUploadFeedInherited(
-                  info: info,
-                  child: OverviewGrid(),
-                )
-              : SizedBox.shrink(),
-          info.commentCount > 0
-              ? buildCommentFeedInherited(
-                  info: info,
-                  child: ProfileCommentOverview(user: info.user),
-                )
-              : SizedBox.shrink(),
-        ];
 
-        if (showFavBtn) {
-          tabViews.insert(
-            1,
-            info.likeCount > 0
-                ? buildFavoritesFeedInherited(
-                    info: info,
-                    child: OverviewGrid(),
-                  )
-                : SizedBox.shrink(),
-          );
-          _tabController = new TabController(length: 3, vsync: this);
-        } else {
-          _tabController = new TabController(length: 2, vsync: this);
-        }
+        final tabs = buildTabs(info, showFavBtn);
+        _tabController = new TabController(length: tabs.length, vsync: this);
 
         return MyScaffold(
-          name: "by ${info.user.name}",
+          name: "von ${info.user.name}",
           body: Column(
             children: <Widget>[
               ProfileInfoBar(info: info),
@@ -93,27 +66,54 @@ class _ProfileViewState extends State<ProfileView>
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
-                  children: tabViews,
+                  children: tabs,
                 ),
               ),
             ],
           ),
         );
-        ;
       },
     );
+  }
+
+  List<Widget> buildTabs(ProfileInfo info, bool showFavBtn) {
+    final tabs = new List<Widget>();
+    if (info.uploadCount > 0) {
+      final uploadTab = buildUploadFeedInherited(
+        info: info,
+        child: OverviewGrid(),
+      );
+      tabs.add(uploadTab);
+    }
+
+    if (showFavBtn) {
+      final favTab = buildFavoritesFeedInherited(
+        info: info,
+        child: OverviewGrid(),
+      );
+      tabs.add(favTab);
+    }
+
+    if (info.commentCount > 0) {
+      final commentTab = buildCommentFeedInherited(
+        info: info,
+        child: ProfileCommentOverview(user: info.user),
+      );
+      tabs.add(commentTab);
+    }
+
+    return tabs;
   }
 
   FeedInherited buildFavoritesFeedInherited({ProfileInfo info, Widget child}) {
     final user = info.user.name;
 
     final feedDetails = new FeedDetails(
-        promoted: PromotionStatus.none,
-        flags: GlobalInherited.of(context).isLoggedIn ? Flags.sfw : Flags.guest,
-        config: GetItemsConfiguration(
-          likes: user,
-          self: true,
-        ));
+      promoted: PromotionStatus.none,
+      flags: GlobalInherited.of(context).isLoggedIn ? Flags.sfw : Flags.guest,
+      likes: user,
+      self: true,
+    );
 
     final favoriteFeed = new Feed(
       feedDetails: feedDetails,
@@ -123,7 +123,7 @@ class _ProfileViewState extends State<ProfileView>
     );
 
     return FeedInherited(
-      key: PageStorageKey(info.user.id ^ (info.likeCount + info.likes.first.id)),
+      key: PageStorageKey("profile_${info.user.id}_favs"),
       feed: favoriteFeed,
       child: child,
     );
@@ -146,7 +146,7 @@ class _ProfileViewState extends State<ProfileView>
     );
 
     return FeedInherited(
-      key: PageStorageKey(info.user.id ^ (info.uploadCount + info.uploads.first.id)),
+      key: PageStorageKey("profile_${info.user.id}_uploads"),
       feed: uploadFeed,
       child: child,
     );
@@ -156,15 +156,17 @@ class _ProfileViewState extends State<ProfileView>
     ProfileInfo info,
     Widget child,
   }) {
+    final firstComment =
+        info.comments.reduce((a, b) => a.created < b.created ? b : a);
+
     final commentFeed = new ProfileCommentFeed(
       user: info.user.name,
-      firstComment:
-          info.comments.reduce((a, b) => a.created < b.created ? b : a),
+      firstComment: firstComment,
       flags: Flags.sfw,
     );
 
     return CommentFeedInherited(
-      key: PageStorageKey(info.user.id ^ (info.commentCount + info.comments.first.id)),
+      key: PageStorageKey("profile_${info.user.id}_comments"),
       feed: commentFeed,
       child: child,
     );

@@ -12,11 +12,11 @@ class ItemProvider {
 
   GetItemsConfiguration buildConfig(FeedDetails feedDetails) {
     return new GetItemsConfiguration(
-      promoted: feedDetails.config?.promoted ?? feedDetails.promoted,
-      flags: feedDetails.config?.flags ?? feedDetails.flags,
-      tags: feedDetails.config?.tags ?? feedDetails.tags,
-      likes: feedDetails.config?.likes,
-      self: feedDetails.config?.self,
+      promoted: feedDetails.promoted,
+      flags: feedDetails.flags,
+      tags: feedDetails.tags,
+      likes: feedDetails.likes,
+      self: feedDetails.self,
     );
   }
 

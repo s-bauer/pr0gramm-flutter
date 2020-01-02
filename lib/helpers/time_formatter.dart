@@ -69,7 +69,7 @@ String countHours(int difference) {
 ///   returns ("1 day" OR "X days")
 String countDays(int difference) {
   int count = (difference / 86400000).truncate();
-  return count.toString() + (count > 1 ? ' Tag' : ' Tag');
+  return count.toString() + (count > 1 ? ' Tagen' : ' Tag');
 }
 
 /// Converts the time difference to a number of weeks.
@@ -78,7 +78,7 @@ String countDays(int difference) {
 String countWeeks(int difference) {
   int count = (difference / 604800000).truncate();
   if (count > 3) {
-    return '1 month';
+    return '1 Monat';
   }
   return count.toString() + (count > 1 ? ' Wochen' : ' Woche');
 }
@@ -90,9 +90,9 @@ String countMonths(int difference) {
   int count = (difference / 2628003000).round();
   count = count > 0 ? count : 1;
   if (count > 12) {
-    return '1 year';
+    return '1 Jahr';
   }
-  return count.toString() + (count > 1 ? ' Monate' : ' Monat');
+  return count.toString() + (count > 1 ? ' Monaten' : ' Monat');
 }
 
 /// Converts the time difference to a number of years.
@@ -100,5 +100,5 @@ String countMonths(int difference) {
 ///   returns ("1 year" OR "X years")
 String countYears(int difference) {
   int count = (difference / 31536000000).truncate();
-  return count.toString() + (count > 1 ? ' Jahre' : ' Jahr');
+  return count.toString() + (count > 1 ? ' Jahren' : ' Jahr');
 }

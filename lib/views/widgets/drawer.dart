@@ -39,8 +39,19 @@ class CustomDrawer extends Drawer {
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              child: Text("pr0gramm"),
-              decoration: BoxDecoration(color: Colors.black45),
+              child: GestureDetector(
+                onTap: () => Navigator.pushNamed(
+                  context,
+                  "/profile",
+                  arguments: GlobalInherited.of(context).profile.user.name,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: buildInfoHeader(context),
+                ),
+              ),
+              decoration: BoxDecoration(color: Color(0xCF000000)),
             ),
             buildRouteButton(context, "TOP", "/top", Icons.home),
             buildRouteButton(context, "NEW", "/new", Icons.trending_up),

@@ -53,6 +53,42 @@ class CustomDrawer extends Drawer {
     );
   }
 
+  List<Widget> buildInfoHeader(BuildContext context) {
+    var children = <Widget>[
+      Image.asset(
+        "assets/app_orange.png",
+        height: 64,
+        width: 64,
+      ),
+    ];
+    if (GlobalInherited.of(context).isLoggedIn) {
+      var user = GlobalInherited.of(context).profile.user;
+      children.addAll([
+        Padding(
+          padding: EdgeInsets.only(top: 15),
+          child: Text(
+            user.name,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 25,
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: 2),
+          child: Text(
+            user.mark.name.toUpperCase(),
+            style: TextStyle(
+              color: user.mark.color,
+              fontSize: 10,
+            ),
+          ),
+        ),
+      ]);
+    }
+    return children;
+  }
+
   Widget buildRouteButton(
     BuildContext context,
     String name,

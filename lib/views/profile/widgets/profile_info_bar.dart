@@ -88,7 +88,7 @@ class ProfileInfoBar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          Text(registeredText, style: headerStyle),
+          Text(registeredText, style: _headerStyle),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: new Row(

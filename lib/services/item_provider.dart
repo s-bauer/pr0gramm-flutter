@@ -15,6 +15,8 @@ class ItemProvider {
       promoted: feedDetails.promoted,
       flags: feedDetails.flags,
       tags: feedDetails.tags,
+      likes: feedDetails.likes,
+      self: feedDetails.self,
     );
   }
 

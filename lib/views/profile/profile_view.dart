@@ -26,14 +26,7 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView>
     with SingleTickerProviderStateMixin {
-  bool showUploads = true;
   TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = new TabController(length: 2, vsync: this);
-  }
 
   @override
   void dispose() {
@@ -50,49 +43,99 @@ class _ProfileViewState extends State<ProfileView>
           return Center(child: CircularProgressIndicator());
 
         final info = snapshot.data;
-        final mainView = new MyScaffold(
+        final showFavBtn = info.likesArePublic ||
+            info.user.id == GlobalInherited.of(context).profile.user.id;
+
+        final tabs = buildTabs(info, showFavBtn);
+        _tabController = new TabController(length: tabs.length, vsync: this);
+
+        return MyScaffold(
+          name: "von ${info.user.name}",
           body: Column(
             children: <Widget>[
               ProfileInfoBar(info: info),
               ProfileTabBar(
                 showUploadsHandler: onShowUploads,
-                showCommentsHandler: onShowComments,
+                showFavoritesHandler: showFavBtn ? onShowFavorites : null,
+                showCommentsHandler: () => onShowComments(showFavBtn ? 2 : 1),
                 commentCount: info.commentCount,
                 uploadCount: info.uploadCount,
                 tagCount: info.tagCount,
+                favoriteCount: info.likeCount,
               ),
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
-                  children: <Widget>[
-                    OverviewGrid(),
-                    ProfileCommentOverview(user: info.user)
-                  ],
+                  children: tabs,
                 ),
               ),
             ],
-          ),
-        );
-
-        return buildFeedInherited(
-          info: info,
-          child: buildCommentFeedInherited(
-            info: info,
-            child: mainView,
           ),
         );
       },
     );
   }
 
-  FeedInherited buildFeedInherited({ProfileInfo info, Widget child}) {
+  List<Widget> buildTabs(ProfileInfo info, bool showFavBtn) {
+    final tabs = new List<Widget>();
+    if (info.uploadCount > 0) {
+      final uploadTab = buildUploadFeedInherited(
+        info: info,
+        child: OverviewGrid(),
+      );
+      tabs.add(uploadTab);
+    }
+
+    if (showFavBtn) {
+      final favTab = buildFavoritesFeedInherited(
+        info: info,
+        child: OverviewGrid(),
+      );
+      tabs.add(favTab);
+    }
+
+    if (info.commentCount > 0) {
+      final commentTab = buildCommentFeedInherited(
+        info: info,
+        child: ProfileCommentOverview(user: info.user),
+      );
+      tabs.add(commentTab);
+    }
+
+    return tabs;
+  }
+
+  FeedInherited buildFavoritesFeedInherited({ProfileInfo info, Widget child}) {
+    final user = info.user.name;
+
+    final feedDetails = new FeedDetails(
+      promoted: PromotionStatus.none,
+      flags: GlobalInherited.of(context).isLoggedIn ? Flags.sfw : Flags.guest,
+      likes: user,
+      self: true,
+    );
+
+    final favoriteFeed = new Feed(
+      feedDetails: feedDetails,
+      feedType: GlobalInherited.of(context).isLoggedIn
+          ? FeedType.NEW
+          : FeedType.PUBLICNEW,
+    );
+
+    return FeedInherited(
+      key: PageStorageKey("profile_${info.user.id}_favs"),
+      feed: favoriteFeed,
+      child: child,
+    );
+  }
+
+  FeedInherited buildUploadFeedInherited({ProfileInfo info, Widget child}) {
     final user = info.user.name;
 
     final feedDetails = new FeedDetails(
       promoted: PromotionStatus.none,
       flags: GlobalInherited.of(context).isLoggedIn ? Flags.sfw : Flags.guest,
       tags: "!u:$user",
-      name: "by $user",
     );
 
     final uploadFeed = new Feed(
@@ -103,6 +146,7 @@ class _ProfileViewState extends State<ProfileView>
     );
 
     return FeedInherited(
+      key: PageStorageKey("profile_${info.user.id}_uploads"),
       feed: uploadFeed,
       child: child,
     );
@@ -112,14 +156,17 @@ class _ProfileViewState extends State<ProfileView>
     ProfileInfo info,
     Widget child,
   }) {
+    final firstComment =
+        info.comments.reduce((a, b) => a.created < b.created ? b : a);
+
     final commentFeed = new ProfileCommentFeed(
       user: info.user.name,
-      firstComment:
-          info.comments.reduce((a, b) => a.created < b.created ? b : a),
+      firstComment: firstComment,
       flags: Flags.sfw,
     );
 
     return CommentFeedInherited(
+      key: PageStorageKey("profile_${info.user.id}_comments"),
       feed: commentFeed,
       child: child,
     );
@@ -129,7 +176,11 @@ class _ProfileViewState extends State<ProfileView>
     _tabController.index = 0;
   }
 
-  void onShowComments() {
+  void onShowComments(int index) {
+    _tabController.index = index;
+  }
+
+  void onShowFavorites() {
     _tabController.index = 1;
   }
 }

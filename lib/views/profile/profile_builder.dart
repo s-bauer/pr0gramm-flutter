@@ -11,7 +11,6 @@ class ProfileBuilder {
 
   Widget buildByRoute(BuildContext context) {
     final String user = ModalRoute.of(context).settings.arguments;
-
     return ProfileView(
       infoFuture: profileAPi.getProfileInfo(name: user, flags: Flags.sfw),
     );

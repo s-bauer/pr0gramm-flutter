@@ -7,8 +7,17 @@ class FeedDetails {
   final PromotionStatus promoted;
   final String tags;
   final String name;
+  final bool self;
+  final String likes;
 
-  FeedDetails({this.flags, this.promoted, this.tags, this.name});
+  FeedDetails({
+    this.flags,
+    this.promoted,
+    this.tags,
+    this.name,
+    this.self,
+    this.likes,
+  });
 
   FeedDetails copyWith({
     Flags flags,

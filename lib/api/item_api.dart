@@ -14,6 +14,8 @@ class GetItemsConfiguration {
   final ItemRange range;
   final int id;
   final String tags;
+  final bool self;
+  final String likes;
 
   GetItemsConfiguration({
     this.tags,
@@ -21,6 +23,8 @@ class GetItemsConfiguration {
     this.range,
     this.promoted,
     this.flags,
+    this.self,
+    this.likes,
   });
 
   String toQueryString() {
@@ -28,11 +32,13 @@ class GetItemsConfiguration {
         ? "&promoted=${promoted.value}"
         : "";
 
+    final selfStr = self != null ? "self=$self" : "";
+    final likesStr = self != null ? "likes=$likes" : "";
     final rangeStr = id != null ? "&${range.value}=$id" : "";
     final tagStr = tags != null ? "&tags=$tags" : "";
     final flagStr = "flags=${flags.value}";
 
-    return flagStr + promotedStr + rangeStr + tagStr;
+    return flagStr + promotedStr + rangeStr + tagStr + selfStr + likesStr;
   }
 
   GetItemsConfiguration copyWith({
@@ -41,6 +47,8 @@ class GetItemsConfiguration {
     ItemRange range,
     int id,
     String tags,
+    bool self,
+    String likes,
   }) {
     return new GetItemsConfiguration(
       promoted: promoted ?? this.promoted,
@@ -48,6 +56,8 @@ class GetItemsConfiguration {
       range: range ?? this.range,
       id: id ?? this.id,
       tags: tags ?? this.tags,
+      self: self ?? this.self,
+      likes: tags ?? this.likes,
     );
   }
 }

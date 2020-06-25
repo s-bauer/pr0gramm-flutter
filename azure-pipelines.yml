@@ -20,7 +20,7 @@ jobs:
         git checkout master
 
     - script: fastlane init
-      workingDirectory: $(Build.DefaultWorkingDirectory)/ios
+      workingDirectory: ios
       displayName: fastlane init (iOS)
 
     - script: |

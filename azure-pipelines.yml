@@ -3,8 +3,7 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-trigger:
-- master
+trigger: none
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -14,5 +13,20 @@ jobs:
   pool:
     vmImage: "macOS-latest"
   steps:
-    - 
+    - script: brew install fastlane
+      displayName: Install fastlane
+
+    - script: |
+        git checkout master
+
+    - script: fastlane init
+      workingDirectory: $(Build.DefaultWorkingDirectory)/ios
+      displayName: fastlane init (iOS)
+
+    - script: |
+        git add .
+        git commit -m "Changes"
+        git push
+    
+
 
